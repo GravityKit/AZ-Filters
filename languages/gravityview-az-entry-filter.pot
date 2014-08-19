@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GravityView AZ Entry Filter\n"
-"POT-Creation-Date: 2014-08-19 16:33+0100\n"
-"PO-Revision-Date: 2014-08-19 16:33+0100\n"
+"POT-Creation-Date: 2014-08-19 18:29+0100\n"
+"PO-Revision-Date: 2014-08-19 18:29+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -42,26 +42,30 @@ msgstr ""
 msgid "French"
 msgstr ""
 
-#: ../widget/gravityview-a-z-entry-filter-widget.php:41
+#: ../widget/gravityview-a-z-entry-filter-widget.php:40
+msgid "Italian"
+msgstr ""
+
+#: ../widget/gravityview-a-z-entry-filter-widget.php:42
 msgid "Localization"
 msgstr ""
 
-#: ../widget/gravityview-a-z-entry-filter-widget.php:46
+#: ../widget/gravityview-a-z-entry-filter-widget.php:47
 msgid "Uppercase A-Z"
 msgstr ""
 
-#: ../widget/gravityview-a-z-entry-filter-widget.php:57
+#: ../widget/gravityview-a-z-entry-filter-widget.php:55
 msgid "A-Z Entry Filter"
 msgstr ""
 
-#: ../widget/gravityview-a-z-entry-filter-widget.php:65
+#: ../widget/gravityview-a-z-entry-filter-widget.php:63
 msgid "Default"
 msgstr ""
 
-#: ../widget/gravityview-a-z-entry-filter-widget.php:66
+#: ../widget/gravityview-a-z-entry-filter-widget.php:64
 msgid "Date Created"
 msgstr ""
 
-#: ../widget/gravityview-a-z-entry-filter-widget.php:251
+#: ../widget/gravityview-a-z-entry-filter-widget.php:275
 msgid "Show All"
 msgstr ""

@@ -1,6 +1,6 @@
 <?php
 /**
- * French Alphabet
+ * Italian Alphabet
  *
  * @since 1.0.0
  */
@@ -15,8 +15,6 @@ function alphabet_letters() {
 		'g', 
 		'h', 
 		'i', 
-		'j', 
-		'k', 
 		'l', 
 		'm', 
 		'n', 
@@ -28,9 +26,6 @@ function alphabet_letters() {
 		't', 
 		'u', 
 		'v', 
-		'w', 
-		'x', 
-		'y', 
 		'z'
 	);
 	return $alphabets;
@@ -83,17 +78,9 @@ function fetch_previous_letter( $letter ) {
 		case 'I':
 			$letter = 'H';
 		break;
-		case 'j':
-		case 'J':
-			$letter = 'I';
-		break;
-		case 'k':
-		case 'K':
-			$letter = 'J';
-		break;
 		case 'l':
 		case 'L':
-			$letter = 'K';
+			$letter = 'I';
 		break;
 		case 'm':
 		case 'M':
@@ -135,21 +122,9 @@ function fetch_previous_letter( $letter ) {
 		case 'V':
 			$letter = 'U';
 		break;
-		case 'w':
-		case 'W':
-			$letter = 'V';
-		break;
-		case 'x':
-		case 'X':
-			$letter = 'W';
-		break;
-		case 'y':
-		case 'Y':
-			$letter = 'X';
-		break;
 		case 'z':
 		case 'Z':
-			$letter = 'Y';
+			$letter = 'V';
 		break;
 	}
 	return $letter;
