@@ -50,13 +50,14 @@ function gv_extension_az_entry_filtering_load() {
 		public function __construct() {
 			// Load widget
 			add_action( 'init', array( $this, 'register_az_entry_filter_widget' ) );
+			define( 'GV_AZ_Entry_Filter_Plugin_Dir_Path', plugin_dir_path( __FILE__ ) );
 		}
 
 		public function register_az_entry_filter_widget() {
 			// Load the widget class
 			require_once( GRAVITYVIEW_DIR . 'includes/default-widgets.php');
 			// Load widget extension
-			include_once plugin_dir_path( __FILE__ ) . 'widget/gravityview-a-z-entry-filter-widget.php';
+			include_once( GV_AZ_Entry_Filter_Plugin_Dir_Path . 'widget/gravityview-a-z-entry-filter-widget.php' );
 		}
 
 	} // GravityView_A_Z_Entry_Filter_Extension
