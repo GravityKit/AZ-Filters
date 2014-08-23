@@ -50,7 +50,11 @@ function gv_extension_az_entry_filtering_load() {
 		public function __construct() {
 			// Load widget
 			add_action( 'init', array( $this, 'register_az_entry_filter_widget' ) );
+			// Print Styles
+			add_action( 'wp_enqueue_scripts', array( $this, 'print_styles' ) );
+
 			define( 'GV_AZ_Entry_Filter_Plugin_Dir_Path', plugin_dir_path( __FILE__ ) );
+			define( 'GV_AZ_Entry_Filter_Plugin_URL', untrailingslashit( plugins_url( '/', __FILE__ ) ) );
 		}
 
 		public function register_az_entry_filter_widget() {
@@ -58,6 +62,17 @@ function gv_extension_az_entry_filtering_load() {
 			require_once( GRAVITYVIEW_DIR . 'includes/default-widgets.php');
 			// Load widget extension
 			include_once( GV_AZ_Entry_Filter_Plugin_Dir_Path . 'widget/gravityview-a-z-entry-filter-widget.php' );
+		}
+
+		/**
+		* This prints a little bit of CSS to keep the filter 
+		* clean on the front-end of the site.
+		* Only called when GravityView is detected on the page.
+		*/
+		function print_styles() {
+			// Need to filter the CSS to load only when required.
+
+			wp_enqueue_style( 'gravityview_az_entry_filter_style', GV_AZ_Entry_Filter_Plugin_URL . '/assets/css/gravityview-az-entry-filter.css' );
 		}
 
 	} // GravityView_A_Z_Entry_Filter_Extension

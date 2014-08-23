@@ -34,13 +34,9 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 			),
 			'localization' => array(
 				'type' => 'select',
-				'choices' => apply_filters( 'gravity_view-az-entry-filter_widget_localization', array(
-					'en' => __( 'English', 'gravity-view-az-entry-filter' ),
-					'fr' => __( 'French', 'gravity-view-az-entry-filter' ),
-					'it' => __( 'Italian', 'gravity-view-az-entry-filter' ),
-				) ),
+				'choices' => $this->load_localization(),
 				'label' => __( 'Localization', 'gravity-view-az-entry-filter' ),
-				'default' => 'en'
+				'default' => WPLANG
 			),
 			'uppercase' => array(
 				'type' => 'checkbox',
@@ -53,6 +49,16 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		add_filter( 'gravityview_fe_search_criteria', array( $this, 'filter_entries' ) );
 
 		parent::__construct( __( 'A-Z Entry Filter', 'gravity-view-az-entry-filter' ), 'page_letters', $default_values, $settings );
+	}
+
+	// This loads the languages we can display the alphabets in.
+	function load_localization() {
+		$local = apply_filters( 'gravityview_az_entry_filter_localization', array(
+			'' => __( 'English', 'gravity-view-az-entry-filter' ),
+			'fr_FR' => __( 'French', 'gravity-view-az-entry-filter' ),
+			'it_IT' => __( 'Italian', 'gravity-view-az-entry-filter' ),
+		) );
+		return $local;
 	}
 
 	function get_filter_fields( $formid ) {
@@ -141,6 +147,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		return $search_criteria;
 	}
 
+	// Displays the A-Z Filter
 	public function render_frontend( $widget_args, $content = '', $context = '') {
 		global $gravityview_view;
 
@@ -177,14 +184,14 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 	function render_alphabet_letters( $args = '', $show_all_letters = true, $charset = 'en', $uppercase = true ) {
 		global $gravityview_view;
 
+		if( empty($charset) ) { $charset = 'en'; } // Loads english by default.
+
 		include( GV_AZ_Entry_Filter_Plugin_Dir_Path . 'alphabets/alphabets-' . $charset . '.php' );
 
 		$defaults = array(
 			'base' => add_query_arg('letter','%#%'),
 			'format' => '&letter=%#%',
 			'add_args' => array(), //
-			'prev_text' => '&laquo;',
-			'next_text' => '&raquo;',
 			'current_letter' => $this->get_first_letter_localized( $charset ),
 			'show_all' => false,
 			'before_first_letter' => '',
@@ -202,24 +209,12 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		$total = $gravityview_view->total_entries;
 		if( empty( $total ) ) return;
 
-		$output = '<ul class="gravityview-alphabet-filter" style="list-style-type: none;">';
+		$output = '<ul class="gravityview-alphabet-filter">';
 
-		$output .= '<li style="float: left; margin-left: 0%;">';
-
-		if( empty( $current_letter ) || $current_letter == $first_letter ) {
-			$output .= '<span class="previous-letter gv-disabled">';
-		}
-		else{
-			$output .= '<span class="previous-letter"><a href=" ' . add_query_arg('letter', $this->previous_letter( $charset, $current_letter ) ) . '">';
-		}
-
-		$output .= $prev_text . '</a></span></li>';
-
-		$other_chars = apply_filters( 'gravityview_widget_a_z_entry_filter_other_chars', array( '&#35;' ) );
+		$other_chars = apply_filters( 'gravityview_az_entry_filter_other_chars', array( '&#35;' ) );
 		$alphabet_chars = $this->get_localized_alphabet( $charset );
 		$alphabet_chars = array_merge( $other_chars, $alphabet_chars );
 
-		//foreach( range( $first_letter, $last_letter ) as $char ) { // I think this only works for the english alphabet.
 		foreach( $alphabet_chars as $char ) { // This is more suited for any alphabet
 
 			$class = '';
@@ -244,10 +239,10 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 				$class = ' class="gv-disabled"';
 			// If letters are not set to show then we hide the letter with a little css.
 			//if( empty( $entries ) || $entries < 1 && $show_all_letters == 0 )
-				//$class = ' class="gv-hide" style="display: none;"';
+				//$class = ' class="gv-hide"';
 
 			// Outputs the letter to filter the results on click.
-			$output .= '<li style="float: left; margin-left: 1.4%;"><span' . $class . '><a href="' . $link . '">';
+			$output .= '<li><span' . $class . '><a href="' . $link . '">';
 
 			if( $uppercase ) {
 				$char = ucwords( $char );
@@ -261,18 +256,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 			$output .= '</a></span></li>';
 		}
 
-		$output .= '<li style="float: left; margin-left: 1.4%;">';
-
-		if( $current_letter == $last_letter ) {
-			$output .= '<span class="next-letter gv-disabled">';
-		}
-		else{
-			$output .= '<span class="next-letter"><a href=" ' . add_query_arg('letter', $this->next_letter( $current_letter ) ) . '">';
-		}
-
-		$output .= $next_text . '</a></span></li>';
-
-		$output .= '<li class="last" style="float: left; margin-left: 1.4%; margin-right: 0%;"><span class="show-all"><a href="' . remove_query_arg('letter') . '">' . __( 'Show All', 'gravity-view-az-entry-filter' ) . '</a></span></li>';
+		$output .= '<li class="last"><span class="show-all"><a href="' . remove_query_arg('letter') . '">' . __( 'Show All', 'gravity-view-az-entry-filter' ) . '</a></span></li>';
 
 		$output .= '</ul>';
 
@@ -289,17 +273,6 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 	function get_last_letter_localized( $charset ) {
 		return last_letter();
-	}
-
-	/* This fetches the previous letter. - This only works for English, still needs work */
-	function previous_letter( $charset = 'en', $letter ) {
-		return fetch_previous_letter( $letter );
-	}
-
-	/* This fetches the next letter. */
-	function next_letter( $letter ) {
-		$letter++;
-		return $letter;
 	}
 
 	function find_entries_under_letter( $char = '' ){

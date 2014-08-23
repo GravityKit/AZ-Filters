@@ -1,6 +1,6 @@
 <?php
 /**
- * English Alphabet
+ * French Alphabet
  *
  * @since 1.0.0
  */

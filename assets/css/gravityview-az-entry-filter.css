@@ -1,0 +1,23 @@
+ul.gravityview-alphabet-filter {
+	list-style-type: none !important;
+}
+
+ul.gravityview-alphabet-filter li {
+	float: left;
+	margin-left: 1.4%;
+}
+
+ul.gravityview-alphabet-filter li.last {
+	float: left;
+	margin-left: 1.4%;
+	margin-right: 0%;
+}
+
+.gv-disabled,
+span.gv-disabled a {
+	color: #ccc;
+}
+
+.gv-hide {
+	display: none;
+}

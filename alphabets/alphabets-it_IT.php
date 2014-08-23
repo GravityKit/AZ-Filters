@@ -1,6 +1,6 @@
 <?php
 /**
- * English Alphabet
+ * Italian Alphabet
  *
  * @since 1.0.0
  */
@@ -15,8 +15,6 @@ function alphabet_letters() {
 		'g', 
 		'h', 
 		'i', 
-		'j', 
-		'k', 
 		'l', 
 		'm', 
 		'n', 
@@ -28,9 +26,6 @@ function alphabet_letters() {
 		't', 
 		'u', 
 		'v', 
-		'w', 
-		'x', 
-		'y', 
 		'z'
 	);
 	return sort($alphabets);
