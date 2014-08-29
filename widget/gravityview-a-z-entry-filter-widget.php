@@ -63,7 +63,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 		$default_output = array(
 			'' => __( 'Default', 'gravity-view-az-entry-filter' ),
-			//'date_created' => __( 'Date Created', 'gravity-view-az-entry-filter' )
+			'date_created' => __( 'Date Created', 'gravity-view-az-entry-filter' )
 		);
 
 		$output = array();
@@ -102,7 +102,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 				$search_criteria['field_filters'][] = array(
 					'key' => NULL, // The field ID to search
 					'value' => esc_attr( $number ), // The value to search
-					'operator' => 'is', // What to search in. Options: `is` or `contains`
+					'operator' => 'contains', // What to search in. Options: `is`, `isnot`, `>`, `<`, `contains`
 				);
 			}
 		}
@@ -110,9 +110,9 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		// Search by Letter
 		if( !empty( $_GET['letter'] ) ) {
 			$search_criteria['field_filters'][] = array(
-				'key' => NULL, // The field ID to search
+				'key' => $this->settings['filter_field']['default'], // The field ID to search
 				'value' => esc_attr( $_GET['letter'] ), // The value to search
-				'operator' => 'contains', // What to search in. Options: `is` or `contains`
+				'operator' => 'contains', // What to search in. Options: `is`, `isnot`, `>`, `<`, `contains`
 			);
 		}
 
@@ -125,7 +125,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 				if( !empty( $filter['value'] ) ) {
 
-					if( false === strpos('.', $filter['key'] ) && ( $this->settings['filter_field'] === $filter['type'] ) ) {
+					if( false === strpos('.', $filter['key'] ) && ( $this->settings['filter_field']['default'] === $filter['type'] ) ) {
 						unset($filter['type']);
 
 						$value = $filter['value'];
@@ -244,9 +244,11 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		if( empty( $total ) ) {
 			$output = '<ul class="gravityview-alphabet-filter">';
 
-			$output .= '<li class="last"><span class="show-all"><a href="' . remove_query_arg('number', remove_query_arg('letter') ) . '">' . __( 'Show All', 'gravity-view-az-entry-filter' ) . '</a></span></li>';
+			$output .= '<li class="last"><span class="show-all"><a href="' . remove_query_arg('number', remove_query_arg('letter') ) . '">' . __( 'Reset', 'gravity-view-az-entry-filter' ) . '</a></span></li>';
 
 			$output .= '</ul>';
+
+			$output .= do_action('gravityview_log_debug', sprintf( '%s[render_frontend]: No entries.', get_class($this)) );
 
 			return $output;
 		}
@@ -266,11 +268,9 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 			$class = '';
 			$link = '&#35;'; // Hashtag
 
-			//$entries = $this->find_entries_under_letter( $form_id, $char ); // This checks if there are any entries under the letter.
-
 			// If hashtag '#' = '&#35;'
 			if( $char == '&#35;' ) {
-				$numbers = array( 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 );
+				$numbers = array( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
 				$number = implode( ",", $numbers );
 				// If entries exist then change the link for the number.
 				if( $entries > 0 ) $link = remove_query_arg('letter', add_query_arg('number', $number) );
@@ -358,9 +358,6 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 	function get_last_letter_localized( $charset ) {
 		return last_letter();
-	}
-
-	function find_entries_under_letter( $form_id, $char = '' ){
 	}
 
 } // GravityView_Widget_A_Z_Entry_Filter
