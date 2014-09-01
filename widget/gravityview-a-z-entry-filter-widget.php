@@ -14,7 +14,11 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		$postID = isset($_GET['post']) ? intval($_GET['post']) : NULL;
 		$formid = gravityview_get_form_id( $postID );
 
-		$default_values = array( 'header' => 1, 'footer' => 0 );
+		$widget_label = __( 'A-Z Entry Filter', 'gravity-view-az-entry-filter' );
+
+		$widget_id = 'page_letters';
+
+		$default_values = array( 'header' => 1, 'footer' => 1 );
 
 		$settings = array(
 			'show_all_letters' => array(
@@ -44,7 +48,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 		add_filter( 'gravityview_fe_search_criteria', array( $this, 'filter_entries' ) );
 
-		parent::__construct( __( 'A-Z Entry Filter', 'gravity-view-az-entry-filter' ), 'page_letters', $default_values, $settings );
+		parent::__construct( $widget_label, $widget_id, $default_values, $settings );
 	}
 
 	// This loads the languages we can display the alphabets in.
@@ -110,13 +114,13 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		// Search by Letter
 		if( !empty( $_GET['letter'] ) ) {
 			$search_criteria['field_filters'][] = array(
-				'key' => $this->settings['filter_field']['default'], // The field ID to search
+				'key' => $this->settings['filter_field'], // The field ID to search e.g. 1.3 is the First Name
 				'value' => esc_attr( $_GET['letter'] ), // The value to search
 				'operator' => 'contains', // What to search in. Options: `is`, `isnot`, `>`, `<`, `contains`
 			);
 		}
 
-		// add specific fields search
+		// Add specific fields search
 		$search_filters = $this->get_search_filters();
 
 		if( !empty( $search_filters ) && is_array( $search_filters ) ) {
@@ -125,7 +129,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 				if( !empty( $filter['value'] ) ) {
 
-					if( false === strpos('.', $filter['key'] ) && ( $this->settings['filter_field']['default'] === $filter['type'] ) ) {
+					if( false === strpos('.', $filter['key'] ) && ( $this->settings['filter_field'] === $filter['type'] ) ) {
 						unset($filter['type']);
 
 						$value = $filter['value'];
@@ -165,7 +169,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 						}
 
-						// next field
+						// Next field
 						continue;
 
 					}
@@ -241,16 +245,10 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 		// First we check that we have entries to begin with.
 		$total = $gravityview_view->total_entries;
+
+		// No Entries?
 		if( empty( $total ) ) {
-			$output = '<ul class="gravityview-alphabet-filter">';
-
-			$output .= '<li class="last"><span class="show-all"><a href="' . remove_query_arg('number', remove_query_arg('letter') ) . '">' . __( 'Reset', 'gravity-view-az-entry-filter' ) . '</a></span></li>';
-
-			$output .= '</ul>';
-
-			$output .= do_action('gravityview_log_debug', sprintf( '%s[render_frontend]: No entries.', get_class($this)) );
-
-			return $output;
+			do_action('gravityview_log_debug', sprintf( '%s[render_frontend]: No entries.', get_class($this)) );
 		}
 
 		$entries = $gravityview_view->entries; // Fetches all entries.
@@ -311,8 +309,6 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		return $output;
 	}
 
-	//////
-
 	private function get_search_filters() {
 		global $gravityview_view;
 
@@ -322,7 +318,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 		if( empty( $gravityview_view ) ) { return; }
 
-		// get configured search filters (fields)
+		// Get configured search filters (fields)
 		$search_filters = array();
 		$view_fields = $gravityview_view->fields;
 		$form = $gravityview_view->form;
@@ -331,11 +327,19 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 			foreach( $view_fields as $t => $fields ) {
 				foreach( $fields as $field ) {
 					if( !empty( $field['search_filter'] ) ) {
-						$key = str_replace( '.', '_', $field['id'] );
-						$value = esc_attr(rgget('filter_'. $key ) );
+						$key = str_replace( '.', '_', $field['id'] ); // If the field [id] has a dot, replace it with a underscore.
+						$value = esc_attr( rgget('filter_' . $key ) ); // Returns e.g. filter_1_3 for `First Name`
 						$form_field = gravityview_get_field( $form, $field['id'] );
 
-						$search_filters[] = array( 'key' => $field['id'], 'label' => $field['label'], 'value' => $value, 'type' => $form_field['type'] );
+						// Only return the selected field to filter by
+						if( $field['id'] == $this->settings['filter_field'] ) {
+							$search_filters[] = array( 
+								'key' => $field['id'], 
+								'label' => $field['label'], 
+								'value' => $value, 
+								'type' => $form_field['type']
+							);
+						}
 					}
 				}
 			}
@@ -346,16 +350,17 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		return $search_filters;
 	}
 
-	/////
-
+	// Returns the letters of the alphabets from the localization chosen or set by default.
 	function get_localized_alphabet( $charset ) {
 		return alphabet_letters();
 	}
 
+	// Returns the first letter of the alphabet.
 	function get_first_letter_localized( $charset ) {
 		return first_letter();
 	}
 
+	// Returns the last letter of the alphabet.
 	function get_last_letter_localized( $charset ) {
 		return last_letter();
 	}
