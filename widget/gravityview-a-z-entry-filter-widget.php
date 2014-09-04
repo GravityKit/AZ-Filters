@@ -55,9 +55,13 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 	function load_localization() {
 		$local = apply_filters( 'gravityview_az_entry_filter_localization', array(
 			'' => __( 'English', 'gravity-view-az-entry-filter' ),
+			'de_DE' => __( 'German', 'gravity-view-az-entry-filter' ),
+			'es_ES' => __( 'Spanish', 'gravity-view-az-entry-filter' ),
 			'fr_FR' => __( 'French', 'gravity-view-az-entry-filter' ),
 			'it_IT' => __( 'Italian', 'gravity-view-az-entry-filter' ),
+			'ru_RU' => __( 'Russian', 'gravity-view-az-entry-filter' ),
 		) );
+
 		return $local;
 	}
 
@@ -219,14 +223,12 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 	}
 
 	// Renders the alphabet letters
-	function render_alphabet_letters( $args = '', $show_all_letters = true, $charset = 'en', $uppercase = true ) {
+	function render_alphabet_letters( $args = '', $show_all_letters = true, $charset = '', $uppercase = true ) {
 		global $gravityview_view, $post;
 
 		$form_id = gravityview_get_form_id( $post->ID );
 
-		if( empty($charset) ) { $charset = 'en'; } // Loads english by default.
-
-		include( GV_AZ_Entry_Filter_Plugin_Dir_Path . 'alphabets/alphabets-' . $charset . '.php' );
+		if( empty($charset) ) { $charset = 'en_US'; } // Loads 'en_US' by default.
 
 		$defaults = array(
 			'base' => add_query_arg('letter','%#%'),
@@ -289,7 +291,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 			$output .= '<li><span' . $class . '><a href="' . $link . '">';
 
 			if( $uppercase ) {
-				$char = ucwords( $char );
+				$char = mb_strtoupper( $char );
 			}
 
 			// If the current letter matches then put it in bold.
@@ -352,17 +354,37 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 	// Returns the letters of the alphabets from the localization chosen or set by default.
 	function get_localized_alphabet( $charset ) {
-		return alphabet_letters();
+		$alphabets = apply_filters( 'gravityview_alphabets', array(
+			'en_US' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'),
+			'en_GB' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'),
+			'es_ES' => array('a', 'b', 'c', 'ch', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'll', 'm', 'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'),
+			'fr_FR' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'),
+			'de_DE' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'),
+			'it_IT' => array( 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'z'),
+			'ru_RU' => array('а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я'),
+		) );
+
+		if( isset( $alphabets[ $charset ] ) ) {
+			$alphabet = $alphabets[ $charset ];
+		} else {
+			$alphabet = $alphabets['en_US'];
+		}
+ 
+		return $alphabet;
 	}
 
 	// Returns the first letter of the alphabet.
 	function get_first_letter_localized( $charset ) {
-		return first_letter();
+		$alphabet = $this->get_localized_alphabet( $charset );
+ 
+		return array_shift( $alphabet );
 	}
 
 	// Returns the last letter of the alphabet.
 	function get_last_letter_localized( $charset ) {
-		return last_letter();
+		$alphabet = $this->get_localized_alphabet( $charset );
+ 
+		return array_pop( $alphabet );
 	}
 
 } // GravityView_Widget_A_Z_Entry_Filter
