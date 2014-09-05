@@ -36,7 +36,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 				'type' => 'select',
 				'choices' => $this->load_localization(),
 				'label' => __( 'Localization', 'gravity-view-az-entry-filter' ),
-				'default' => WPLANG
+				'default' => get_locale()
 			),
 			'uppercase' => array(
 				'type' => 'checkbox',
