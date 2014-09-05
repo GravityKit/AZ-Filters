@@ -70,7 +70,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		$fields = gravityview_get_form_fields( $formid, true, false );
 
 		$default_output = array(
-			'' => __( 'Default', 'gravity-view-az-entry-filter' ),
+			'' => __( 'Select a Field', 'gravity-view-az-entry-filter' ),
 			'date_created' => __( 'Date Created', 'gravity-view-az-entry-filter' )
 		);
 
@@ -280,12 +280,15 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 				if( $entries > 0 ) $link = remove_query_arg('number', add_query_arg('letter', $char) );
 			}
 
-			// If all letters are set to show even if the entries are empty then we add a class to disable the linked letter.
+			// Leave class empty unless there are no entries.
+			$class = '';
+			// If entries are empty or less than 1
 			if( empty( $entries ) || $entries < 1 ) {
-				if( $show_all_letters == 1 ) {
+				// All letters are set to show, disable linked letter.
+if( $show_all_letters == 1 ) {
 					$class = ' class="gv-disabled"';
 				}
-				// If letters are not set to show then we hide the letter with a little css.
+				// All letters are NOT set to show, hide the linked letter.
 				else if( $show_all_letters == 0 ) {
 					$class = ' class="gv-hide"';
 				}
