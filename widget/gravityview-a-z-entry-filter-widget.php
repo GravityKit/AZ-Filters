@@ -223,7 +223,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 	}
 
 	// Renders the alphabet letters
-	function render_alphabet_letters( $args = '', $show_all_letters = true, $charset = '', $uppercase = true ) {
+	function render_alphabet_letters( $args = '', $show_all_letters = 1, $charset = '', $uppercase = true ) {
 		global $gravityview_view, $post;
 
 		$form_id = gravityview_get_form_id( $post->ID );
@@ -281,14 +281,18 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 			}
 
 			// If all letters are set to show even if the entries are empty then we add a class to disable the linked letter.
-			if( empty( $entries ) || $entries < 1 && $show_all_letters == 1 )
-				$class = ' class="gv-disabled"';
-			// If letters are not set to show then we hide the letter with a little css.
-			if( empty( $entries ) || $entries < 1 && $show_all_letters == 0 )
-				$class = ' class="gv-hide"';
+			if( empty( $entries ) || $entries < 1 ) {
+				if( $show_all_letters == 1 ) {
+					$class = ' class="gv-disabled"';
+				}
+				// If letters are not set to show then we hide the letter with a little css.
+				else if( $show_all_letters == 0 ) {
+					$class = ' class="gv-hide"';
+				}
+			}
 
 			// Outputs the letter to filter the results on click.
-			$output .= '<li><span' . $class . '><a href="' . $link . '">';
+			$output .= '<li' . $class . '><a href="' . $link . '">';
 
 			if( $uppercase ) {
 				$char = mb_strtoupper( $char );
@@ -299,7 +303,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 			$output .= $char; // Returns the letter after it's modifications.
 
-			$output .= '</a></span></li>';
+			$output .= '</a></li>';
 		}
 
 		$output .= $after_last_letter;
