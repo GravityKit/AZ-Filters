@@ -47,7 +47,7 @@ function gv_extension_az_entry_filtering_load() {
 
 		protected $_path = __FILE__;
 
-		public function __construct() {
+		public function add_hooks() {
 			// Load widget
 			add_action( 'init', array( $this, 'register_az_entry_filter_widget' ) );
 			// Print Styles
@@ -65,7 +65,7 @@ function gv_extension_az_entry_filtering_load() {
 		}
 
 		/**
-		* This prints a little bit of CSS to keep the filter 
+		* This prints a little bit of CSS to keep the filter
 		* clean on the front-end of the site.
 		* Only called when GravityView is detected on the page.
 		*/
