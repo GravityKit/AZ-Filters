@@ -56,7 +56,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		$param = apply_filters( 'gravityview_az_filter_parameter', 'letter' );
 
 		if( !empty( $_GET[ $param ] ) ) {
-			return esc_attr( $_GET[ $param ] );
+			return esc_sql( $_GET[ $param ] );
 		}
 
 		return false;
