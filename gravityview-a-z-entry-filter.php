@@ -76,7 +76,7 @@ function gv_extension_az_entry_filtering_load() {
 		}
 
 	} // GravityView_A_Z_Entry_Filter_Extension
+
 	new GravityView_A_Z_Entry_Filter_Extension;
 
 }
-?>

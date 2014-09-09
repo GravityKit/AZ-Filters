@@ -1,0 +1,30 @@
+ul.gravityview-alphabet-filter {
+
+	list-style-type: none !important;
+
+	li {
+
+		float: left;
+		margin: 0;
+
+		a {
+			padding: 0 .4em;
+		}
+
+		&.last a {
+			padding-right: 0;
+		}
+
+		&.first a {
+			padding-left: 0;
+		}
+
+		&.gv-active a {
+			font-weight: bold;
+		}
+
+		&.gv-uppercase a {
+			text-transform: uppercase;
+		}
+	}
+}
