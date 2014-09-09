@@ -11,6 +11,10 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 	private $letter = false;
 
 	function __construct() {
+
+		/**
+		 * @todo Fix the fetching of the filter fields. Make it ajax.
+		 */
 		$postID = isset($_GET['post']) ? intval($_GET['post']) : NULL;
 
 		$formid = gravityview_get_form_id( $postID );
@@ -22,11 +26,6 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		$default_values = array( 'header' => 1, 'footer' => 1 );
 
 		$settings = array(
-			'show_all_letters' => array(
-				'type' => 'checkbox',
-				'label' => __( 'Show all letters even if entries are empty.', 'gravity-view-az-entry-filter' ),
-				'default' => true
-			),
 			'filter_field' => array(
 				'type' => 'select',
 				'choices' => $this->get_filter_fields( $formid ),
@@ -118,7 +117,6 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 		if( false !== $letter && preg_match( '/rg_lead_detail/', $query ) ) {
 
-			if( mb_strlen( $letter ) === 1  && in_array( $letter, $this->alphabet ) ) {
 			if( in_array( $letter, $this->alphabet ) ) {
 
 				$query = str_replace( "value like '%[REPLACEGV_AZ_FILTER]{$letter}%'", "value like '{$letter}%'", $query );
@@ -174,16 +172,18 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 			return;
 		}
 
-		$show_all_letters = $widget_args['show_all_letters'];
 		$filter_field = $widget_args['filter_field'];
 		$localization = $widget_args['localization'];
 		$uppercase = $widget_args['uppercase'];
 
+		/**
+		 * @todo Clean up this - just pass the args directly to the render_alphabet_letters() method.
+		 */
 		$letter_links = array(
 			'current_letter' => $this->get_filter_letter()
 		);
 
-		$letter_links = $this->render_alphabet_letters( $letter_links, $show_all_letters, $localization, $uppercase);
+		$letter_links = $this->render_alphabet_letters( $letter_links, $localization, $uppercase);
 
 		if( !empty( $letter_links ) ) {
 			echo '<div class="gv-widget-letter-links">' . $letter_links . '</div>';
@@ -193,7 +193,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 	}
 
 	// Renders the alphabet letters
-	function render_alphabet_letters( $args = '', $show_all_letters = 1, $charset = '', $uppercase = true ) {
+	function render_alphabet_letters( $args = '', $charset = '', $uppercase = true ) {
 		global $gravityview_view, $post;
 
 		$form_id = gravityview_get_form_id( $post->ID );
@@ -280,6 +280,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 	// Returns the letters of the alphabets from the localization chosen or set by default.
 	function get_localized_alphabet( $charset ) {
+
 		$alphabets = apply_filters( 'gravityview_alphabets', array(
 			'en_US' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'),
 			'en_GB' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'),
