@@ -119,6 +119,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		if( false !== $letter && preg_match( '/rg_lead_detail/', $query ) ) {
 
 			if( mb_strlen( $letter ) === 1  && in_array( $letter, $this->alphabet ) ) {
+			if( in_array( $letter, $this->alphabet ) ) {
 
 				$query = str_replace( "value like '%[REPLACEGV_AZ_FILTER]{$letter}%'", "value like '{$letter}%'", $query );
 

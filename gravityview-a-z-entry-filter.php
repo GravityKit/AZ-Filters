@@ -4,11 +4,11 @@
  * Plugin URI: https://gravityview.co
  * Description: Filters your entries via the alphabet.
  * Version: 1.0.0
- * Author: Sebastien Dumont
- * Author URI: http://www.sebastiendumont.com
- * Author Email: mailme@sebastiendumont.com
+ * Author: Katz Web Services, Inc.
+ * Author URI: https://gravityview.co
+ * Author Email: admin@gravityview.co
  * Requires at least: 3.8
- * Tested up to: 4.0 beta4
+ * Tested up to: 4.0
  * Text Domain: gravity-view-az-entry-filter
  * Domain Path: languages
  */
@@ -42,8 +42,6 @@ function gv_extension_az_entry_filtering_load() {
 		protected $_text_domain = 'gravity-view-az-entry-filter';
 
 		protected $_min_gravityview_version = '1.1.5';
-
-		protected $_author = 'Sebastien Dumont';
 
 		protected $_path = __FILE__;
 
