@@ -86,14 +86,14 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 				$output[$id] = esc_attr( $field['label'] );
 			}
 
-			$output = array_merge($default_output, $output);
+			$output = $default_output + $output;
 
 		}
 		else{
 			$output = $default_output;
 		}
 
-		$output = array_merge($default_output, $output);
+		$output = $default_output + $output;
 
 		return $output;
 	}
