@@ -1,11 +1,17 @@
 ul.gravityview-alphabet-filter {
 
-	list-style-type: none !important;
+	margin: 10px 0;
+
+	&, li {
+		list-style: none!important;
+		padding: 0;
+		background: none;
+	}
 
 	li {
 
-		float: left;
 		margin: 0;
+		float: left;
 
 		a {
 			padding: 0 .4em;
@@ -24,7 +30,7 @@ ul.gravityview-alphabet-filter {
 		}
 
 		&.gv-uppercase a {
-			text-transform: uppercase;
+			text-transform: uppercase!important;
 		}
 	}
 }
