@@ -106,12 +106,16 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 	 */
 	function load_localization() {
 		$local = apply_filters( 'gravityview_az_entry_filter_localization', array(
-			'' => __( 'English', 'gravity-view-az-entry-filter' ),
-			'de_DE' => __( 'German', 'gravity-view-az-entry-filter' ),
-			'es_ES' => __( 'Spanish', 'gravity-view-az-entry-filter' ),
-			'fr_FR' => __( 'French', 'gravity-view-az-entry-filter' ),
-			'it_IT' => __( 'Italian', 'gravity-view-az-entry-filter' ),
-			'ru_RU' => __( 'Russian', 'gravity-view-az-entry-filter' ),
+			'en_US' => __( 'English', 'gravityview-az-entry-filter' ),
+			'fi'	=> __( 'Finnish', 'gravityview-az-entry-filter' ),
+			'fr_FR' => __( 'French', 'gravityview-az-entry-filter' ),
+			'de_DE' => __( 'German', 'gravityview-az-entry-filter' ),
+			'it_IT' => __( 'Italian', 'gravityview-az-entry-filter' ),
+			'nn_NO'	=> __( 'Norwegian', 'gravityview-az-entry-filter' ),
+			'ro_RO'	=> __( 'Romanian', 'gravityview-az-entry-filter' ),
+			'ru_RU' => __( 'Russian', 'gravityview-az-entry-filter' ),
+			'es_ES' => __( 'Spanish', 'gravityview-az-entry-filter' ),
+			'tr_TR'	=> __( 'Turkish', 'gravityview-az-entry-filter' ),
 		) );
 
 		return $local;
@@ -399,6 +403,10 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 			'de_DE' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'),
 			'it_IT' => array( 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'z'),
 			'ru_RU' => array('а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я'),
+			'nn_NO' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'æ', 'ø', 'å' ),
+			'fi' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z', 'å', 'ä', 'ö' ),
+			'ro_RO' => array('a', 'ă', 'â', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'î', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 'ș', 't', 'ț', 'u', 'v', 'w', 'x', 'y', 'z' ),
+			'tr_TR' => array( 'a', 'b', 'c', 'ç', 'd', 'e', 'f', 'g', 'ğ', 'h', 'ı', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'ö', 'p', 'r', 's', 'ş', 't', 'u', 'ü', 'v', 'y', 'z' )
 		) );
 
 		// If the alphabet exists, use it. Otherwise, use English alphabet.
