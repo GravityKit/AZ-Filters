@@ -35,7 +35,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 		$widget_label = __( 'A-Z Entry Filter', 'gravity-view-az-entry-filter' );
 
-		$widget_id = 'page_letters';
+		$widget_id = 'az_filter';
 
 		$default_values = array( 'header' => 1, 'footer' => 1 );
 
@@ -222,8 +222,8 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 		foreach ($gravityview_view->widgets as $zone => $areas) {
 
-			// Get all the widgets that have ID of `page_letters`
-			$widgets = wp_list_filter( $areas, array('id' => 'page_letters' ));
+			// Get all the widgets that have ID of `az_filter`
+			$widgets = wp_list_filter( $areas, array('id' => 'az_filter' ));
 
 			// For each widget...
 			foreach ( $widgets as $uniqueid => $widget ) {
