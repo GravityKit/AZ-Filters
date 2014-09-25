@@ -45,7 +45,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 				'type' => 'select',
 				'choices' => $this->get_filter_fields( $formid ),
 				'label' => esc_attr__( 'Use this field to filter entries:', 'gravityview-az-filters' ),
-				'desc'	=> esc_attr__('Entries will be filtered based on the first character of this field.', 'gravityview-az-filters' ),
+				'desc'	=> sprintf( esc_attr__('Entries will be filtered based on the first character of this field. %sLearn more%s.', 'gravityview-az-filters' ), '<a href="https://gravityview.co/support/documentation/202386695/" rel="external">', '</a>' ),
 				'default' => ''
 			),
 			'localization' => array(
