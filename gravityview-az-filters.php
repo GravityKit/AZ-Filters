@@ -1,15 +1,15 @@
 <?php
 /**
- * Plugin Name: GravityView A-Z Entry Filter
+ * Plugin Name: GravityView A-Z Filters
  * Plugin URI: https://gravityview.co
- * Description: Filters your entries via the alphabet.
- * Version: 1.0-beta
+ * Description: Alphabetically filter your entries.
+ * Version: 1.0
  * Author: Katz Web Services, Inc.
  * Author URI: https://gravityview.co
  * Author Email: admin@gravityview.co
  * Requires at least: 3.8
  * Tested up to: 4.0
- * Text Domain: gravity-view-az-entry-filter
+ * Text Domain: gravityview-az-filters
  * Domain Path: languages
  */
 
@@ -35,11 +35,11 @@ function gv_extension_az_entry_filtering_load() {
 	 */
 	class GravityView_A_Z_Entry_Filter_Extension extends GravityView_Extension {
 
-		protected $_title = 'A-Z Entry Filter';
+		protected $_title = 'A-Z Filters';
 
 		protected $_version = '1.0-beta';
 
-		protected $_text_domain = 'gravity-view-az-entry-filter';
+		protected $_text_domain = 'gravityview-az-filters';
 
 		protected $_min_gravityview_version = '1.1.6';
 
@@ -52,6 +52,11 @@ function gv_extension_az_entry_filtering_load() {
 
 			// Print Styles
 			add_action( 'wp_enqueue_scripts', array( $this, 'print_styles' ) );
+
+			// Admin styles
+			add_action( 'admin_enqueue_scripts', array( $this, 'print_scripts'));
+
+			add_filter( 'gravityview_noconflict_scripts', array( $this, 'register_noconflict') );
 
 			define( 'GRAVITYVIEW_AZ_FILTER_PATH', plugin_dir_path( __FILE__ ) );
 
@@ -70,13 +75,43 @@ function gv_extension_az_entry_filtering_load() {
 		}
 
 		/**
-		 * Print CSS when widget is loaded
+		 * Enable the script in no-conflict mode
+		 *
+		 * @param  array $scripts_or_styles array of scripts to be loaded
+		 * @return array                    Modified array
+		 */
+		function register_noconflict( $scripts_or_styles ) {
+
+			$scripts_or_styles[] = 'gravityview-az-filters';
+
+			return $scripts_or_styles;
+		}
+
+		/**
+		 * Output the script that dynamically loads the fields for the widget settings
+		 * @param  string $hook $pagenow page name
+		 * @return void
+		 */
+		function print_scripts( $hook ) {
+
+			if( !gravityview_is_admin_page($hook, 'single') ) { return; }
+
+			wp_enqueue_script( 'gravityview-az-filters', GRAVITYVIEW_AZ_FILTER_URL . '/assets/js/az-search-widget-admin.js', array('jquery') );
+
+			wp_localize_script( 'gravityview-az-filters', 'gvAZVar', array(
+				'nonce' => wp_create_nonce( 'gravityview_ajaxviews')
+			) );
+
+		}
+
+		/**
+		 * Print CSS on front-end when widget is loaded
 		 * @return void
 		 */
 		function print_styles() {
 
 			// Need to filter the CSS to load only when required.
-			wp_enqueue_style( 'gravityview_az_entry_filter', GRAVITYVIEW_AZ_FILTER_URL . '/assets/css/gravityview-az-entry-filter.css' );
+			wp_enqueue_style( 'gravityview_az_entry_filter', GRAVITYVIEW_AZ_FILTER_URL . '/assets/css/gravityview-az-filters.css' );
 		}
 
 	} // GravityView_A_Z_Entry_Filter_Extension

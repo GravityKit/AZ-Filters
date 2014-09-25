@@ -13,6 +13,8 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 	private $letter_parameter;
 
+	protected $widget_description;
+
 	function __construct() {
 
 		/**
@@ -26,14 +28,13 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 		$this->letter_parameter = !empty( $parameter ) ? esc_attr( $parameter ) : 'letter';
 
-		/**
-		 * @todo Fix the fetching of the filter fields. Make it ajax.
-		 */
 		$postID = isset($_GET['post']) ? intval($_GET['post']) : NULL;
 
 		$formid = gravityview_get_form_id( $postID );
 
-		$widget_label = __( 'A-Z Entry Filter', 'gravity-view-az-entry-filter' );
+		$widget_label = __( 'A-Z Entry Filter', 'gravityview-az-filters' );
+
+		$this->widget_description = __('Alphabet links that filter entries by their first letter.', 'gravityview-az-filters');
 
 		$widget_id = 'az_filter';
 
@@ -43,19 +44,22 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 			'filter_field' => array(
 				'type' => 'select',
 				'choices' => $this->get_filter_fields( $formid ),
-				'label' => __( 'Which field do you wish to filter?', 'gravity-view-az-entry-filter' ),
+				'label' => esc_attr__( 'Use this field to filter entries:', 'gravityview-az-filters' ),
+				'desc'	=> sprintf( esc_attr__('Entries will be filtered based on the first character of this field. %sLearn more%s.', 'gravityview-az-filters' ), '<a href="" rel="external">', '</a>' ),
 				'default' => ''
 			),
 			'localization' => array(
 				'type' => 'select',
 				'choices' => $this->load_localization(),
-				'label' => __( 'Localization', 'gravity-view-az-entry-filter' ),
+				'label' => __( 'Alphabet', 'gravityview-az-filters' ),
+				'desc' => __('What alphabet should be used?', 'gravityview-az-filters' ),
 				'default' => get_locale()
 			),
 			'uppercase' => array(
 				'type' => 'checkbox',
-				'label' => __( 'Uppercase A-Z', 'gravity-view-az-entry-filter' ),
-				'default' => true
+				'label' => __( 'Use Uppercase Letters?', 'gravityview-az-filters' ),
+				'default' => true,
+				'desc' => __('Should the alphabet links be capitalized?', 'gravityview-az-filters' ),
 			),
 
 		);
@@ -65,6 +69,40 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		add_filter( 'gravityview_fe_search_criteria', array( $this, 'filter_entries' ) );
 
 		parent::__construct( $widget_label, $widget_id, $default_values, $settings );
+	}
+
+	/**
+	 * Define the default fields for the widget. Overwritten by the Javascript, but necessary to pass settings.
+	 *
+	 * Unsets fields that are inappropriate for filtering by letter.
+	 *
+	 * @param  int $formid Current Gravity Forms form ID
+	 * @return array         Array of fields
+	 */
+	function get_filter_fields( $formid ) {
+
+		$output = array();
+
+		// Get fields with sub-inputs and no parent
+		$fields = gravityview_get_form_fields( $formid, true, false );
+
+		if( !empty( $fields ) ) {
+
+			$blacklist_field_types = apply_filters( 'gravityview_blacklist_field_types', array( 'list', 'textarea', 'checkbox', 'radio', 'likert' ) );
+
+			foreach( $fields as $id => $field ) {
+				if( in_array( $field['type'], $blacklist_field_types ) ) {
+					unset( $fields[ $id ] );
+					continue;
+				}
+			}
+		}
+
+		foreach ( $fields as $key => $field ) {
+			$output[ $key ] = $field['label'];
+		}
+
+		return $output;
 	}
 
 	/**
@@ -106,53 +144,19 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 	 */
 	function load_localization() {
 		$local = apply_filters( 'gravityview_az_entry_filter_localization', array(
-			'en_US' => __( 'English', 'gravityview-az-entry-filter' ),
-			'fi'	=> __( 'Finnish', 'gravityview-az-entry-filter' ),
-			'fr_FR' => __( 'French', 'gravityview-az-entry-filter' ),
-			'de_DE' => __( 'German', 'gravityview-az-entry-filter' ),
-			'it_IT' => __( 'Italian', 'gravityview-az-entry-filter' ),
-			'nn_NO'	=> __( 'Norwegian', 'gravityview-az-entry-filter' ),
-			'ro_RO'	=> __( 'Romanian', 'gravityview-az-entry-filter' ),
-			'ru_RU' => __( 'Russian', 'gravityview-az-entry-filter' ),
-			'es_ES' => __( 'Spanish', 'gravityview-az-entry-filter' ),
-			'tr_TR'	=> __( 'Turkish', 'gravityview-az-entry-filter' ),
+			'en_US' => __( 'English', 'gravityview-az-filters' ),
+			'fi'	=> __( 'Finnish', 'gravityview-az-filters' ),
+			'fr_FR' => __( 'French', 'gravityview-az-filters' ),
+			'de_DE' => __( 'German', 'gravityview-az-filters' ),
+			'it_IT' => __( 'Italian', 'gravityview-az-filters' ),
+			'nn_NO'	=> __( 'Norwegian', 'gravityview-az-filters' ),
+			'ro_RO'	=> __( 'Romanian', 'gravityview-az-filters' ),
+			'ru_RU' => __( 'Russian', 'gravityview-az-filters' ),
+			'es_ES' => __( 'Spanish', 'gravityview-az-filters' ),
+			'tr_TR'	=> __( 'Turkish', 'gravityview-az-filters' ),
 		) );
 
 		return $local;
-	}
-
-	function get_filter_fields( $formid ) {
-
-		// Get fields with sub-inputs and no parent
-		$fields = gravityview_get_form_fields( $formid, true, false );
-
-		$default_output = array(
-			'' => __( 'Select a Field', 'gravity-view-az-entry-filter' ),
-			'date_created' => __( 'Date Created', 'gravity-view-az-entry-filter' )
-		);
-
-		$output = array();
-
-		if( !empty( $fields ) ) {
-
-			$blacklist_field_types = apply_filters( 'gravityview_blacklist_field_types', array( 'list', 'textarea' ) );
-
-			foreach( $fields as $id => $field ) {
-				if( in_array( $field['type'], $blacklist_field_types ) ) { continue; }
-
-				$output[$id] = esc_attr( $field['label'] );
-			}
-
-			$output = $default_output + $output;
-
-		}
-		else{
-			$output = $default_output;
-		}
-
-		$output = $default_output + $output;
-
-		return $output;
 	}
 
 	/**
@@ -240,8 +244,9 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 				$filter = array(
 					'key' => $widget['filter_field'], // The field ID to search e.g. 1.3 is the First Name
+
 					'value' => '[GRAVITYVIEW_AZ_FILTER_REPLACE]'.$letter, // The value to search
-					'operator' => 'like', // What to search in. Options: `is`, `isnot`, `>`, `<`, `contains`
+					'operator' => 'like', // Will use wildcard `%search%` format
 				);
 
 				$search_criteria['field_filters'][] = $filter;
@@ -289,7 +294,13 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		}
 	}
 
-	// Renders the alphabet letters
+	/**
+	 * Renders the HTML output of the letter links
+	 * @param  array|string  $args     List of arguments for how to display the linked list. By default, only `current_letter` is passed, but others can be used. See the $defaults array in the code.
+	 * @param  string  $charset   Language to use, using the WordPress Locale code (see {@link http://wpcentral.io/internationalization/})
+	 * @param  boolean $uppercase Whether to show as uppercase or not
+	 * @return string             HTML output of links
+	 */
 	function render_alphabet_letters( $args = '', $charset = 'en_US', $uppercase = true ) {
 		global $gravityview_view, $post;
 
@@ -305,7 +316,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 			'add_args' => array(), //
 			'current_letter' => NULL,
 			'number_character' => _x('#', 'Character representing numbers', 'gravity-view'),
-			'show_all_text' => __( 'Show All', 'gravity-view-az-entry-filter' ),
+			'show_all_text' => __( 'Show All', 'gravityview-az-filters' ),
 			'link_title_number' => __('Show entries starting with a number', 'gravity-view' ),
 			'link_title_letter' => __('Show entries starting with the letter %s', 'gravity-view' ),
 			'before_first_letter' => NULL,
@@ -325,7 +336,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 		}
 
-		$output = '<ul class="gravityview-alphabet-filter">';
+		$output = '<ul class="gravityview-az-filter">';
 
 		$output .= $args['before_first_letter'];
 
@@ -397,9 +408,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 		$alphabets = apply_filters( 'gravityview_alphabets', array(
 			'en_US' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'),
-			'en_GB' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'),
 			'es_ES' => array('a', 'b', 'c', 'ch', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'll', 'm', 'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'),
-			'fr_FR' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'),
 			'de_DE' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'),
 			'it_IT' => array( 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'z'),
 			'ru_RU' => array('а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я'),
