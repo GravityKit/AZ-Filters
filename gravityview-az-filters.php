@@ -37,7 +37,7 @@ function gv_extension_az_entry_filtering_load() {
 
 		protected $_title = 'A-Z Filters';
 
-		protected $_version = '1.0-beta';
+		protected $_version = '1.0';
 
 		protected $_text_domain = 'gravityview-az-filters';
 
