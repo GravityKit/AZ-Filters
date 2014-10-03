@@ -18,6 +18,7 @@ Alphabetically filter your entries.
 
 = 1.0.2 on October 3 =
 * Fixed: Added Bengali to language dropdown 
+* Updated translation files
 
 = 1.0.1 on October 2 =
 * Support non-Latin number sets
