@@ -4,9 +4,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GravityView A-Z Filters\n"
-"POT-Creation-Date: 2014-09-22 22:56-0700\n"
-"PO-Revision-Date: 2014-09-26 20:01+0000\n"
-"Last-Translator: Süha Karalar <suhakaralar@gmail.com>\n"
+"POT-Creation-Date: 2014-10-03 09:41-0700\n"
+"PO-Revision-Date: 2014-10-03 15:42+0000\n"
+"Last-Translator: Zachary Katz <zack@katz.co>\n"
 "Language-Team: Turkish (Turkey) (http://www.transifex.com/projects/p/gravityview-az-filters/language/tr_TR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -29,9 +29,13 @@ msgstr "%s eklentisi etkinleştirilemiyor; GravityView etkin değil."
 msgid "The %s Extension requires GravityView Version %s or newer."
 msgstr "%s eklentisi en az GravityView %s sürümü yada daha yenisini gerektirmektedir."
 
-#: widget/gravityview-a-z-entry-filter-widget.php:36
+#: widget/gravityview-a-z-entry-filter-widget.php:35
 msgid "A-Z Entry Filter"
 msgstr "A-Z Kayıt Süzgeci"
+
+#: widget/gravityview-a-z-entry-filter-widget.php:37
+msgid "Alphabet links that filter entries by their first letter."
+msgstr ""
 
 #: widget/gravityview-a-z-entry-filter-widget.php:47
 msgid "Use this field to filter entries:"
@@ -60,60 +64,64 @@ msgstr "Büyük harfleri kullanmak istermisiniz?"
 msgid "Should the alphabet links be capitalized?"
 msgstr "Alfabe bağlantıları büyük harfle mi gösterilsin?"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:141
+#: widget/gravityview-a-z-entry-filter-widget.php:147
 msgid "English"
 msgstr "İngilizce"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:142
+#: widget/gravityview-a-z-entry-filter-widget.php:148
 msgid "Finnish"
 msgstr "Fince"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:143
+#: widget/gravityview-a-z-entry-filter-widget.php:149
 msgid "French"
 msgstr "Fransızca"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:144
+#: widget/gravityview-a-z-entry-filter-widget.php:150
 msgid "German"
 msgstr "Almanca"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:145
+#: widget/gravityview-a-z-entry-filter-widget.php:151
 msgid "Italian"
 msgstr "İtalyanca"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:146
+#: widget/gravityview-a-z-entry-filter-widget.php:152
 msgid "Norwegian"
 msgstr "Norveçce"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:147
+#: widget/gravityview-a-z-entry-filter-widget.php:153
 msgid "Romanian"
 msgstr "Rumence"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:148
+#: widget/gravityview-a-z-entry-filter-widget.php:154
 msgid "Russian"
 msgstr "Rusça"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:149
+#: widget/gravityview-a-z-entry-filter-widget.php:155
 msgid "Spanish"
 msgstr "İspanyolca"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:150
+#: widget/gravityview-a-z-entry-filter-widget.php:156
 msgid "Turkish"
 msgstr "Türkçe"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:311
+#: widget/gravityview-a-z-entry-filter-widget.php:157
+msgid "Bengali"
+msgstr ""
+
+#: widget/gravityview-a-z-entry-filter-widget.php:375
 msgctxt "Character representing numbers"
 msgid "#"
 msgstr "#"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:312
+#: widget/gravityview-a-z-entry-filter-widget.php:376
 msgid "Show All"
 msgstr "Tümü Göster"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:313
+#: widget/gravityview-a-z-entry-filter-widget.php:377
 msgid "Show entries starting with a number"
 msgstr "Sayı ile başlayan kayıtları göster"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:314
+#: widget/gravityview-a-z-entry-filter-widget.php:378
 #, php-format
 msgid "Show entries starting with the letter %s"
 msgstr "%s harfi ile başlayan kayıtları göster"
