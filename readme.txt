@@ -20,6 +20,9 @@ Alphabetically filter your entries.
 * Support non-Latin number sets
 * Add Bengali alphabet and number set support
 * Add additional debugging
+* Add Bengali translation (thanks [@tareqhi](https://www.transifex.com/accounts/profile/tareqhi/))
+* Add Finnish translation (thanks [@harjuja](https://www.transifex.com/accounts/profile/harjuja/))
+* Add Turkish translation (thanks [@suhakaralar](https://www.transifex.com/accounts/profile/suhakaralar/))
 
 = 1.0.0 on September 25 =
 * Liftoff!

@@ -1,11 +1,12 @@
 # 
 # Translators:
+# Jari Harju <jari.harju@doaudit.fi>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: GravityView A-Z Filters\n"
 "POT-Creation-Date: 2014-09-22 22:56-0700\n"
-"PO-Revision-Date: 2014-09-23 04:57+0000\n"
-"Last-Translator: Katz Web Services, Inc. <support@katz.co>\n"
+"PO-Revision-Date: 2014-09-29 14:40+0000\n"
+"Last-Translator: Jari Harju <jari.harju@doaudit.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/gravityview-az-filters/language/fi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -61,43 +62,43 @@ msgstr ""
 
 #: widget/gravityview-a-z-entry-filter-widget.php:141
 msgid "English"
-msgstr ""
+msgstr "englanti"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:142
 msgid "Finnish"
-msgstr ""
+msgstr "suomi"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:143
 msgid "French"
-msgstr ""
+msgstr "ranska"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:144
 msgid "German"
-msgstr ""
+msgstr "saksa"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:145
 msgid "Italian"
-msgstr ""
+msgstr "italia"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:146
 msgid "Norwegian"
-msgstr ""
+msgstr "norja"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:147
 msgid "Romanian"
-msgstr ""
+msgstr "romania"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:148
 msgid "Russian"
-msgstr ""
+msgstr "venäjä"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:149
 msgid "Spanish"
-msgstr ""
+msgstr "espanja"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:150
 msgid "Turkish"
-msgstr ""
+msgstr "turkki"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:311
 msgctxt "Character representing numbers"
@@ -106,7 +107,7 @@ msgstr ""
 
 #: widget/gravityview-a-z-entry-filter-widget.php:312
 msgid "Show All"
-msgstr ""
+msgstr "Näytä kaikki"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:313
 msgid "Show entries starting with a number"
