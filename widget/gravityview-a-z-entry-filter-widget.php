@@ -176,6 +176,20 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 	 * - Before: `WHERE ((value like '%[GRAVITYVIEW_AZ_FILTER_REPLACE]a%'))` - note the wildcard before and after the `GRAVITYVIEW_AZ_FILTER_REPLACE`
 	 * - After: `WHERE ((value like 'a%'))` - Now the wildcard and the placeholder get replaced with just the letter
 	 *
+	 * The code for the numbers query is a bit complex because we need to process multi-byte strings.
+	 *
+	 * MySQL regex doesn't work for unicode characters, so we need to generate a query string that goes through each number with a `LIKE` statement instead.
+	 *
+	 * The code looks like:
+	 *
+	 * `(value like '0%' OR value like '1%' [...] OR value like '9%')`
+	 *
+	 * and in Bengali:
+	 *
+	 * `(value like '০%' OR value like '1%' [...] OR value like '৯%')`
+	 *
+	 * There's a nice side effect: it's faster than `REGEXP` anyway.
+	 *
 	 * @param  string $query MySQL query passed to the database
 	 * @return string        If the query contains `GRAVITYVIEW_AZ_FILTER_REPLACE`, it will be a modified query. Otherwise, the original query will be returned.
 	 */
@@ -190,15 +204,41 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 			do_action( 'gravityview_log_debug', 'GravityView_Widget_A_Z_Entry_Filter[query]: Before filtering by character '.$letter, $query );
 
+			$replace_sql = '';
+
 			if( in_array( $letter, $this->alphabet ) ) {
 
-				$query = str_replace( "value like '%[GRAVITYVIEW_AZ_FILTER_REPLACE]{$letter}%'", "value like '{$letter}%'", $query );
+				$replace_sql = $wpdb->prepare("value like %s", $letter.'%' );
 
 			} else if( $letter === '0-9' ) {
 
-				$query = str_replace( "value like '%[GRAVITYVIEW_AZ_FILTER_REPLACE]0-9%'", "value REGEXP '[0-9]'", $query );
+				/**
+				 * See docBlock for more information on why we're doing it like this.
+				 */
+
+				// Open number LIKE statement
+				$replace_sql = '(';
+
+				foreach ($this->numbers as $key => $value) {
+
+					// Sanitize the request
+					$replace_sql .= $wpdb->prepare( "value LIKE %s", $value.'%' );
+
+					// If there's another number, join the statement
+					if( isset($this->numbers[ ($key + 1) ] ) ) {
+						$replace_sql .= ' OR ';
+					}
+				}
+
+				// Close LIKE statement
+				$replace_sql .= ')';
 
 			}
+
+			// Replace the placeholder with the actual query
+			$query = str_replace( "value like '%[GRAVITYVIEW_AZ_FILTER_REPLACE]{$letter}%'", $replace_sql, $query );
+
+			unset( $replace_sql );
 
 			do_action( 'gravityview_log_debug', 'GravityView_Widget_A_Z_Entry_Filter[query]: After filtering by character '.$letter, $query );
 		}
@@ -232,7 +272,15 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 			// For each widget...
 			foreach ( $widgets as $uniqueid => $widget ) {
 
+				if( empty( $widget['filter_field'] ) ) {
+
+					do_action( 'gravityview_log_error', 'GravityView_Widget_A_Z_Entry_Filter[filter_entries]: No filter field has been set.', $widget );
+					continue;
+				}
+
 				$this->alphabet = $this->get_localized_alphabet( $widget['localization'] );
+
+				$this->numbers = $this->get_localized_numbers( $widget['localization'] );
 
 				/**
 				 * Modifies the query performed by GravityView. As in, the ACTUAL SQL.
@@ -276,6 +324,14 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 			do_action('gravityview_log_debug', sprintf( '%s[render_frontend]: $gravityview_view not instantiated yet.', get_class( $this ) ) );
 			return;
 		}
+
+		$defaults = array(
+			'filter_field' => 0,
+			'localization' => 'en_US',
+			'uppercase' => true
+		);
+
+		$widget_args = wp_parse_args( $widget_args, $defaults );
 
 		$filter_field = $widget_args['filter_field'];
 		$localization = $widget_args['localization'];
@@ -396,6 +452,24 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		return $output;
 	}
 
+	/**
+	 * Support non-latin numbers
+	 * @since  1.0.1
+	 * @param  string $charset Language code used by WordPress, such as `en_US` and `de_DE`
+	 * @return array          Array of numbers in the language
+	 */
+	function get_localized_numbers( $charset = 'en_US' ) {
+
+		$numbers = apply_filters( 'gravityview_numbers', array(
+			'default' => array( '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' ),
+			'bn_BN' => array( '০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯' )
+		));
+
+		// If the alphabet exists, use it. Otherwise, use latin numerals.
+		$number = isset( $numbers[ $charset ] ) ? $numbers[ $charset ] : $numbers['default'];
+
+		return $number;
+	}
 
 	/**
 	 * Returns the letters of the alphabets from the localization chosen or set by default.
@@ -415,7 +489,8 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 			'nn_NO' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'æ', 'ø', 'å' ),
 			'fi' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z', 'å', 'ä', 'ö' ),
 			'ro_RO' => array('a', 'ă', 'â', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'î', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 'ș', 't', 'ț', 'u', 'v', 'w', 'x', 'y', 'z' ),
-			'tr_TR' => array( 'a', 'b', 'c', 'ç', 'd', 'e', 'f', 'g', 'ğ', 'h', 'ı', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'ö', 'p', 'r', 's', 'ş', 't', 'u', 'ü', 'v', 'y', 'z' )
+			'tr_TR' => array( 'a', 'b', 'c', 'ç', 'd', 'e', 'f', 'g', 'ğ', 'h', 'ı', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'ö', 'p', 'r', 's', 'ş', 't', 'u', 'ü', 'v', 'y', 'z' ),
+			'bn_BN' => array( 'অ', 'আ', 'ই', 'ঈ', 'উ', 'ঊ', 'ঋ', 'এ', 'ঐ', 'ও', 'ঔ', 'ক', 'খ', 'গ', 'ঘ', 'ঙ', 'চ', 'ছ', 'জ', 'ঝ', 'ঞ', 'ট', 'ঠ', 'ড', 'ঢ', 'ণ', 'ত', 'থ', 'দ', 'ধ', 'ন', 'প', 'ফ', 'ব', 'ভ', 'ম', 'য', 'র', 'ল', 'শ', 'ষ', 'স', 'হ', 'ড়', 'ঢ়', 'য়' ),
 		) );
 
 		// If the alphabet exists, use it. Otherwise, use English alphabet.

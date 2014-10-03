@@ -16,5 +16,10 @@ Alphabetically filter your entries.
 
 == Changelog ==
 
+= 1.0.1 on October 2 =
+* Support non-Latin number sets
+* Add Bengali alphabet and number set support
+* Add additional debugging
+
 = 1.0.0 on September 25 =
 * Liftoff!
