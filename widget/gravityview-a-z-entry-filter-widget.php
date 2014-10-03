@@ -154,6 +154,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 			'ru_RU' => __( 'Russian', 'gravityview-az-filters' ),
 			'es_ES' => __( 'Spanish', 'gravityview-az-filters' ),
 			'tr_TR'	=> __( 'Turkish', 'gravityview-az-filters' ),
+			'bn_BN'	=> __( 'Bengali', 'gravityview-az-filters' ),
 		) );
 
 		return $local;
