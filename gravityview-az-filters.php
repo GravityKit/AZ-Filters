@@ -3,7 +3,7 @@
  * Plugin Name: GravityView A-Z Filters
  * Plugin URI: https://gravityview.co
  * Description: Alphabetically filter your entries.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: Katz Web Services, Inc.
  * Author URI: https://gravityview.co
  * Author Email: admin@gravityview.co
@@ -23,9 +23,14 @@ add_action( 'plugins_loaded', 'gv_extension_az_entry_filtering_load' );
  */
 function gv_extension_az_entry_filtering_load() {
 
-	// We prefer to use the one bundled with GravityView, but if it doesn't exist, go here.
 	if( !class_exists( 'GravityView_Extension' ) ) {
-		include_once plugin_dir_path( __FILE__ ) . 'lib/class-gravityview-extension.php';
+
+		if( class_exists('GravityView_Plugin') && is_callable(array('GravityView_Plugin', 'include_extension_framework')) ) {
+			GravityView::include_extension_framework();
+		} else {
+			// We prefer to use the one bundled with GravityView, but if it doesn't exist, go here.
+			include_once plugin_dir_path( __FILE__ ) . 'lib/class-gravityview-extension.php';
+		}
 	}
 
 	/**
