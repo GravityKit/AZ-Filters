@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name: GravityView A-Z Filters
- * Plugin URI: https://gravityview.co
+ * Plugin Name: GravityView A-Z Filters Extension
+ * Plugin URI: https://gravityview.co/extensions/a-z-filter/
  * Description: Alphabetically filter your entries.
  * Version: 1.0.3
  * Author: Katz Web Services, Inc.
@@ -26,7 +26,7 @@ function gv_extension_az_entry_filtering_load() {
 	if( !class_exists( 'GravityView_Extension' ) ) {
 
 		if( class_exists('GravityView_Plugin') && is_callable(array('GravityView_Plugin', 'include_extension_framework')) ) {
-			GravityView::include_extension_framework();
+			GravityView_Plugin::include_extension_framework();
 		} else {
 			// We prefer to use the one bundled with GravityView, but if it doesn't exist, go here.
 			include_once plugin_dir_path( __FILE__ ) . 'lib/class-gravityview-extension.php';
