@@ -46,19 +46,19 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 				'choices' => $this->get_filter_fields( $formid ),
 				'label' => esc_attr__( 'Use this field to filter entries:', 'gravityview-az-filters' ),
 				'desc'	=> sprintf( esc_attr__('Entries will be filtered based on the first character of this field. %sLearn more%s.', 'gravityview-az-filters' ), '<a href="https://gravityview.co/support/documentation/202386695/" rel="external">', '</a>' ),
-				'default' => ''
+				'value' => ''
 			),
 			'localization' => array(
 				'type' => 'select',
 				'choices' => $this->load_localization(),
 				'label' => __( 'Alphabet', 'gravityview-az-filters' ),
 				'desc' => __('What alphabet should be used?', 'gravityview-az-filters' ),
-				'default' => get_locale()
+				'value' => get_locale()
 			),
 			'uppercase' => array(
 				'type' => 'checkbox',
 				'label' => __( 'Use Uppercase Letters?', 'gravityview-az-filters' ),
-				'default' => true,
+				'value' => true,
 				'desc' => __('Should the alphabet links be capitalized?', 'gravityview-az-filters' ),
 			),
 
