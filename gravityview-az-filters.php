@@ -101,7 +101,9 @@ function gv_extension_az_entry_filtering_load() {
 
 			if( !gravityview_is_admin_page($hook, 'single') ) { return; }
 
-			wp_enqueue_script( 'gravityview-az-filters', GRAVITYVIEW_AZ_FILTER_URL . '/assets/js/az-search-widget-admin.js', array('jquery') );
+			$script_debug = (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) ? '' : '.min';
+
+			wp_enqueue_script( 'gravityview-az-filters', GRAVITYVIEW_AZ_FILTER_URL . '/assets/js/az-search-widget-admin'.$script_debug.'.js', array('jquery') );
 
 			wp_localize_script( 'gravityview-az-filters', 'gvAZVar', array(
 				'nonce' => wp_create_nonce( 'gravityview_ajaxviews')
