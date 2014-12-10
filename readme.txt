@@ -21,9 +21,9 @@ Alphabetically filter your entries.
 * Modified: Use GravityView extension manager by default
 * Modified: Use minified script in admin
 * Updated translations:
-    - Added: Spanish (thanks, [@jorgepelaez](https://www.transifex.com/accounts/profile/jorgepelaez/))
-    - Added: Dutch (thanks, [@erikvanbeek](https://www.transifex.com/accounts/profile/erikvanbeek/))
-    - Updated: Bengali (thanks [@tareqhi](https://www.transifex.com/accounts/profile/tareqhi/))
+    - Added Spanish (thanks, [@jorgepelaez](https://www.transifex.com/accounts/profile/jorgepelaez/))
+    - Added Dutch (thanks, [@erikvanbeek](https://www.transifex.com/accounts/profile/erikvanbeek/))
+    - Updated Bengali (thanks [@tareqhi](https://www.transifex.com/accounts/profile/tareqhi/))
 
 = 1.0.2 on October 3 =
 * Fixed: Added Bengali to language dropdown 
