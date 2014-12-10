@@ -42,11 +42,11 @@ function gv_extension_az_entry_filtering_load() {
 
 		protected $_title = 'A-Z Filters';
 
-		protected $_version = '1.0.2';
+		protected $_version = '1.0.3';
 
 		protected $_text_domain = 'gravityview-az-filters';
 
-		protected $_min_gravityview_version = '1.1.6';
+		protected $_min_gravityview_version = '1.1.7';
 
 		protected $_path = __FILE__;
 
