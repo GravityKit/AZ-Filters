@@ -1,0 +1,18 @@
+{
+  "name": "GravityView-AZ-Filters",
+  "version": "1.0.5",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-less": "^0.12.0",
+    "grunt-contrib-uglify": "^0.6.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-exec": "^0.4.6",
+    "grunt-potomo": "^3.1.0",
+    "grunt-sass": "^0.14.1",
+    "grunt-wp-readme-to-markdown": "^0.8.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/katzwebservices/GravityView-AZ-Filters.git"
+  }
+}

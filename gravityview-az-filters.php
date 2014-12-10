@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: GravityView A-Z Filters
- * Plugin URI: https://gravityview.co
+ * Plugin Name: GravityView A-Z Filters Extension
+ * Plugin URI: https://gravityview.co/extensions/a-z-filter/
  * Description: Alphabetically filter your entries.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: Katz Web Services, Inc.
  * Author URI: https://gravityview.co
  * Author Email: admin@gravityview.co
@@ -23,9 +23,14 @@ add_action( 'plugins_loaded', 'gv_extension_az_entry_filtering_load' );
  */
 function gv_extension_az_entry_filtering_load() {
 
-	// We prefer to use the one bundled with GravityView, but if it doesn't exist, go here.
 	if( !class_exists( 'GravityView_Extension' ) ) {
-		include_once plugin_dir_path( __FILE__ ) . 'lib/class-gravityview-extension.php';
+
+		if( class_exists('GravityView_Plugin') && is_callable(array('GravityView_Plugin', 'include_extension_framework')) ) {
+			GravityView_Plugin::include_extension_framework();
+		} else {
+			// We prefer to use the one bundled with GravityView, but if it doesn't exist, go here.
+			include_once plugin_dir_path( __FILE__ ) . 'lib/class-gravityview-extension.php';
+		}
 	}
 
 	/**
@@ -37,11 +42,11 @@ function gv_extension_az_entry_filtering_load() {
 
 		protected $_title = 'A-Z Filters';
 
-		protected $_version = '1.0.2';
+		protected $_version = '1.0.3';
 
 		protected $_text_domain = 'gravityview-az-filters';
 
-		protected $_min_gravityview_version = '1.1.6';
+		protected $_min_gravityview_version = '1.1.7';
 
 		protected $_path = __FILE__;
 
@@ -96,7 +101,9 @@ function gv_extension_az_entry_filtering_load() {
 
 			if( !gravityview_is_admin_page($hook, 'single') ) { return; }
 
-			wp_enqueue_script( 'gravityview-az-filters', GRAVITYVIEW_AZ_FILTER_URL . '/assets/js/az-search-widget-admin.js', array('jquery') );
+			$script_debug = (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) ? '' : '.min';
+
+			wp_enqueue_script( 'gravityview-az-filters', GRAVITYVIEW_AZ_FILTER_URL . '/assets/js/az-search-widget-admin'.$script_debug.'.js', array('jquery') );
 
 			wp_localize_script( 'gravityview-az-filters', 'gvAZVar', array(
 				'nonce' => wp_create_nonce( 'gravityview_ajaxviews')

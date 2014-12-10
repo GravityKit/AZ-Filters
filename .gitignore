@@ -4,8 +4,6 @@ composer.lock
 vendor/.git
 vendor/*/.git
 node_modules/*
-Gruntfile.js
-package.json
 .sass-cache
 *.codekit
 .tx
