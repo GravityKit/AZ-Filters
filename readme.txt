@@ -16,6 +16,9 @@ Alphabetically filter your entries.
 
 == Changelog ==
 
+= 1.0.4 =
+* Added: Handle custom CSS classes on the widget wrapper (frontend)
+
 = 1.0.3 on December 10 =
 * Fixed: PHP warnings on Edit View page
 * Modified: Use GravityView extension manager by default
@@ -26,7 +29,7 @@ Alphabetically filter your entries.
     - Updated Bengali (thanks [@tareqhi](https://www.transifex.com/accounts/profile/tareqhi/))
 
 = 1.0.2 on October 3 =
-* Fixed: Added Bengali to language dropdown 
+* Fixed: Added Bengali to language dropdown
 * Updated translation files
 
 = 1.0.1 on October 2 =
