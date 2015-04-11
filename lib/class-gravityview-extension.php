@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.0.4
+ * @version 1.0.6
  */
 abstract class GravityView_Extension {
 
@@ -8,7 +8,7 @@ abstract class GravityView_Extension {
 
 	protected $_version = NULL;
 
-	protected $_text_domain = 'gravity-view';
+	protected $_text_domain = 'gravityview';
 
 	protected $_min_gravityview_version = '1.1.5';
 
@@ -48,10 +48,10 @@ abstract class GravityView_Extension {
 
 		// Set filter for plugin's languages directory
 		$lang_dir = dirname( plugin_basename( __FILE__ ) ) . '/languages/';
-		$lang_dir = apply_filters( 'gravityview_az_entry_filter_languages_directory', $lang_dir );
 
 		// Traditional WordPress plugin locale filter
 		$locale = apply_filters( 'plugin_locale',  get_locale(), $this->_text_domain );
+
 		$mofile = sprintf( '%1$s-%2$s.mo', $this->_text_domain, $locale );
 
 		// Setup paths to current locale file
@@ -59,11 +59,11 @@ abstract class GravityView_Extension {
 		$mofile_global = WP_LANG_DIR . '/' . $this->_text_domain . '/' . $mofile;
 
 		if ( file_exists( $mofile_global ) ) {
-			// Look in global /wp-content/languages/gravityview-a-z-entry-filter/ folder
+			// Look in global /wp-content/languages/[plugin-dir]/ folder
 			load_textdomain( $this->_text_domain, $mofile_global );
 		}
 		elseif ( file_exists( $mofile_local ) ) {
-			// Look in local /wp-content/plugins/gravityview-a-z-entry-filter/languages/ folder
+			// Look in local /wp-content/plugins/[plugin-dir]/languages/ folder
 			load_textdomain( $this->_text_domain, $mofile_local );
 		}
 		else {
@@ -180,4 +180,3 @@ abstract class GravityView_Extension {
 	}
 
 }
-?>
