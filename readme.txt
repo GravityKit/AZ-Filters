@@ -1,7 +1,7 @@
 === GravityView - A-Z Filters Extension ===
 Tags: gravityview
 Requires at least: 3.3
-Tested up to: 4.0
+Tested up to: 4.2
 Stable tag: trunk
 Contributors: katzwebservices
 License: GPL 3 or higher
@@ -15,6 +15,10 @@ Alphabetically filter your entries.
 3. Follow the instructions
 
 == Changelog ==
+
+= 1.0.4 on April 10 =
+* Fixed: Compatibility with GravityView 1.7.5
+* Updated Hungarian translation (thanks, [@dbalage](https://www.transifex.com/accounts/profile/dbalage/)!)
 
 = 1.0.3 on December 10 =
 * Fixed: PHP warnings on Edit View page

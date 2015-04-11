@@ -21,12 +21,12 @@ msgstr ""
 #: lib/class-gravityview-extension.php:157
 #, php-format
 msgid "Could not activate the %s Extension; GravityView is not active."
-msgstr ""
+msgstr "Kon %s Extensie niet activeren; GravityView is niet actief. "
 
 #: lib/class-gravityview-extension.php:167
 #, php-format
 msgid "The %s Extension requires GravityView Version %s or newer."
-msgstr ""
+msgstr "De %s Extensie heeft GravityView versie %s nodig of nieuwer. "
 
 #: widget/gravityview-a-z-entry-filter-widget.php:35
 msgid "A-Z Entry Filter"
