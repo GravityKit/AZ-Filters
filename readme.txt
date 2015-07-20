@@ -1,7 +1,7 @@
 === GravityView - A-Z Filters Extension ===
 Tags: gravityview
 Requires at least: 3.3
-Tested up to: 4.2
+Tested up to: 4.2.2
 Stable tag: trunk
 Contributors: katzwebservices
 License: GPL 3 or higher
@@ -15,6 +15,12 @@ Alphabetically filter your entries.
 3. Follow the instructions
 
 == Changelog ==
+
+= 1.0.5 on July 20 =
+* Fixed: Sanitize links to improve security
+* Fixed: Link to "[Use this field to filter entries](http://docs.gravityview.co/article/198-the-use-this-field-to-filter-entries-setting)" documentation
+* Updated: Translations
+    - Added Danish (thanks, [@jaegerbo](https://www.transifex.com/accounts/profile/jaegerbo/))
 
 = 1.0.4 on April 10 =
 * Fixed: Compatibility with GravityView 1.7.5
