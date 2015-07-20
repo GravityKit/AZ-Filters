@@ -430,7 +430,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 			// Outputs the letter to filter the results on click.
 			$output .= '<li class="' . gravityview_sanitize_html_class( $classes ) . '">';
-			$output .= '<a href="' . $link . '" title="'.esc_attr( $title ).'">' . $char . '</a>';
+			$output .= '<a href="' . esc_url( $link ) . '" title="'.esc_attr( $title ).'">' . $char . '</a>';
 			$output .= '</li>';
 
 		}
