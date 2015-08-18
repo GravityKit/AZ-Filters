@@ -295,7 +295,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 					'key' => $widget['filter_field'], // The field ID to search e.g. 1.3 is the First Name
 
 					'value' => '[GRAVITYVIEW_AZ_FILTER_REPLACE]'.$letter, // The value to search
-					'operator' => 'like', // Will use wildcard `%search%` format
+					'operator' => 'contains', // Will use wildcard `%search%` format
 				);
 
 				$search_criteria['field_filters'][] = $filter;
