@@ -16,6 +16,9 @@ Alphabetically filter your entries.
 
 == Changelog ==
 
+= 1.0.6 on August 18 =
+* Fixed: Conflict with Gravity Forms 1.9.12+ preventing the A-Z filter from retrieving values
+
 = 1.0.5 on July 20 =
 * Fixed: Sanitize links to improve security
 * Fixed: Link to "[Use this field to filter entries](http://docs.gravityview.co/article/198-the-use-this-field-to-filter-entries-setting)" documentation
