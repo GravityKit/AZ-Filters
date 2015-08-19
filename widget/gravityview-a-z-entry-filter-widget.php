@@ -265,6 +265,9 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 			return $search_criteria;
 		}
 
+		// After 1.9.12, GF changed search operator options
+		$filter_operator = version_compare( GFCommon::$version, '1.9.12', '>=' ) ? 'contains' : 'like';
+
 		foreach ($gravityview_view->widgets as $zone => $areas) {
 
 			// Get all the widgets that have ID of `az_filter`
@@ -295,7 +298,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 					'key' => $widget['filter_field'], // The field ID to search e.g. 1.3 is the First Name
 
 					'value' => '[GRAVITYVIEW_AZ_FILTER_REPLACE]'.$letter, // The value to search
-					'operator' => 'contains', // Will use wildcard `%search%` format
+					'operator' => $filter_operator, // Will use wildcard `%search%` format
 				);
 
 				$search_criteria['field_filters'][] = $filter;
