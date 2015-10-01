@@ -9,3 +9,4 @@ node_modules/*
 *.codekit
 .tx
 .idea
+.DS_Store
