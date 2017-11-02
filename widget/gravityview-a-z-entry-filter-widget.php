@@ -209,7 +209,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 			if( in_array( $letter, $this->alphabet ) ) {
 
-				$replace_sql = $wpdb->prepare("value like %s", $letter.'%' );
+				$replace_sql = sprintf( "value like '%s%%'", $wpdb->esc_like( $letter ) );
 
 			} else if( $letter === '0-9' ) {
 
@@ -223,7 +223,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 				foreach ($this->numbers as $key => $value) {
 
 					// Sanitize the request
-					$replace_sql .= $wpdb->prepare( "value LIKE %s", $value.'%' );
+					$replace_sql .= sprintf( "value LIKE '%s%%'", $wpdb->esc_like( $value ) );
 
 					// If there's another number, join the statement
 					if( isset($this->numbers[ ($key + 1) ] ) ) {
