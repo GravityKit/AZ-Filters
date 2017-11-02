@@ -1,7 +1,7 @@
 # GravityView - A-Z Filters Extension #
 **Tags:** gravityview  
 **Requires at least:** 3.3  
-**Tested up to:** 4.2.2  
+**Tested up to:** 4.8.3
 **Stable tag:** trunk  
 **Contributors:** katzwebservices  
 **License:** GPL 3 or higher  
