@@ -3,7 +3,7 @@
  * Plugin Name: GravityView A-Z Filters Extension
  * Plugin URI: https://gravityview.co/extensions/a-z-filter/
  * Description: Alphabetically filter your entries.
- * Version: 1.0.6
+ * Version: 1.0.8
  * Author: Katz Web Services, Inc.
  * Author URI: https://gravityview.co
  * Author Email: admin@gravityview.co
@@ -42,7 +42,7 @@ function gv_extension_az_entry_filtering_load() {
 
 		protected $_title = 'A-Z Filters';
 
-		protected $_version = '1.0.6';
+		protected $_version = '1.0.8';
 
 		protected $_text_domain = 'gravityview-az-filters';
 

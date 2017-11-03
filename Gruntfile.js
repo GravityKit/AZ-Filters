@@ -69,7 +69,24 @@ module.exports = function(grunt) {
 			transifex: 'tx pull -a',
 
 			// Create a ZIP file
-			zip: 'python /usr/bin/git-archive-all ../gravityview-az-filters.zip'
+			// Create a ZIP file
+			zip: {
+				cmd: function( version = '' ) {
+
+					var filename = ( version === '' ) ? 'gravityview-az-filters' : 'gravityview-az-filters-' + version;
+
+					// First, create the full archive
+					var command = 'git-archive-all gravityview-az-filters.zip &&';
+
+					command += 'unzip -o gravityview-az-filters.zip &&';
+
+					command += 'zip -r ../' + filename + '.zip "gravityview-az-filters" &&';
+
+					command += 'rm -rf "gravityview-az-filters/" && rm -f "gravityview-az-filters.zip"';
+
+					return command;
+				}
+			}
 		},
 
 		wp_readme_to_markdown: {
