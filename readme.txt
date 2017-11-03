@@ -1,7 +1,7 @@
 === GravityView - A-Z Filters Extension ===
 Tags: gravityview
 Requires at least: 3.3
-Tested up to: 4.2.2
+Tested up to: 4.8.3
 Stable tag: trunk
 Contributors: katzwebservices
 License: GPL 3 or higher
@@ -15,6 +15,10 @@ Alphabetically filter your entries by letters of the alphabet.
 3. Follow the instructions
 
 == Changelog ==
+
+= 1.0.8 on November 2, 2017 =
+* Fixed: WordPress 4.8.3 introduced breaking change
+* Updated translations: Turkish, Russian, Romanian, Portuguese (PT & BR), Dutch, German
 
 = 1.0.7 on September 28 =
 * Fixed: Fatal error when GravityView is disabled

@@ -1,13 +1,14 @@
 # 
 # Translators:
 # Erik van Beek <erik@aiwos.nl>, 2014
+# Thom, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: GravityView A-Z Filters\n"
 "POT-Creation-Date: 2014-10-03 09:41-0700\n"
-"PO-Revision-Date: 2014-11-10 07:27+0000\n"
-"Last-Translator: Erik van Beek <erik@aiwos.nl>\n"
-"Language-Team: Dutch (Netherlands) (http://www.transifex.com/projects/p/gravityview-az-filters/language/nl_NL/)\n"
+"PO-Revision-Date: 2017-09-23 20:14+0000\n"
+"Last-Translator: Thom\n"
+"Language-Team: Dutch (Netherlands) (http://www.transifex.com/katzwebservices/gravityview-az-filters/language/nl_NL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,12 +23,12 @@ msgstr ""
 #: lib/class-gravityview-extension.php:157
 #, php-format
 msgid "Could not activate the %s Extension; GravityView is not active."
-msgstr "Kan de %s plugin niet activeren. GravityView is niet actief. "
+msgstr "Kon de %s-extensie niet activeren; GravityView is niet actief."
 
 #: lib/class-gravityview-extension.php:167
 #, php-format
 msgid "The %s Extension requires GravityView Version %s or newer."
-msgstr "De %s plugin heeft GravityView Versie %s of nieuwer nodig. "
+msgstr "De %s-extensie vereist GravityView versie %s of nieuwer."
 
 #: widget/gravityview-a-z-entry-filter-widget.php:35
 msgid "A-Z Entry Filter"
@@ -54,11 +55,11 @@ msgstr "Alfabet"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:55
 msgid "What alphabet should be used?"
-msgstr "Welk alfabet moet gebruikt worden? "
+msgstr "Welk alfabet moet worden gebruikt? "
 
 #: widget/gravityview-a-z-entry-filter-widget.php:60
 msgid "Use Uppercase Letters?"
-msgstr "Gebruikt hoofdletters?"
+msgstr "Hoofdletters gebruiken?"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:62
 msgid "Should the alphabet links be capitalized?"
@@ -86,11 +87,11 @@ msgstr "Italiaans"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:152
 msgid "Norwegian"
-msgstr "Noorweegs"
+msgstr "Noors"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:153
 msgid "Romanian"
-msgstr "Romeens"
+msgstr "Roemeens"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:154
 msgid "Russian"
@@ -115,7 +116,7 @@ msgstr "#"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:376
 msgid "Show All"
-msgstr "Toon Alles"
+msgstr "Alles tonen"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:377
 msgid "Show entries starting with a number"
