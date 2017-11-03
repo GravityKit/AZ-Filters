@@ -8,11 +8,13 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-exec": "^0.4.6",
     "grunt-potomo": "^3.2.1",
-    "grunt-sass": "^0.18.1",
-    "grunt-wp-readme-to-markdown": "^0.9.0"
+    "grunt-sass": "^2.0.0",
+    "grunt-wp-readme-to-markdown": "^0.9.0",
+    "node-sass": "^2.1.1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/katzwebservices/GravityView-AZ-Filters.git"
-  }
+    "url": "https://github.com/gravityview/GravityView-AZ-Filters.git"
+  },
+  "dependencies": {}
 }
