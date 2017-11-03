@@ -19,6 +19,7 @@ Alphabetically filter your entries by letters of the alphabet.
 = 1.0.8 on November 2, 2017 =
 * Fixed: WordPress 4.8.3 introduced breaking change
 * Updated translations: Turkish, Russian, Romanian, Portuguese (PT & BR), Dutch, German
+* Updated extension framework for improved auto-updates
 
 = 1.0.7 on September 28 =
 * Fixed: Fatal error when GravityView is disabled
