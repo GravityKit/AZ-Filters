@@ -2,13 +2,13 @@
 /**
  * Plugin Name: GravityView A-Z Filters Extension
  * Plugin URI: https://gravityview.co/extensions/a-z-filter/
- * Description: Alphabetically filter your entries.
+ * Description: Alphabetically filter your entries by letters of the alphabet.
  * Version: 1.0.8
  * Author: Katz Web Services, Inc.
  * Author URI: https://gravityview.co
  * Author Email: admin@gravityview.co
  * Requires at least: 3.8
- * Tested up to: 4.3
+ * Tested up to: 4.8.3
  * Text Domain: gravityview-az-filters
  * Domain Path: languages
  */
@@ -42,7 +42,13 @@ function gv_extension_az_entry_filtering_load() {
 
 		protected $_title = 'A-Z Filters';
 
+<<<<<<< HEAD
 		protected $_version = '1.0.8';
+=======
+		protected $_version = '1.0.7';
+
+		protected $_item_id = 266;
+>>>>>>> origin/develop
 
 		protected $_text_domain = 'gravityview-az-filters';
 
