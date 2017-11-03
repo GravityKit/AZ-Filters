@@ -16,6 +16,7 @@ Alphabetically filter your entries.
 
 == Changelog ==
 
+* Updated translations: Turkish, Russian, Romanian, Portuguese (PT & BR), Dutch, German
 = 1.0.6 on August 18 =
 * Fixed: Conflict with Gravity Forms 1.9.12+ preventing the A-Z filter from retrieving values
 
