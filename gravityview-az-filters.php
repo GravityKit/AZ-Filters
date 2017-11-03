@@ -41,14 +41,10 @@ function gv_extension_az_entry_filtering_load() {
 	class GravityView_A_Z_Entry_Filter_Extension extends GravityView_Extension {
 
 		protected $_title = 'A-Z Filters';
-
-<<<<<<< HEAD
+		
 		protected $_version = '1.0.8';
-=======
-		protected $_version = '1.0.7';
 
 		protected $_item_id = 266;
->>>>>>> origin/develop
 
 		protected $_text_domain = 'gravityview-az-filters';
 
