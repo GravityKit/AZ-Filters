@@ -201,7 +201,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		$letter = $this->get_filter_letter();
 
 		// Make sure the query is the correct, modified query. We don't want to modify any other queries!
-		if( false !== $letter && preg_match( '/rg_lead_detail/', $query ) && preg_match('/GRAVITYVIEW_AZ_FILTER_REPLACE/', $query ) ) {
+		if ( false !== $letter && preg_match( '/(rg_lead_detail|gf_entry_meta).*GRAVITYVIEW_AZ_FILTER_REPLACE/s', $query ) ) {
 
 			do_action( 'gravityview_log_debug', 'GravityView_Widget_A_Z_Entry_Filter[query]: Before filtering by character '.$letter, $query );
 
@@ -209,7 +209,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 			if( in_array( $letter, $this->alphabet ) ) {
 
-				$replace_sql = sprintf( "value like '%s%%'", $wpdb->esc_like( $letter ) );
+				$replace_sql = sprintf( "'%s%%'", $wpdb->esc_like( $letter ) );
 
 			} else if( $letter === '0-9' ) {
 
@@ -223,7 +223,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 				foreach ($this->numbers as $key => $value) {
 
 					// Sanitize the request
-					$replace_sql .= sprintf( "value LIKE '%s%%'", $wpdb->esc_like( $value ) );
+					$replace_sql .= sprintf( "'%s%%'", $wpdb->esc_like( $value ) );
 
 					// If there's another number, join the statement
 					if( isset($this->numbers[ ($key + 1) ] ) ) {
@@ -237,7 +237,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 			}
 
 			// Replace the placeholder with the actual query
-			$query = str_replace( "value like '%[GRAVITYVIEW_AZ_FILTER_REPLACE]{$letter}%'", $replace_sql, $query );
+			$query = str_replace( "'%[GRAVITYVIEW_AZ_FILTER_REPLACE]{$letter}%'", $replace_sql, $query );
 
 			unset( $replace_sql );
 
