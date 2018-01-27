@@ -23,14 +23,8 @@ add_action( 'plugins_loaded', 'gv_extension_az_entry_filtering_load' );
  */
 function gv_extension_az_entry_filtering_load() {
 
-	if( !class_exists( 'GravityView_Extension' ) ) {
-
-		if( class_exists('GravityView_Plugin') && is_callable(array('GravityView_Plugin', 'include_extension_framework')) ) {
-			GravityView_Plugin::include_extension_framework();
-		} else {
-			// We prefer to use the one bundled with GravityView, but if it doesn't exist, go here.
-			include_once plugin_dir_path( __FILE__ ) . 'lib/class-gravityview-extension.php';
-		}
+	if ( ! class_exists( 'GravityView_Extension' ) ) {
+		return;
 	}
 
 	/**
@@ -75,20 +69,6 @@ function gv_extension_az_entry_filtering_load() {
 		 * @return void
 		 */
 		public function register_az_entry_filter_widget() {
-
-			// 1.7.5.1+
-			if( is_callable( array( 'GravityView_Plugin', 'include_widget_class' ) ) ) {
-				GravityView_Plugin::include_widget_class();
-			}
-			// 1.7.5
-			else if( file_exists( GRAVITYVIEW_DIR . 'includes/widgets/register-gravityview-widgets.php' ) ) {
-				include_once( GRAVITYVIEW_DIR . 'includes/widgets/register-gravityview-widgets.php' );
-			}
-			// Before 1.7.5
-			else {
-				include_once( GRAVITYVIEW_DIR . 'includes/default-widgets.php' );
-			}
-
 			// Load widget extension
 			include_once( GRAVITYVIEW_AZ_FILTER_PATH . 'widget/gravityview-a-z-entry-filter-widget.php' );
 		}
