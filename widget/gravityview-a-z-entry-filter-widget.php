@@ -152,6 +152,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			'es_ES' => __( 'Spanish', 'gravityview-az-filters' ),
 			'tr_TR'	=> __( 'Turkish', 'gravityview-az-filters' ),
 			'bn_BN'	=> __( 'Bengali', 'gravityview-az-filters' ),
+			'is_IS' => __( 'Icelandic', 'gravityview-az-filters' ),
 		) );
 
 		return $local;
@@ -467,6 +468,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			'ro_RO' => array('a', 'ă', 'â', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'î', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 'ș', 't', 'ț', 'u', 'v', 'w', 'x', 'y', 'z' ),
 			'tr_TR' => array( 'a', 'b', 'c', 'ç', 'd', 'e', 'f', 'g', 'ğ', 'h', 'ı', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'ö', 'p', 'r', 's', 'ş', 't', 'u', 'ü', 'v', 'y', 'z' ),
 			'bn_BN' => array( 'অ', 'আ', 'ই', 'ঈ', 'উ', 'ঊ', 'ঋ', 'এ', 'ঐ', 'ও', 'ঔ', 'ক', 'খ', 'গ', 'ঘ', 'ঙ', 'চ', 'ছ', 'জ', 'ঝ', 'ঞ', 'ট', 'ঠ', 'ড', 'ঢ', 'ণ', 'ত', 'থ', 'দ', 'ধ', 'ন', 'প', 'ফ', 'ব', 'ভ', 'ম', 'য', 'র', 'ল', 'শ', 'ষ', 'স', 'হ', 'ড়', 'ঢ়', 'য়' ),
+			'is_IS' => array('a','á','b','d','ð','e','é','f','g','h','i','í','j','k','l','m','n','o','ó','p','r','s','t','u','ú','v','x','y','ý','þ','æ','ö'),
 		) );
 
 		// If the alphabet exists, use it. Otherwise, use English alphabet.
