@@ -379,6 +379,8 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 		// Add the number character to the beginning of the array
 		array_unshift( $alphabet_chars, $args['number_character'] );
 
+		$pagenum_parameter = 'pagenum';
+
 		foreach ( $alphabet_chars as $char ) { // This is more suited for any alphabet
 
 			$class = '';
@@ -392,6 +394,11 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			} else {
 				$link = add_query_arg( array( $this->letter_parameter => $char ) );
 				$title = sprintf( $args['link_title_letter'], $char );
+			}
+
+			// Remove pagination if switching letters
+			if ( Utils::_GET( $this->letter_parameter ) != $char ) {
+				$link = remove_query_arg( $pagenum_parameter, $link );
 			}
 
 			// Leave class empty unless there are no entries.
@@ -421,7 +428,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 		 */
 		if ( $this->get_filter_letter() ) {
 			$show_all_text = $uppercase ? $args['show_all_text'] : mb_strtolower( $args['show_all_text'] );
-			$output .= '<li class="last"><span class="show-all"><a href="' . esc_url( remove_query_arg( 'number', remove_query_arg( $this->letter_parameter ) ) ) . '">' . esc_html( $show_all_text ) . '</a></span></li>';
+			$output .= '<li class="last"><span class="show-all"><a href="' . esc_url( remove_query_arg( $pagenum_parameter, remove_query_arg( $this->letter_parameter ) ) ) . '">' . esc_html( $show_all_text ) . '</a></span></li>';
 		}
 
 		$output .= '</ul>';
