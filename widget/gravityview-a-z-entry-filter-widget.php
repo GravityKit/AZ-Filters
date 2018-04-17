@@ -199,9 +199,9 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 		// Get the letter to filter by. Already sanitized.
 		$letter = $this->get_filter_letter();
-
+		
 		// Make sure the query is the correct, modified query. We don't want to modify any other queries!
-		if( false !== $letter && preg_match( '/rg_lead_detail/', $query ) && preg_match('/GRAVITYVIEW_AZ_FILTER_REPLACE/', $query ) ) {
+		if( false !== $letter && preg_match( '/rg_lead_detail|gf_entry_meta/', $query ) && preg_match('/GRAVITYVIEW_AZ_FILTER_REPLACE/', $query ) ) {
 
 			do_action( 'gravityview_log_debug', 'GravityView_Widget_A_Z_Entry_Filter[query]: Before filtering by character '.$letter, $query );
 
