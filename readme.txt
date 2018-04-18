@@ -47,7 +47,7 @@ Alphabetically filter your entries by letters of the alphabet.
     - Updated Bengali (thanks [@tareqhi](https://www.transifex.com/accounts/profile/tareqhi/))
 
 = 1.0.2 on October 3 =
-* Fixed: Added Bengali to language dropdown 
+* Fixed: Added Bengali to language dropdown
 * Updated translation files
 
 = 1.0.1 on October 2 =

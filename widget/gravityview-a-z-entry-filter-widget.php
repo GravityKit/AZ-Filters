@@ -348,7 +348,9 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		$letter_links = $this->render_alphabet_letters( $args, $localization, $uppercase);
 
 		if( !empty( $letter_links ) ) {
-			echo '<div class="gv-widget-letter-links">' . $letter_links . '</div>';
+			$custom_class = !empty( $widget_args['custom_class'] ) ? $widget_args['custom_class'] : '';
+			$custom_class = gravityview_sanitize_html_class( $class );
+			echo '<div class="gv-widget-letter-links '.$custom_class.'">' . $letter_links . '</div>';
 		} else {
 			do_action( 'gravityview_log_debug', 'GravityView_Widget_A_Z_Entry_Filter[render_frontend] No letter links; render_alphabet_letters() returned empty response.' );
 		}
