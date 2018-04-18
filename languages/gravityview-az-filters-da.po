@@ -1,18 +1,17 @@
 # 
 # Translators:
-# Erik van Beek <erik@aiwos.nl>, 2014
-# Thom, 2017
+# Bo Jaeger <jaegerbo@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: GravityView A-Z Filters\n"
 "POT-Creation-Date: 2014-10-03 09:41-0700\n"
-"PO-Revision-Date: 2017-09-23 20:14+0000\n"
-"Last-Translator: Thom\n"
-"Language-Team: Dutch (Netherlands) (http://www.transifex.com/katzwebservices/gravityview-az-filters/language/nl_NL/)\n"
+"PO-Revision-Date: 2017-09-22 01:19+0000\n"
+"Last-Translator: Bo Jaeger <jaegerbo@gmail.com>\n"
+"Language-Team: Danish (http://www.transifex.com/katzwebservices/gravityview-az-filters/language/da/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: nl_NL\n"
+"Language: da\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.6.9\n"
 "X-Poedit-Basepath: ..\n"
@@ -23,91 +22,91 @@ msgstr ""
 #: lib/class-gravityview-extension.php:157
 #, php-format
 msgid "Could not activate the %s Extension; GravityView is not active."
-msgstr "Kon de %s-extensie niet activeren; GravityView is niet actief."
+msgstr "%s Extension kunne ikke aktiveres; GravityView er ikke aktiv."
 
 #: lib/class-gravityview-extension.php:167
 #, php-format
 msgid "The %s Extension requires GravityView Version %s or newer."
-msgstr "De %s-extensie vereist GravityView versie %s of nieuwer."
+msgstr "Denne %s Extension kræver GravityView Version %s eller nyere."
 
 #: widget/gravityview-a-z-entry-filter-widget.php:35
 msgid "A-Z Entry Filter"
-msgstr "A-Z Inzendingen Filter"
+msgstr "A-Z Entry Filter"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:37
 msgid "Alphabet links that filter entries by their first letter."
-msgstr "Alfabetische links die Inzendingen filteren op basis van de eerste letter. "
+msgstr ""
 
 #: widget/gravityview-a-z-entry-filter-widget.php:47
 msgid "Use this field to filter entries:"
-msgstr "Gebruik dit veld als een zoekfilter:"
+msgstr "Brug dette felt til filtrering af entries:"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:48
 #, php-format
 msgid ""
 "Entries will be filtered based on the first character of this field. %sLearn"
 " more%s."
-msgstr "Inzendingen worden gefilterd op basis van de eerste letter van dit veld. %sMeer informatie%s. "
+msgstr ""
 
 #: widget/gravityview-a-z-entry-filter-widget.php:54
 msgid "Alphabet"
-msgstr "Alfabet"
+msgstr ""
 
 #: widget/gravityview-a-z-entry-filter-widget.php:55
 msgid "What alphabet should be used?"
-msgstr "Welk alfabet moet worden gebruikt? "
+msgstr "Hvilket alfabet skal anvendes?"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:60
 msgid "Use Uppercase Letters?"
-msgstr "Hoofdletters gebruiken?"
+msgstr ""
 
 #: widget/gravityview-a-z-entry-filter-widget.php:62
 msgid "Should the alphabet links be capitalized?"
-msgstr "Moet het alfabet getoond worden in hoofdletters?"
+msgstr ""
 
 #: widget/gravityview-a-z-entry-filter-widget.php:147
 msgid "English"
-msgstr "Engels"
+msgstr "Engelsk"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:148
 msgid "Finnish"
-msgstr "Fins"
+msgstr "Finsk"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:149
 msgid "French"
-msgstr "Frans"
+msgstr "Fransk"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:150
 msgid "German"
-msgstr "Duits"
+msgstr "Tysk"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:151
 msgid "Italian"
-msgstr "Italiaans"
+msgstr "Italiensk"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:152
 msgid "Norwegian"
-msgstr "Noors"
+msgstr "Norsk"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:153
 msgid "Romanian"
-msgstr "Roemeens"
+msgstr "Rumænsk"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:154
 msgid "Russian"
-msgstr "Russisch"
+msgstr "Russisk"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:155
 msgid "Spanish"
-msgstr "Spaans"
+msgstr "Spansk"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:156
 msgid "Turkish"
-msgstr "Turks"
+msgstr "Tyrkisk"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:157
 msgid "Bengali"
-msgstr "Bengali"
+msgstr "Bengalsk"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:375
 msgctxt "Character representing numbers"
@@ -116,13 +115,13 @@ msgstr "#"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:376
 msgid "Show All"
-msgstr "Alles tonen"
+msgstr "Vis Alt"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:377
 msgid "Show entries starting with a number"
-msgstr "Toon Inzendingen met een nummer"
+msgstr ""
 
 #: widget/gravityview-a-z-entry-filter-widget.php:378
 #, php-format
 msgid "Show entries starting with the letter %s"
-msgstr "Toon Inzendingen beginnend met de letter %s"
+msgstr ""

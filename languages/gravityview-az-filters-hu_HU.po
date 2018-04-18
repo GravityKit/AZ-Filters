@@ -1,12 +1,13 @@
 # 
 # Translators:
+# dbalage <balazs@magonc.org>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: GravityView A-Z Filters\n"
 "POT-Creation-Date: 2014-10-03 09:41-0700\n"
-"PO-Revision-Date: 2014-10-03 15:42+0000\n"
-"Last-Translator: Zachary Katz <zack@katz.co>\n"
-"Language-Team: Hungarian (Hungary) (http://www.transifex.com/projects/p/gravityview-az-filters/language/hu_HU/)\n"
+"PO-Revision-Date: 2017-09-20 11:21+0000\n"
+"Last-Translator: dbalage <balazs@magonc.org>\n"
+"Language-Team: Hungarian (Hungary) (http://www.transifex.com/katzwebservices/gravityview-az-filters/language/hu_HU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,106 +22,106 @@ msgstr ""
 #: lib/class-gravityview-extension.php:157
 #, php-format
 msgid "Could not activate the %s Extension; GravityView is not active."
-msgstr ""
+msgstr "Nem lehet a aktiválni a %s Bővítményt; a GravityView nem aktív."
 
 #: lib/class-gravityview-extension.php:167
 #, php-format
 msgid "The %s Extension requires GravityView Version %s or newer."
-msgstr ""
+msgstr "A %s bővítménynek szüksége van a GravitView %s vagy újabb verziójára."
 
 #: widget/gravityview-a-z-entry-filter-widget.php:35
 msgid "A-Z Entry Filter"
-msgstr ""
+msgstr "A-Z bejegyzés szűrő"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:37
 msgid "Alphabet links that filter entries by their first letter."
-msgstr ""
+msgstr "Ábécé linkek, melyek az első betű alapján szűrik a bejegyzéseket."
 
 #: widget/gravityview-a-z-entry-filter-widget.php:47
 msgid "Use this field to filter entries:"
-msgstr ""
+msgstr "Mező használata szűrőként:"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:48
 #, php-format
 msgid ""
 "Entries will be filtered based on the first character of this field. %sLearn"
 " more%s."
-msgstr ""
+msgstr "A bejegyzések ezen mező első karaktere alapján lesznek szűrve. %sTovábbi információ%s."
 
 #: widget/gravityview-a-z-entry-filter-widget.php:54
 msgid "Alphabet"
-msgstr ""
+msgstr "Ábécé"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:55
 msgid "What alphabet should be used?"
-msgstr ""
+msgstr "Melyik ábécét szeretnéd használni?"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:60
 msgid "Use Uppercase Letters?"
-msgstr ""
+msgstr "Nagybetűk használata?"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:62
 msgid "Should the alphabet links be capitalized?"
-msgstr ""
+msgstr "Alakítsuk nagybetűsre az ábécé linkeket?"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:147
 msgid "English"
-msgstr ""
+msgstr "Angol"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:148
 msgid "Finnish"
-msgstr ""
+msgstr "Finn"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:149
 msgid "French"
-msgstr ""
+msgstr "Francia"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:150
 msgid "German"
-msgstr ""
+msgstr "Német"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:151
 msgid "Italian"
-msgstr ""
+msgstr "Olasz"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:152
 msgid "Norwegian"
-msgstr ""
+msgstr "Norvég"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:153
 msgid "Romanian"
-msgstr ""
+msgstr "Román"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:154
 msgid "Russian"
-msgstr ""
+msgstr "Orosz"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:155
 msgid "Spanish"
-msgstr ""
+msgstr "Spanyol"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:156
 msgid "Turkish"
-msgstr ""
+msgstr "Török"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:157
 msgid "Bengali"
-msgstr ""
+msgstr "Bengáli"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:375
 msgctxt "Character representing numbers"
 msgid "#"
-msgstr ""
+msgstr "#"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:376
 msgid "Show All"
-msgstr ""
+msgstr "Összes mutatása"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:377
 msgid "Show entries starting with a number"
-msgstr ""
+msgstr "Számmal kezdődő bejegyzések mutatása"
 
 #: widget/gravityview-a-z-entry-filter-widget.php:378
 #, php-format
 msgid "Show entries starting with the letter %s"
-msgstr ""
+msgstr "Bejegyzések mutatása kezdőbetű alapján: %s"

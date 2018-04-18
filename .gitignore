@@ -4,7 +4,10 @@ composer.lock
 vendor/.git
 vendor/*/.git
 node_modules/*
+**/.sass-cache/**
 .sass-cache
 *.codekit
 .tx
 .idea
+.DS_Store
+package-lock.json

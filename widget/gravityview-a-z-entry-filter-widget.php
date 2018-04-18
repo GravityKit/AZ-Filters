@@ -45,7 +45,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 				'type' => 'select',
 				'choices' => $this->get_filter_fields( $formid ),
 				'label' => esc_attr__( 'Use this field to filter entries:', 'gravityview-az-filters' ),
-				'desc'	=> sprintf( esc_attr__('Entries will be filtered based on the first character of this field. %sLearn more%s.', 'gravityview-az-filters' ), '<a href="https://gravityview.co/support/documentation/202386695/" rel="external">', '</a>' ),
+				'desc'	=> sprintf( esc_attr__('Entries will be filtered based on the first character of this field. %sLearn more%s.', 'gravityview-az-filters' ), '<a href="http://docs.gravityview.co/article/198-the-use-this-field-to-filter-entries-setting" rel="external">', '</a>' ),
 				'value' => ''
 			),
 			'localization' => array(
@@ -201,7 +201,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		$letter = $this->get_filter_letter();
 
 		// Make sure the query is the correct, modified query. We don't want to modify any other queries!
-		if( false !== $letter && preg_match( '/rg_lead_detail/', $query ) && preg_match('/GRAVITYVIEW_AZ_FILTER_REPLACE/', $query ) ) {
+		if ( false !== $letter && preg_match( '/(rg_lead_detail|gf_entry_meta).*GRAVITYVIEW_AZ_FILTER_REPLACE/s', $query ) ) {
 
 			do_action( 'gravityview_log_debug', 'GravityView_Widget_A_Z_Entry_Filter[query]: Before filtering by character '.$letter, $query );
 
@@ -209,7 +209,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 			if( in_array( $letter, $this->alphabet ) ) {
 
-				$replace_sql = $wpdb->prepare("value like %s", $letter.'%' );
+				$replace_sql = sprintf( "'%s%%'", $wpdb->esc_like( $letter ) );
 
 			} else if( $letter === '0-9' ) {
 
@@ -223,7 +223,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 				foreach ($this->numbers as $key => $value) {
 
 					// Sanitize the request
-					$replace_sql .= $wpdb->prepare( "value LIKE %s", $value.'%' );
+					$replace_sql .= sprintf( "'%s%%'", $wpdb->esc_like( $value ) );
 
 					// If there's another number, join the statement
 					if( isset($this->numbers[ ($key + 1) ] ) ) {
@@ -237,7 +237,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 			}
 
 			// Replace the placeholder with the actual query
-			$query = str_replace( "value like '%[GRAVITYVIEW_AZ_FILTER_REPLACE]{$letter}%'", $replace_sql, $query );
+			$query = str_replace( "'%[GRAVITYVIEW_AZ_FILTER_REPLACE]{$letter}%'", $replace_sql, $query );
 
 			unset( $replace_sql );
 
@@ -264,6 +264,9 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 			return $search_criteria;
 		}
+
+		// After 1.9.12, GF changed search operator options
+		$filter_operator = version_compare( GFCommon::$version, '1.9.12', '>=' ) ? 'contains' : 'like';
 
 		foreach ($gravityview_view->widgets as $zone => $areas) {
 
@@ -295,7 +298,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 					'key' => $widget['filter_field'], // The field ID to search e.g. 1.3 is the First Name
 
 					'value' => '[GRAVITYVIEW_AZ_FILTER_REPLACE]'.$letter, // The value to search
-					'operator' => 'like', // Will use wildcard `%search%` format
+					'operator' => $filter_operator, // Will use wildcard `%search%` format
 				);
 
 				$search_criteria['field_filters'][] = $filter;
@@ -432,7 +435,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 			// Outputs the letter to filter the results on click.
 			$output .= '<li class="' . gravityview_sanitize_html_class( $classes ) . '">';
-			$output .= '<a href="' . $link . '" title="'.esc_attr( $title ).'">' . $char . '</a>';
+			$output .= '<a href="' . esc_url( $link ) . '" title="'.esc_attr( $title ).'">' . $char . '</a>';
 			$output .= '</li>';
 
 		}

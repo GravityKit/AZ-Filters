@@ -1,12 +1,12 @@
 === GravityView - A-Z Filters Extension ===
 Tags: gravityview
 Requires at least: 3.3
-Tested up to: 4.0
+Tested up to: 4.8.3
 Stable tag: trunk
 Contributors: katzwebservices
 License: GPL 3 or higher
 
-Alphabetically filter your entries.
+Alphabetically filter your entries by letters of the alphabet.
 
 == Installation ==
 
@@ -16,8 +16,26 @@ Alphabetically filter your entries.
 
 == Changelog ==
 
-= 1.0.4 =
-* Added: Handle custom CSS classes on the widget wrapper (frontend)
+= 1.0.8 on November 2, 2017 =
+* Fixed: WordPress 4.8.3 introduced breaking change
+* Updated translations: Turkish, Russian, Romanian, Portuguese (PT & BR), Dutch, German
+* Updated extension framework for improved auto-updates
+
+= 1.0.7 on September 28 =
+* Fixed: Fatal error when GravityView is disabled
+
+= 1.0.6 on August 18 =
+* Fixed: Conflict with Gravity Forms 1.9.12+ preventing the A-Z filter from retrieving values
+
+= 1.0.5 on July 20 =
+* Fixed: Sanitize links to improve security
+* Fixed: Link to "[Use this field to filter entries](http://docs.gravityview.co/article/198-the-use-this-field-to-filter-entries-setting)" documentation
+* Updated: Translations
+    - Added Danish (thanks, [@jaegerbo](https://www.transifex.com/accounts/profile/jaegerbo/))
+
+= 1.0.4 on April 10 =
+* Fixed: Compatibility with GravityView 1.7.5
+* Updated Hungarian translation (thanks, [@dbalage](https://www.transifex.com/accounts/profile/dbalage/)!)
 
 = 1.0.3 on December 10 =
 * Fixed: PHP warnings on Edit View page
