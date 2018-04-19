@@ -17,7 +17,7 @@ Alphabetically filter your entries by letters of the alphabet.
 ## Changelog ##
 
 ### 1.1 on April 18, 2018 ###
-* Added: Swedish alphabet support
+* Added: Icelandic and Swedish alphabet support
 * Fixed: Support for Gravity Forms 2.3
 * Fixed: Clicking letter links would include the page number from the prior letter
 * Fixed: Add custom CSS classes to the A-Z Widget wrapper HTML
