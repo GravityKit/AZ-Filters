@@ -415,6 +415,8 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		// Add the number character to the beginning of the array
 		array_unshift($alphabet_chars, $args['number_character'] );
 
+		$pagenum_parameter = 'pagenum';
+
 		foreach( $alphabet_chars as $char ) { // This is more suited for any alphabet
 
 			$class = '';
@@ -428,6 +430,11 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 			} else {
 				$link = add_query_arg( array( $this->letter_parameter => $char ) );
 				$title = sprintf( $args['link_title_letter'], $char );
+			}
+
+			// Remove pagination if switching letters
+			if ( rgget( $this->letter_parameter ) !== $char ) {
+				$link = remove_query_arg( $pagenum_parameter, $link );
 			}
 
 			// Leave class empty unless there are no entries.
@@ -463,7 +470,7 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 				$show_all_text = function_exists( 'mb_strtolower' ) ? mb_strtolower( $args['show_all_text'] ) : strtolower( $args['show_all_text'] );
 			}
 
-			$output .= '<li class="last"><span class="show-all"><a href="' . remove_query_arg('number', remove_query_arg( $this->letter_parameter ) ) . '">' . esc_html( $show_all_text ) . '</a></span></li>';
+			$output .= '<li class="last"><span class="show-all"><a href="' . remove_query_arg( $pagenum_parameter, remove_query_arg( $this->letter_parameter ) ) . '">' . esc_html( $show_all_text ) . '</a></span></li>';
 
 		}
 
