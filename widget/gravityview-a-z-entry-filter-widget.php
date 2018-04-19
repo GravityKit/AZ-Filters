@@ -11,6 +11,10 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 
 	private $letter = false;
 
+	private $numbers;
+
+	private $alphabet;
+
 	private $letter_parameter;
 
 	protected $widget_description;
@@ -27,6 +31,10 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		$parameter = apply_filters( 'gravityview_az_filter_parameter', 'letter' );
 
 		$this->letter_parameter = !empty( $parameter ) ? esc_attr( $parameter ) : 'letter';
+
+		$this->alphabet = $this->get_localized_alphabet();
+
+		$this->numbers = $this->get_localized_numbers();
 
 		$postID = isset($_GET['post']) ? intval($_GET['post']) : NULL;
 
