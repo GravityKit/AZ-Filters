@@ -1,7 +1,7 @@
 === GravityView - A-Z Filters Extension ===
 Tags: gravityview
 Requires at least: 3.3
-Tested up to: 4.8.3
+Tested up to: 4.9.5
 Stable tag: trunk
 Contributors: katzwebservices
 License: GPL 3 or higher
@@ -15,6 +15,12 @@ Alphabetically filter your entries by letters of the alphabet.
 3. Follow the instructions
 
 == Changelog ==
+
+= 1.1 on April 18, 2018 =
+* Added: Icelandic and Swedish alphabet support
+* Fixed: Support for Gravity Forms 2.3
+* Fixed: Clicking letter links would include the page number from the prior letter
+* Fixed: Add custom CSS classes to the A-Z Widget wrapper HTML
 
 = 1.0.8 on November 2, 2017 =
 * Fixed: WordPress 4.8.3 introduced breaking change

@@ -12,6 +12,10 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 
 	private $letter = false;
 
+	private $numbers;
+
+	private $alphabet;
+
 	private $letter_parameter;
 
 	protected $widget_description;
@@ -34,6 +38,10 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 
 		$this->letter_parameter = ! empty( $parameter ) ? $parameter : 'letter';
 
+		$this->alphabet = $this->get_localized_alphabet();
+
+		$this->numbers = $this->get_localized_numbers();
+
 		$formid = gravityview_get_form_id( Utils::_GET( 'post' ) );
 
 		$widget_label = __( 'A-Z Entry Filter', 'gravityview-az-filters' );
@@ -49,7 +57,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 				'type' => 'select',
 				'choices' => $this->get_filter_fields( $formid ),
 				'label' => esc_attr__( 'Use this field to filter entries:', 'gravityview-az-filters' ),
-				'desc'	=> sprintf( esc_attr__( 'Entries will be filtered based on the first character of this field. %sLearn more%s.', 'gravityview-az-filters' ), '<a href="http://docs.gravityview.co/article/198-the-use-this-field-to-filter-entries-setting" rel="external">', '</a>' ),
+				'desc'	=> sprintf( esc_attr__( 'Entries will be filtered based on the first character of this field. %sLearn more%s.', 'gravityview-az-filters' ), '<a href="https://docs.gravityview.co/article/198-the-use-this-field-to-filter-entries-setting" rel="external">', '</a>' ),
 				'value' => ''
 			),
 			'localization' => array(
@@ -153,6 +161,9 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			'tr_TR'	=> __( 'Turkish', 'gravityview-az-filters' ),
 			'bn_BN'	=> __( 'Bengali', 'gravityview-az-filters' ),
 			'is_IS' => __( 'Icelandic', 'gravityview-az-filters' ),
+			'sv_SE' => __( 'Swedish (Sweden)', 'gravityview-az-filters' ),
+			'sv_FI' => __( 'Swedish (Finland)', 'gravityview-az-filters' ),
+			'sv'    => __( 'Swedish', 'gravityview-az-filters' ),
 		) );
 
 		return $local;
@@ -325,8 +336,9 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 
 		$letter_links = $this->render_alphabet_letters( $args, $localization, $uppercase, $context );
 
-		if ( ! empty( $letter_links ) ) {
-			echo '<div class="gv-widget-letter-links">' . $letter_links . '</div>';
+		if( ! empty( $letter_links ) ) {
+			$custom_class = ! empty( $widget_args['custom_class'] ) ? ' ' . gravityview_sanitize_html_class( $widget_args['custom_class'] ) : '';
+			echo '<div class="gv-widget-letter-links'.$custom_class.'">' . $letter_links . '</div>';
 		} else {
 			gravityview()->log->debug( 'Widget_A_Z_Entry_Filter[render_frontend] No letter links; render_alphabet_letters() returned empty response.' );
 		}
@@ -426,8 +438,14 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 		/**
 		 * Only show "Show All" link if there's a filter.
 		 */
-		if ( $this->get_filter_letter() ) {
-			$show_all_text = $uppercase ? $args['show_all_text'] : mb_strtolower( $args['show_all_text'] );
+		if( $this->get_filter_letter() ) {
+
+			$show_all_text = $args['show_all_text'];
+
+			if( ! $uppercase && function_exists( 'mb_strtolower') ) {
+				$show_all_text = function_exists( 'mb_strtolower' ) ? mb_strtolower( $args['show_all_text'] ) : strtolower( $args['show_all_text'] );
+			}
+
 			$output .= '<li class="last"><span class="show-all"><a href="' . esc_url( remove_query_arg( $pagenum_parameter, remove_query_arg( $this->letter_parameter ) ) ) . '">' . esc_html( $show_all_text ) . '</a></span></li>';
 		}
 
@@ -471,11 +489,14 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			'it_IT' => array( 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'z'),
 			'ru_RU' => array('а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я'),
 			'nn_NO' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'æ', 'ø', 'å' ),
-			'fi' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z', 'å', 'ä', 'ö' ),
+			'fi'    => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z', 'å', 'ä', 'ö' ),
 			'ro_RO' => array('a', 'ă', 'â', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'î', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 'ș', 't', 'ț', 'u', 'v', 'w', 'x', 'y', 'z' ),
 			'tr_TR' => array( 'a', 'b', 'c', 'ç', 'd', 'e', 'f', 'g', 'ğ', 'h', 'ı', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'ö', 'p', 'r', 's', 'ş', 't', 'u', 'ü', 'v', 'y', 'z' ),
 			'bn_BN' => array( 'অ', 'আ', 'ই', 'ঈ', 'উ', 'ঊ', 'ঋ', 'এ', 'ঐ', 'ও', 'ঔ', 'ক', 'খ', 'গ', 'ঘ', 'ঙ', 'চ', 'ছ', 'জ', 'ঝ', 'ঞ', 'ট', 'ঠ', 'ড', 'ঢ', 'ণ', 'ত', 'থ', 'দ', 'ধ', 'ন', 'প', 'ফ', 'ব', 'ভ', 'ম', 'য', 'র', 'ল', 'শ', 'ষ', 'স', 'হ', 'ড়', 'ঢ়', 'য়' ),
 			'is_IS' => array('a','á','b','d','ð','e','é','f','g','h','i','í','j','k','l','m','n','o','ó','p','r','s','t','u','ú','v','x','y','ý','þ','æ','ö'),
+			'sv_FI' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö'),
+			'sv_SE' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö'),
+			'sv'    => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö'),
 		) );
 
 		// If the alphabet exists, use it. Otherwise, use English alphabet.
