@@ -457,7 +457,11 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 		 */
 		if( $this->get_filter_letter() ) {
 
-			$show_all_text = $uppercase ? $args['show_all_text'] : mb_strtolower( $args['show_all_text'] );
+			$show_all_text = $args['show_all_text'];
+
+			if( ! $uppercase && function_exists( 'mb_strtolower') ) {
+				$show_all_text = function_exists( 'mb_strtolower' ) ? mb_strtolower( $args['show_all_text'] ) : strtolower( $args['show_all_text'] );
+			}
 
 			$output .= '<li class="last"><span class="show-all"><a href="' . remove_query_arg('number', remove_query_arg( $this->letter_parameter ) ) . '">' . esc_html( $show_all_text ) . '</a></span></li>';
 
