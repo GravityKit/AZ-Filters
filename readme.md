@@ -16,7 +16,8 @@ Alphabetically filter your entries by letters of the alphabet.
 
 ## Changelog ##
 
-### 1.1.1 on April 22, 2018 ###
+### 1.1.1 on April 23, 2018 ###
+* Fixed: Translation resource updated
 * Fixed: Some strings not properly configured for translation
 * If you want to help translate this extension, [join us on Transifex](https://www.transifex.com/katzwebservices/gravityview-az-filters/)
 
