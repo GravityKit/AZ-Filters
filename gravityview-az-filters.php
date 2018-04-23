@@ -2,7 +2,7 @@
 /**
  * Plugin Name: GravityView - A-Z Filters Extension
  * Plugin URI: https://gravityview.co/extensions/a-z-filter/
- * Description: Alphabetically filter your entries by letters of the alphabet.
+ * Description: Filter your entries by letters of the alphabet.
  * Version: 1.1
  * Author: GravityView
  * Author URI: https://gravityview.co
