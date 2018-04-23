@@ -388,10 +388,10 @@ class GravityView_Widget_A_Z_Entry_Filter extends GravityView_Widget {
 			'format' => '&'.$this->letter_parameter.'=%#%',
 			'add_args' => array(), //
 			'current_letter' => NULL,
-			'number_character' => _x('#', 'Character representing numbers', 'gravity-view'),
+			'number_character' => _x('#', 'Character representing numbers', 'gravityview-az-filters'),
 			'show_all_text' => __( 'Show All', 'gravityview-az-filters' ),
-			'link_title_number' => __('Show entries starting with a number', 'gravity-view' ),
-			'link_title_letter' => __('Show entries starting with the letter %s', 'gravity-view' ),
+			'link_title_number' => __('Show entries starting with a number', 'gravityview-az-filters' ),
+			'link_title_letter' => __('Show entries starting with the letter %s', 'gravityview-az-filters' ),
 			'before_first_letter' => NULL,
 			'after_last_letter' => NULL,
 			'first_letter' => $this->get_first_letter_localized( $charset ),

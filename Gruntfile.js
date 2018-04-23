@@ -95,6 +95,69 @@ module.exports = function(grunt) {
 					'readme.md': 'readme.txt'
 				},
 			},
+		},
+
+		// Build translations without POEdit
+		makepot: {
+			target: {
+				options: {
+					mainFile: 'gravityview-az-filters.php',
+					type: 'wp-plugin',
+					domainPath: '/languages',
+					updateTimestamp: false,
+					exclude: ['node_modules/.*', 'assets/.*', 'tmp/.*', 'vendor/.*', 'includes/lib/xml-parsers/.*', 'includes/lib/jquery-cookie/.*' ],
+					potHeaders: {
+						poedit: true,
+						'x-poedit-keywordslist': true
+					},
+					processPot: function( pot, options ) {
+						pot.headers['language'] = 'en_US';
+						pot.headers['language-team'] = 'GravityView <support@gravityview.co>';
+						pot.headers['last-translator'] = 'GravityView <support@gravityview.co>';
+						pot.headers['report-msgid-bugs-to'] = 'https://gravityview.co/support/';
+
+						var translation,
+							excluded_meta = [
+								'GravityView - A-Z Filters Extension',
+								'Filter your entries by letters of the alphabet.',
+								'https://gravityview.co',
+								'GravityView',
+								'https://gravityview.co/extensions/a-z-filter/'
+							];
+
+						for ( translation in pot.translations[''] ) {
+							if ( 'undefined' !== typeof pot.translations[''][ translation ].comments.extracted ) {
+								if ( excluded_meta.indexOf( pot.translations[''][ translation ].msgid ) >= 0 ) {
+									console.log( 'Excluded meta: ' + pot.translations[''][ translation ].msgid );
+									delete pot.translations[''][ translation ];
+								}
+							}
+						}
+
+						return pot;
+					}
+				}
+			}
+		},
+
+		// Add textdomain to all strings, and modify existing textdomains in included packages.
+		addtextdomain: {
+			options: {
+				textdomain: 'gravityview-az-filters',    // Project text domain.
+				updateDomains: [ 'gravityview', 'gravity-view', 'gravityforms', 'edd_sl', 'edd', 'easy-digital-downloads' ]  // List of text domains to replace.
+			},
+			target: {
+				files: {
+					src: [
+						'*.php',
+						'**/*.php',
+						'!node_modules/**',
+						'!tests/**',
+						'!tmp/**',
+						'!vendor/**'
+					]
+				}
+			}
 		}
 	});
 
@@ -104,8 +167,11 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-wp-readme-to-markdown');
 	grunt.loadNpmTasks('grunt-potomo');
 	grunt.loadNpmTasks('grunt-exec');
-
+	grunt.loadNpmTasks('grunt-wp-i18n');
 
 	grunt.registerTask( 'default', [ 'sass', 'uglify', 'exec:transifex','potomo', 'watch'] );
+
+	// Translation stuff
+	grunt.registerTask( 'translate', [ 'exec:transifex', 'potomo', 'addtextdomain', 'makepot' ] );
 
 };
