@@ -16,6 +16,9 @@ Alphabetically filter your entries by letters of the alphabet.
 
 ## Changelog ##
 
+### 1.1.1.1 on April 28, 2018 ###
+* Added: Compatibility notice for GravityView 2.0
+
 ### 1.1.1 on April 23, 2018 ###
 * Fixed: Translation resource updated
 * Fixed: Some strings not properly configured for translation

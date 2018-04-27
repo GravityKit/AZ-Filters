@@ -350,6 +350,10 @@ abstract class GravityView_Extension {
 
 			$message = sprintf( __('The %s Extension requires PHP Version %s or newer. Please ask your host to upgrade your server\'s PHP.', 'gravityview-az-filters' ), $this->_title, '<tt>'.$this->_min_php_version.'</tt>' );
 
+		} else if ( ! empty( $this->_max_gravityview_version ) && false === version_compare( $this->_max_gravityview_version, GravityView_Plugin::version, ">" ) ) {
+
+			$message = sprintf( __( 'The %s Extension is not compatible with this version of GravityView. Please update the Extension to the latest version.', 'gravityview-az-filters' ), esc_html( $this->_title ) );
+
 		} else {
 
 			self::$is_compatible = GravityView_Compatibility::is_valid();
