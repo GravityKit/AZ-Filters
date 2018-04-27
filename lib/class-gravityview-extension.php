@@ -1,18 +1,20 @@
 <?php
 /**
- * @package GravityView
+ * @package   GravityView
  * @license   GPL2+
- * @author    Katz Web Services, Inc.
+ * @author    GravityView
  * @link      https://gravityview.co
- * @copyright Copyright 2015, Katz Web Services, Inc.
+ * @copyright Copyright 2018, Katz Web Services, Inc.
  */
 
 /**
  * Extend this class to create a GravityView extension that gets updates from GravityView.co
  *
- * @since 1.1
+ * @version 1.1.3
  *
- * @version 1.1.2
+ * @since 1.1.2 Fixed `/lib/` include path for EDDSL
+ * @since 1.1.3 Added $_max_gravityview_version property, sanitized titles in notices
+ * 
  */
 abstract class GravityView_Extension {
 
@@ -44,7 +46,7 @@ abstract class GravityView_Extension {
 
 	/**
 	 * @var string Maximum version of GravityView the Extension requires, if any
-	 * @since GravityView_Extension version 1.1.2
+	 * @since GravityView_Extension version 1.1.3
 	 */
 	protected $_max_gravityview_version = null;
 
