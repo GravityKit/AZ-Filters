@@ -346,15 +346,15 @@ abstract class GravityView_Extension {
 
 		if( !class_exists( 'GravityView_Plugin' ) ) {
 
-			$message = sprintf( __('Could not activate the %s Extension; GravityView is not active.', 'gravityview-az-filters'), $this->_title );
+			$message = sprintf( __('Could not activate the %s Extension; GravityView is not active.', 'gravityview-az-filters'), esc_html( $this->_title ) );
 
 		} else if( false === version_compare(GravityView_Plugin::version, $this->_min_gravityview_version , ">=") ) {
 
-			$message = sprintf( __('The %s Extension requires GravityView Version %s or newer.', 'gravityview-az-filters' ), $this->_title, '<tt>'.$this->_min_gravityview_version.'</tt>' );
+			$message = sprintf( __('The %s Extension requires GravityView Version %s or newer.', 'gravityview-az-filters' ), esc_html( $this->_title ), '<tt>'.$this->_min_gravityview_version.'</tt>' );
 
 		} else if( isset( $this->_min_php_version ) && false === version_compare( phpversion(), $this->_min_php_version , ">=") ) {
 
-			$message = sprintf( __('The %s Extension requires PHP Version %s or newer. Please ask your host to upgrade your server\'s PHP.', 'gravityview-az-filters' ), $this->_title, '<tt>'.$this->_min_php_version.'</tt>' );
+			$message = sprintf( __('The %s Extension requires PHP Version %s or newer. Please ask your host to upgrade your server\'s PHP.', 'gravityview-az-filters' ), esc_html( $this->_title ), '<tt>'.$this->_min_php_version.'</tt>' );
 
 		} else if ( ! empty( $this->_max_gravityview_version ) && false === version_compare( $this->_max_gravityview_version, GravityView_Plugin::version, ">" ) ) {
 
