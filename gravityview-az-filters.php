@@ -42,7 +42,7 @@ function gv_extension_az_entry_filtering_load() {
 
 		protected $_title = 'A-Z Filters';
 		
-		protected $_version = '1.1.1';
+		protected $_version = '1.1.1.1';
 
 		protected $_item_id = 266;
 
