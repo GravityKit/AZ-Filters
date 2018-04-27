@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GravityView A-Z Filters\n"
 "Report-Msgid-Bugs-To: https://gravityview.co/support/\n"
-"POT-Creation-Date: 2018-04-23 22:55:01+00:00\n"
-"PO-Revision-Date: 2018-04-23 22:58+0000\n"
+"POT-Creation-Date: 2018-04-27 18:50:48+00:00\n"
+"PO-Revision-Date: 2018-04-27 18:52+0000\n"
 "Last-Translator: Zachary Katz <zack@katz.co>\n"
 "Language-Team: Portuguese (http://www.transifex.com/katzwebservices/gravityview-az-filters/language/pt/)\n"
 "MIME-Version: 1.0\n"
@@ -44,18 +44,24 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: lib/class-gravityview-extension.php:343
+#: lib/class-gravityview-extension.php:359
 msgid "Could not activate the %s Extension; GravityView is not active."
 msgstr ""
 
-#: lib/class-gravityview-extension.php:347
+#: lib/class-gravityview-extension.php:363
 msgid "The %s Extension requires GravityView Version %s or newer."
 msgstr ""
 
-#: lib/class-gravityview-extension.php:351
+#: lib/class-gravityview-extension.php:367
 msgid ""
 "The %s Extension requires PHP Version %s or newer. Please ask your host to "
 "upgrade your server's PHP."
+msgstr ""
+
+#: lib/class-gravityview-extension.php:371
+msgid ""
+"The %s Extension is not compatible with this version of GravityView. Please "
+"update the Extension to the latest version."
 msgstr ""
 
 #: widget/gravityview-a-z-entry-filter-widget.php:43

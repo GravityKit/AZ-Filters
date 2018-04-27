@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GravityView - A-Z Filters Extension 1.1.1.1\n"
 "Report-Msgid-Bugs-To: https://gravityview.co/support/\n"
-"POT-Creation-Date: 2018-04-27 00:03:28+00:00\n"
+"POT-Creation-Date: 2018-04-27 18:52:48+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -45,21 +45,21 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: lib/class-gravityview-extension.php:343
+#: lib/class-gravityview-extension.php:359
 msgid "Could not activate the %s Extension; GravityView is not active."
 msgstr ""
 
-#: lib/class-gravityview-extension.php:347
+#: lib/class-gravityview-extension.php:363
 msgid "The %s Extension requires GravityView Version %s or newer."
 msgstr ""
 
-#: lib/class-gravityview-extension.php:351
+#: lib/class-gravityview-extension.php:367
 msgid ""
 "The %s Extension requires PHP Version %s or newer. Please ask your host to "
 "upgrade your server's PHP."
 msgstr ""
 
-#: lib/class-gravityview-extension.php:355
+#: lib/class-gravityview-extension.php:371
 msgid ""
 "The %s Extension is not compatible with this version of GravityView. Please "
 "update the Extension to the latest version."
