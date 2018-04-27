@@ -12,7 +12,7 @@
  *
  * @since 1.1
  *
- * @version 1.1.1
+ * @version 1.1.2
  */
 abstract class GravityView_Extension {
 
@@ -41,6 +41,12 @@ abstract class GravityView_Extension {
 	 * @var string Minimum version of GravityView the Extension requires
 	 */
 	protected $_min_gravityview_version = '1.1.5';
+
+	/**
+	 * @var string Maximum version of GravityView the Extension requires, if any
+	 * @since GravityView_Extension version 1.1.2
+	 */
+	protected $_max_gravityview_version = null;
 
 	/**
 	 * @var string Minimum version of GravityView the Extension requires
