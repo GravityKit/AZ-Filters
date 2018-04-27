@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GravityView A-Z Filters\n"
 "Report-Msgid-Bugs-To: https://gravityview.co/support/\n"
-"POT-Creation-Date: 2018-04-23 22:55:01+00:00\n"
-"PO-Revision-Date: 2018-04-23 22:58+0000\n"
+"POT-Creation-Date: 2018-04-27 18:50:48+00:00\n"
+"PO-Revision-Date: 2018-04-27 18:52+0000\n"
 "Last-Translator: Zachary Katz <zack@katz.co>\n"
 "Language-Team: Spanish (Mexico) (http://www.transifex.com/katzwebservices/gravityview-az-filters/language/es_MX/)\n"
 "MIME-Version: 1.0\n"
@@ -45,19 +45,25 @@ msgstr "No tienes permiso para instalar actualizaciones del plugin"
 msgid "Error"
 msgstr "Error"
 
-#: lib/class-gravityview-extension.php:343
+#: lib/class-gravityview-extension.php:359
 msgid "Could not activate the %s Extension; GravityView is not active."
 msgstr "La extensión %s no pudo ser activada; GravityView no está activo."
 
-#: lib/class-gravityview-extension.php:347
+#: lib/class-gravityview-extension.php:363
 msgid "The %s Extension requires GravityView Version %s or newer."
 msgstr "La %s extensión requiere GravityView versión %s o más reciente."
 
-#: lib/class-gravityview-extension.php:351
+#: lib/class-gravityview-extension.php:367
 msgid ""
 "The %s Extension requires PHP Version %s or newer. Please ask your host to "
 "upgrade your server's PHP."
 msgstr "La Extensión %s requiere la versión de PHP %s o más reciente. Por favor, pídale a su anfitrión que actualice el PHP de su servidor."
+
+#: lib/class-gravityview-extension.php:371
+msgid ""
+"The %s Extension is not compatible with this version of GravityView. Please "
+"update the Extension to the latest version."
+msgstr ""
 
 #: widget/gravityview-a-z-entry-filter-widget.php:43
 msgid "A-Z Entry Filter"

@@ -1,18 +1,20 @@
 <?php
 /**
- * @package GravityView
+ * @package   GravityView
  * @license   GPL2+
- * @author    Katz Web Services, Inc.
+ * @author    GravityView
  * @link      https://gravityview.co
- * @copyright Copyright 2015, Katz Web Services, Inc.
+ * @copyright Copyright 2018, Katz Web Services, Inc.
  */
 
 /**
  * Extend this class to create a GravityView extension that gets updates from GravityView.co
  *
- * @since 1.1
+ * @version 1.1.3
  *
- * @version 1.1.1
+ * @since 1.1.2 Fixed `/lib/` include path for EDDSL
+ * @since 1.1.3 Added $_max_gravityview_version property, sanitized titles in notices
+ * 
  */
 abstract class GravityView_Extension {
 
@@ -41,6 +43,12 @@ abstract class GravityView_Extension {
 	 * @var string Minimum version of GravityView the Extension requires
 	 */
 	protected $_min_gravityview_version = '1.1.5';
+
+	/**
+	 * @var string Maximum version of GravityView the Extension requires, if any
+	 * @since GravityView_Extension version 1.1.3
+	 */
+	protected $_max_gravityview_version = null;
 
 	/**
 	 * @var string Minimum version of GravityView the Extension requires
@@ -224,7 +232,15 @@ abstract class GravityView_Extension {
 		}
 
 		if( !class_exists( 'EDD_SL_Plugin_Updater' ) ) {
-			include_once plugin_dir_path( __FILE__ ) . 'lib/EDD_SL_Plugin_Updater.php';
+
+			$file_path = plugin_dir_path( __FILE__ ) . 'lib/EDD_SL_Plugin_Updater.php';
+
+			// This file may be in the lib/ directory already
+			if( ! file_exists( $file_path ) ) {
+				$file_path = plugin_dir_path( __FILE__ ) . '/EDD_SL_Plugin_Updater.php';
+			}
+
+			include_once $file_path;
 		}
 
 		$license = $this->get_license();
@@ -340,15 +356,19 @@ abstract class GravityView_Extension {
 
 		if( !class_exists( 'GravityView_Plugin' ) ) {
 
-			$message = sprintf( __('Could not activate the %s Extension; GravityView is not active.', 'gravityview-az-filters'), $this->_title );
+			$message = sprintf( __('Could not activate the %s Extension; GravityView is not active.', 'gravityview-az-filters'), esc_html( $this->_title ) );
 
 		} else if( false === version_compare(GravityView_Plugin::version, $this->_min_gravityview_version , ">=") ) {
 
-			$message = sprintf( __('The %s Extension requires GravityView Version %s or newer.', 'gravityview-az-filters' ), $this->_title, '<tt>'.$this->_min_gravityview_version.'</tt>' );
+			$message = sprintf( __('The %s Extension requires GravityView Version %s or newer.', 'gravityview-az-filters' ), esc_html( $this->_title ), '<tt>'.$this->_min_gravityview_version.'</tt>' );
 
 		} else if( isset( $this->_min_php_version ) && false === version_compare( phpversion(), $this->_min_php_version , ">=") ) {
 
-			$message = sprintf( __('The %s Extension requires PHP Version %s or newer. Please ask your host to upgrade your server\'s PHP.', 'gravityview-az-filters' ), $this->_title, '<tt>'.$this->_min_php_version.'</tt>' );
+			$message = sprintf( __('The %s Extension requires PHP Version %s or newer. Please ask your host to upgrade your server\'s PHP.', 'gravityview-az-filters' ), esc_html( $this->_title ), '<tt>'.$this->_min_php_version.'</tt>' );
+
+		} else if ( ! empty( $this->_max_gravityview_version ) && false === version_compare( $this->_max_gravityview_version, GravityView_Plugin::version, ">" ) ) {
+
+			$message = sprintf( __( 'The %s Extension is not compatible with this version of GravityView. Please update the Extension to the latest version.', 'gravityview-az-filters' ), esc_html( $this->_title ) );
 
 		} else {
 
