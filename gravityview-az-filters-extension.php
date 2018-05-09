@@ -13,15 +13,20 @@ if ( ! defined( 'GRAVITYVIEW_DIR' ) ) {
  */
 class A_Z_Entry_Filter_Extension extends Extension {
 
-	protected $_title = 'A-Z Filters';
-	
-	protected $_version = '1.0.8';
-
-	protected $_item_id = 266;
-
-	protected $_text_domain = 'gravityview-az-filters';
-
 	protected $_min_gravityview_version = '2.0-dev';
+
+	public function __construct( $plugin_file, $plugin_version ) {
+
+		$this->_title         = 'A-Z Filters';
+		$this->_version       = $plugin_version;
+		$this->_text_domain   = 'gravityview-az-filters';
+		$this->_path          = $plugin_file;
+		$this->_item_id       = 266;
+		$this->plugin_file    = $plugin_file;
+		$this->plugin_version = $plugin_version;
+
+		parent::__construct();
+	}
 
 	public function add_hooks() {
 
@@ -91,5 +96,3 @@ class A_Z_Entry_Filter_Extension extends Extension {
 	}
 
 } // A_Z_Entry_Filter_Extension
-
-new A_Z_Entry_Filter_Extension;
