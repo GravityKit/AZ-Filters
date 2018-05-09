@@ -16,8 +16,16 @@ Alphabetically filter your entries by letters of the alphabet.
 
 ## Changelog ##
 
-<<<<<<< HEAD
-=======
+### 1.2 on May 8, 2018 ###
+
+* Updated to work with GravityView 2.0
+* Requires GravityView 2.0
+* Requires PHP 5.3 or newer
+
+__Developer Updates:__
+
+* Added `$context` second parameter to the `gravityview_az_entry_args` filter
+
 ### 1.1.1.1 on April 28, 2018 ###
 * Added: Compatibility notice for GravityView 2.0
 
@@ -26,7 +34,6 @@ Alphabetically filter your entries by letters of the alphabet.
 * Fixed: Some strings not properly configured for translation
 * If you want to help translate this extension, [join us on Transifex](https://www.transifex.com/katzwebservices/gravityview-az-filters/)
 
->>>>>>> develop
 ### 1.1 on April 18, 2018 ###
 * Added: Icelandic and Swedish alphabet support
 * Fixed: Support for Gravity Forms 2.3
