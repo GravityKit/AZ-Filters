@@ -16,6 +16,16 @@ Alphabetically filter your entries by letters of the alphabet.
 
 ## Changelog ##
 
+### 1.2 on May 8, 2018 ###
+
+* Updated to work with GravityView 2.0
+* Requires GravityView 2.0
+* Requires PHP 5.3 or newer
+
+__Developer Updates:__
+
+* Added `$context` second parameter to the `gravityview_az_entry_args` filter
+
 ### 1.1.1.1 on April 28, 2018 ###
 * Added: Compatibility notice for GravityView 2.0
 
