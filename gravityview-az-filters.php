@@ -15,6 +15,9 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
+/** @since 1.2 */
+define( 'GRAVITYVIEW_AZ_FILTER_VERSION', '1.2' );
+
 add_action( 'plugins_loaded', 'gv_extension_az_entry_filtering_load' );
 
 /**
@@ -30,8 +33,6 @@ function gv_extension_az_entry_filtering_load() {
 
 	if ( ! class_exists( '\GV\A_Z_Entry_Filter_Extension' ) ) {
 		require plugin_dir_path( __FILE__ ) . 'gravityview-az-filters-extension.php';
-
-		new \GV\A_Z_Entry_Filter_Extension( __FILE__, '1.2' );
 	}
 }
 
