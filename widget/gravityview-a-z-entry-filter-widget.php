@@ -346,10 +346,12 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 
 	/**
 	 * Renders the HTML output of the letter links
+	 *
 	 * @param  array|string  $args     List of arguments for how to display the linked list. By default, only `current_letter` is passed, but others can be used. See the $defaults array in the code.
 	 * @param  string  $charset   Language to use, using the WordPress Locale code (see {@link http://wpcentral.io/internationalization/})
 	 * @param  boolean $uppercase Whether to show as uppercase or not
 	 * @param  \GV\Template_Context $context The view context
+	 *
 	 * @return string             HTML output of links
 	 */
 	public function render_alphabet_letters( $args = '', $charset = 'en_US', $uppercase = true, $context = null ) {
@@ -375,7 +377,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			'last_letter' => $this->get_last_letter_localized( $charset ),
 		);
 
-		$args = apply_filters( 'gravityview_az_entry_args', wp_parse_args( $args, $defaults ) );
+		$args = apply_filters( 'gravityview_az_entry_args', wp_parse_args( $args, $defaults ), $context );
 
 		extract( $args, EXTR_SKIP );
 
