@@ -262,6 +262,19 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	 * @return array Modified search criteria
 	 */
 	public function filter_entries( $search_criteria, $form_id, $args ) {
+		if ( gravityview()->plugin->supports( \GV\Plugin::FEATURE_GFQUERY ) ) {
+			static $filter_added = false;
+ 			if ( ! $filter_added ) {
+				/**
+				 * If GF_Query is available, we can construct custom conditions with nested
+				 * booleans on the query, giving up the old ways of flat search_criteria field_filters.
+				 */
+				$filter_added = add_action( 'gravityview/view/query', array( $this, 'gf_query_filter' ), 10, 3 );
+			}
+
+			return $search_criteria; // Return the original criteria, GF_Query modification kicks in later
+		}
+
 		$letter = $this->get_filter_letter();
 
 		// No search
@@ -307,6 +320,70 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 		}
 
 		return $search_criteria;
+	}
+
+	/**
+	 * Filters the \GF_Query with advanced logic.
+	 *
+	 * Dropin for the legacy flat filters when \GF_Query is available.
+	 *
+	 * @param \GF_Query $query The current query object reference
+	 * @param \GV\View $this The current view object
+	 * @param \GV\Request $request The request object
+	 */
+	public function gf_query_filter( &$query, $view, $request ) {
+		$letter = $this->get_filter_letter();
+
+		// No search
+		if ( empty( $letter ) ) {
+			gravityview()->log->debug( 'Widget_A_Z_Entry_Filter[filter_entries]: Not adding search criteria.' );
+			return;
+		}
+
+		$conditions = array();
+
+		foreach ( $view->widgets->by_id( $this->get_widget_id() )->all() as $widget ) {
+			$filter_field = $widget->configuration->get( 'filter_field' );
+
+			if ( empty( $filter_field ) ) {
+				gravityview()->log->error( 'Widget_A_Z_Entry_Filter[filter_entries]: No filter field has been set.', array( 'data' => $widget ) );
+				continue;
+			}
+
+			$localization = $widget->configuration->get( 'localization' );
+			$this->alphabet = $this->get_localized_alphabet( $localization );
+			$this->numbers = $this->get_localized_numbers( $localization );
+
+			if ( in_array( $letter, $this->alphabet ) ) {
+				$conditions[] = new \GF_Query_Condition(
+					new \GF_Query_Column( $filter_field ),
+					\GF_Query_Condition::LIKE,
+					new \GF_Query_Literal( "$letter%" )
+				);
+			} else {
+				/**
+				 * For numbers 0-9 we need to add every condition separately.
+				 */
+				foreach ( $this->numbers as $value ) {
+					$conditions[] = new \GF_Query_Condition(
+						new \GF_Query_Column( $filter_field ),
+						\GF_Query_Condition::LIKE,
+						new \GF_Query_Literal( "$value%" )
+					);
+				}
+			}
+		}
+
+		if ( $conditions ) {
+			$query_parts = $query->_introspect();
+
+			/**
+			 * Tack on the AZ filter conditions.
+			 */
+			$query->where(
+				\GF_Query_Condition::_and( $query_parts['where'], call_user_func_array( 'GF_Query_Condition::_or', $conditions ) )
+			);
+		}
 	}
 
 	/**
