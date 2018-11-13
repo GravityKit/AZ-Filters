@@ -164,6 +164,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			'sv_SE' => __( 'Swedish (Sweden)', 'gravityview-az-filters' ),
 			'sv_FI' => __( 'Swedish (Finland)', 'gravityview-az-filters' ),
 			'sv'    => __( 'Swedish', 'gravityview-az-filters' ),
+			'pl_PL' => __( 'Polish', 'gravityview-az-filters' ),
 		) );
 
 		return $local;
@@ -499,6 +500,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			'sv_FI' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö'),
 			'sv_SE' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö'),
 			'sv'    => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö'),
+			'pl_PL' => array('a', 'ą', 'b', 'c', 'ć', 'd', 'e', 'ę', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'ł', 'm', 'n', 'ń', 'o', 'ó', 'p', 'r', 's', 'ś', 't', 'u', 'w', 'y', 'z', 'ź', 'ż'),
 		) );
 
 		// If the alphabet exists, use it. Otherwise, use English alphabet.
