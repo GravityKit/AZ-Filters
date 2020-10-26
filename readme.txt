@@ -1,7 +1,7 @@
 === GravityView - A-Z Filters Extension ===
 Tags: gravityview
 Requires at least: 3.3
-Tested up to: 4.9.8
+Tested up to: 5.5
 Stable tag: trunk
 Contributors: katzwebservices
 License: GPL 3 or higher
@@ -79,7 +79,7 @@ __Developer Updates:__
     - Updated Bengali (thanks [@tareqhi](https://www.transifex.com/accounts/profile/tareqhi/))
 
 = 1.0.2 on October 3 =
-* Fixed: Added Bengali to language dropdown 
+* Fixed: Added Bengali to language dropdown
 * Updated translation files
 
 = 1.0.1 on October 2 =
