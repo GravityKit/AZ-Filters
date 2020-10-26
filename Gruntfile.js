@@ -169,7 +169,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-exec');
 	grunt.loadNpmTasks('grunt-wp-i18n');
 
-	grunt.registerTask( 'default', [ 'sass', 'uglify', 'exec:transifex','potomo', 'watch'] );
+	grunt.registerTask( 'default', [ 'sass', 'uglify', 'wp_readme_to_markdown', 'exec:transifex','potomo', 'watch'] );
 
 	// Translation stuff
 	grunt.registerTask( 'translate', [ 'exec:transifex', 'potomo', 'addtextdomain', 'makepot' ] );
