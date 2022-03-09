@@ -101,12 +101,20 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 
 		if ( ! empty( $fields ) ) {
 
-			$blacklist_field_types = apply_filters( 'gravityview_blacklist_field_types', array( 'list', 'textarea', 'checkbox', 'radio', 'likert' ) );
+			/**
+			 * @since 1.3
+			 * @param array $blocklist_field_types Array of fields not to be filtered due to storage types (JSON, serialized).
+			 */
+			$blocklist_field_types = apply_filters( 'gravityview_blocklist_field_types', array( 'list', 'textarea', 'checkbox', 'radio', 'likert' ) );
+
+			/**
+			 * @deprecated 1.3
+			 */
+			$blocklist_field_types = apply_filters_deprecated( 'gravityview_blacklist_field_types', $blocklist_field_types, '1.3', 'gravityview_blocklist_field_types' );
 
 			foreach ( $fields as $id => $field ) {
-				if ( in_array( $field['type'], $blacklist_field_types ) ) {
+				if ( in_array( $field['type'], $blocklist_field_types ) ) {
 					unset( $fields[ $id ] );
-					continue;
 				}
 			}
 		}
