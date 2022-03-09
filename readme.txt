@@ -16,6 +16,14 @@ Alphabetically filter your entries by letters of the alphabet.
 
 == Changelog ==
 
+= 1.3 on March 9, 2022 =
+
+* Added: When filtering by a letter, the webpage will scroll back to the clicked link
+
+__Developer Updates:__
+
+* Added: `gravityview/az_filter/anchor` filter to modify the anchor ID added to the end of the letter filter links. Return an empty string to remove the functionality.
+
 = 1.2.1 on November 13, 2018 =
 
 * Fixed: Bugs when using A-Z Filters in combination with Advanced Filters

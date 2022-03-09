@@ -395,7 +395,21 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			gravityview()->log->debug( sprintf( '%s[render_frontend]: No entries.', get_class( $this ) ) );
 		}
 
-		$output = '<ul class="gravityview-az-filter">';
+		static $az_widget_counter;
+
+		// Auto-increment the ID attribute based on number of displayed widgets.
+		$az_widget_counter = isset( $az_widget_counter ) ? $az_widget_counter + 1 : 1;
+
+		$widget_id_attr = sprintf( 'gv-widget-%s-%d', $this->get_widget_id(), $az_widget_counter );
+
+		/**
+		 * Modifies the anchor ID added to the end of the letter filter links. Return empty string to remove.
+		 * @param string $az_widget_anchor The anchor in the format `#gv-widget-az_filter-{integer widget counter}`
+		 * @param \GV\Template_Context $context The View context
+		 */
+		$az_widget_anchor = apply_filters( 'gravityview/az_filter/anchor', '#' . $widget_id_attr, $context );
+
+		$output = '<ul class="gravityview-az-filter" id="' . esc_attr( $widget_id_attr ) . '">';
 
 		$output .= $args['before_first_letter'];
 
@@ -423,6 +437,8 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			if ( Utils::_GET( $this->letter_parameter ) != $char ) {
 				$link = remove_query_arg( $pagenum_parameter, $link );
 			}
+
+			$link .= $az_widget_anchor;
 
 			// Leave class empty unless there are no entries.
 			$classes = array();
@@ -457,7 +473,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 				$show_all_text = function_exists( 'mb_strtolower' ) ? mb_strtolower( $args['show_all_text'] ) : strtolower( $args['show_all_text'] );
 			}
 
-			$output .= '<li class="last"><span class="show-all"><a href="' . esc_url( remove_query_arg( $pagenum_parameter, remove_query_arg( $this->letter_parameter ) ) ) . '">' . esc_html( $show_all_text ) . '</a></span></li>';
+			$output .= '<li class="last"><span class="show-all"><a href="' . esc_url( remove_query_arg( $pagenum_parameter, remove_query_arg( $this->letter_parameter ) ) . $az_widget_anchor ) . '">' . esc_html( $show_all_text ) . '</a></span></li>';
 		}
 
 		$output .= '</ul>';
