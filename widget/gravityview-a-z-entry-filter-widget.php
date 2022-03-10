@@ -178,84 +178,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 		return $local;
 	}
 
-	/**
-	 * Modifies the query performed by GravityView to allow for "starts with" queries.
-	 *
-	 * This is a major hack, but necessary for the plugin to work without core GF changes.
-	 *
-	 * Because Gravity Forms doesn't have a way to search entries using "starts with", we add a placeholder so that when the query comes up in the filter, we can identify it. That placeholder is `[GravityView_Widget_A_Z_Entry_Filter]`. The query is modified from a wildcard "LIKE" search, which allows for anything before or after the query to a query where the search allows a wildcard after the first letter matches.
-	 *
-	 * Here's a basic example for the letter "a":
-	 *
-	 * - Before: `value LIKE %a%` - note the `%` wildcard both before and after. This would match "apple" and "face"
-	 * - After: `value LIKE a%` - The `%` wildcard is now only after the `a`, which would match "apple", not "face"
-	 *
-	 * Here's an actual sample from a real query:
-	 *
-	 * - Before: `WHERE ((value like '%[GRAVITYVIEW_AZ_FILTER_REPLACE]a%'))` - note the wildcard before and after the `GRAVITYVIEW_AZ_FILTER_REPLACE`
-	 * - After: `WHERE ((value like 'a%'))` - Now the wildcard and the placeholder get replaced with just the letter
-	 *
-	 * The code for the numbers query is a bit complex because we need to process multi-byte strings.
-	 *
-	 * MySQL regex doesn't work for unicode characters, so we need to generate a query string that goes through each number with a `LIKE` statement instead.
-	 *
-	 * The code looks like:
-	 *
-	 * `(value like '0%' OR value like '1%' [...] OR value like '9%')`
-	 *
-	 * and in Bengali:
-	 *
-	 * `(value like '০%' OR value like '1%' [...] OR value like '৯%')`
-	 *
-	 * There's a nice side effect: it's faster than `REGEXP` anyway.
-	 *
-	 * @param  string $query MySQL query passed to the database
-	 * @return string        If the query contains `GRAVITYVIEW_AZ_FILTER_REPLACE`, it will be a modified query. Otherwise, the original query will be returned.
-	 */
-	public function query( $query ) {
-		global $wpdb;
 
-		// Get the letter to filter by. Already sanitized.
-		$letter = $this->get_filter_letter();
-
-		// Make sure the query is the correct, modified query. We don't want to modify any other queries!
-		if ( false !== $letter && preg_match( '/(rg_lead_detail|gf_entry_meta).*GRAVITYVIEW_AZ_FILTER_REPLACE/s', $query ) ) {
-
-			gravityview()->log->debug( 'Widget_A_Z_Entry_Filter[query]: Before filtering by character '.$letter, array( 'data' => $query ) );
-
-			$replace_sql = '';
-
-			if ( in_array( $letter, $this->alphabet ) ) {
-
-				$replace_sql = sprintf( "'%s%%'", $wpdb->esc_like( $letter ) );
-
-			} else if ( $letter === '0-9' ) {
-				/**
-				 * See docBlock for more information on why we're doing it like this.
-				 */
-
-				// Open number LIKE statement
-				$replace_sql = '(';
-
-				foreach ( $this->numbers as $key => $value ) {
-
-					// Sanitize the request
-					$replace_sql .= sprintf( "'%s%%'", $wpdb->esc_like( $value ) );
-
-					// If there's another number, join the statement
-					if ( isset( $this->numbers[ $key + 1 ] ) ) {
-						$replace_sql .= ' OR ';
-					}
-				}
-
-				// Close LIKE statement
-				$replace_sql .= ')';
-			} else {
-				return $query;
-			}
-
-			// Replace the placeholder with the actual query
-			$query = str_replace( "'%[GRAVITYVIEW_AZ_FILTER_REPLACE]{$letter}%'", $replace_sql, $query );
 
 			gravityview()->log->debug( 'Widget_A_Z_Entry_Filter[query]: After filtering by character '.$letter, array( 'data' => $query ) );
 		}
@@ -271,64 +194,24 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	 * @return array Modified search criteria
 	 */
 	public function filter_entries( $search_criteria, $form_id, $args ) {
-		if ( gravityview()->plugin->supports( \GV\Plugin::FEATURE_GFQUERY ) ) {
-			static $filter_added = false;
- 			if ( ! $filter_added ) {
-				/**
-				 * If GF_Query is available, we can construct custom conditions with nested
-				 * booleans on the query, giving up the old ways of flat search_criteria field_filters.
-				 */
-				$filter_added = add_action( 'gravityview/view/query', array( $this, 'gf_query_filter' ), 10, 3 );
-			}
 
-			return $search_criteria; // Return the original criteria, GF_Query modification kicks in later
-		}
-
-		$letter = $this->get_filter_letter();
-
-		// No search
-		if ( empty( $letter ) ) {
-			gravityview()->log->debug( 'Widget_A_Z_Entry_Filter[filter_entries]: Not adding search criteria.' );
+		if ( ! gravityview()->plugin->supports( \GV\Plugin::FEATURE_GFQUERY ) ) {
 			return $search_criteria;
 		}
 
-		// After 1.9.12, GF changed search operator options
-		$filter_operator = version_compare( \GFCommon::$version, '1.9.12', '>=' ) ? 'contains' : 'like';
+		static $filter_added = false;
 
-		$view = View::by_id( Utils::get( $args, 'id' ) );
+        if ( $filter_added ) {
+	        return $search_criteria;
+        }
 
-		foreach ( $view->widgets->by_id( $this->get_widget_id() )->all() as $widget ) {
-			$filter_field = $widget->configuration->get( 'filter_field' );
+		/**
+		 * If GF_Query is available, we can construct custom conditions with nested
+		 * booleans on the query, giving up the old ways of flat search_criteria field_filters.
+		 */
+		$filter_added = add_action( 'gravityview/view/query', array( $this, 'gf_query_filter' ), 10, 3 );
 
-			if ( empty( $filter_field ) ) {
-				gravityview()->log->error( 'Widget_A_Z_Entry_Filter[filter_entries]: No filter field has been set.', array( 'data' => $widget ) );
-				continue;
-			}
-
-			$localization = $widget->configuration->get( 'localization' );
-			$this->alphabet = $this->get_localized_alphabet( $localization );
-			$this->numbers = $this->get_localized_numbers( $localization );
-
-			/**
-			 * Modifies the query performed by GravityView. As in, the ACTUAL SQL.
-			 *
-			 * @see  GravityView_Widget_A_Z_Entry_Filter::query()
-			 * @hack
-			 */
-			add_filter( 'query', array( $this, 'query') );
-
-			$filter = array(
-				'key' => $filter_field, // The field ID to search e.g. 1.3 is the First Name
-				'value' => '[GRAVITYVIEW_AZ_FILTER_REPLACE]'.$letter, // The value to search
-				'operator' => $filter_operator, // Will use wildcard `%search%` format
-			);
-
-			$search_criteria['field_filters'][] = $filter;
-
-			gravityview()->log->debug( 'Widget_A_Z_Entry_Filter[filter_entries]: Adding search criteria.', array( 'data' => $filter ) );
-		}
-
-		return $search_criteria;
+		return $search_criteria; // Return the original criteria, GF_Query modification kicks in later
 	}
 
 	/**
