@@ -282,11 +282,26 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 		}
 
 		/**
-		 * Override the Gravity Forms SQL directly to set a custom collation.
+		 * Override the Gravity Forms SQL directly to search lowercase values and possibly define custom collation.
+		 *
+		 * Requires Gravity Forms 2.4.3 or newer.
 		 */
 		add_filter( 'gform_gf_query_sql', function ( $sql ) {
 
 			$where = $sql['where'];
+
+			/**
+			 * Override the default query collation for the letter comparison.
+			 * @since 1.3
+			 * @param string $collation_override The collation override for the query. May be necessary to limit results with non-latin characters containing accents. Return a valid collation to override, like 'utf8mb4_bin'.
+			 * @param string $query The MySQL query passed to the database.
+			 */
+			$collation_override = apply_filters( 'gravityview/az_filter/collation', '', $where );
+
+			// If the collation is set, add the COLLATE command.
+			if ( $collation_override ) {
+				$collation_override = esc_sql( ' COLLATE ' . $collation_override );
+			}
 
 			// Replace GF_Query meta value statements with only lowercase search in case the collation gives a strict match.
 			// Also, adds the COLLATE statement if defined.
