@@ -27,6 +27,7 @@ Alphabetically filter your entries by letters of the alphabet.
 
 __Developer Updates:__
 
+* Removed legacy query overrides in favor of exclusively relying on `GF_Query`. This may, in theory, affect some custom code. If it does, it will stop filtering values. If that happens, please let support@gravityview.co know.
 * Added: `gravityview/az_filter/collation` filter to override collation for the letter comparison query. This is helpful when the database interprets multiple letters as the same due to collation. For example, in Polish, L and Ł. This functionality requires Gravity Forms 2.4.3 or newer.
 * Added: `gravityview/az_filter/anchor` filter to modify the anchor ID added to the end of the letter filter links. Return an empty string to remove the functionality.
 * Deprecated: `gravityview_blacklist_field_types` filter. Use `gravityview_blocklist_field_types` instead.
