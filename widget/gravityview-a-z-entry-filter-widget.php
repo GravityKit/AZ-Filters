@@ -24,13 +24,13 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 
 		/**
 		 * @filter `gravityview/az_filter/parameter`
-		 * @param string $parameter The URL parameter used to filte the alphabet by.
+		 * @param string $parameter The URL parameter used to filter the alphabet by.
 		 * For example, you could use `starts_with` as the parameter, and the link would be `/view/example/?starts_with=a` instead of `/view/example/?letter=a`
 		 * @return string
 		 */
 		$parameter = apply_filters( 'gravityview/az_filter/parameter', $parameter );
 
-		$this->letter_parameter = ! empty( $parameter ) ? $parameter : 'letter';
+		$this->letter_parameter = ! empty( $parameter ) ? esc_attr( $parameter ) : 'letter';
 
 		$formid = gravityview_get_form_id( Utils::_GET( 'post' ) );
 
