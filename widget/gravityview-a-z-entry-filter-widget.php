@@ -181,14 +181,6 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 		return $local;
 	}
 
-
-
-			gravityview()->log->debug( 'Widget_A_Z_Entry_Filter[query]: After filtering by character '.$letter, array( 'data' => $query ) );
-		}
-
-		return $query;
-	}
-
 	/**
 	 * Add search criteria to the GravityView search that fetches entries from Gravity Forms
 	 * @param array $search_criteria Existing search criteria
