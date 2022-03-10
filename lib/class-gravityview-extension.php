@@ -2,7 +2,7 @@
 /**
  * @package   GravityView
  * @license   GPL2+
- * @author    GravityView
+ * @author    GravityView <hello@gravityview.co>
  * @link      https://gravityview.co
  * @copyright Copyright 2018, Katz Web Services, Inc.
  */
