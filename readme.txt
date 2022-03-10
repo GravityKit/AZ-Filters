@@ -23,6 +23,7 @@ Alphabetically filter your entries by letters of the alphabet.
 * Modified: Localized numbers will be used for links instead of always 0-9
 * Improved: Multiple A-Z Entry Filter widgets may be added to the same View using different languages
 * Fixed: Support for custom collation overrides in situations where accented letters are shown in a filter for the other (for example, L and Ł in Polish).
+* Updated translations
 
 __Developer Updates:__
 
