@@ -131,7 +131,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	 * @return string If filter letter exists, adds a hidden input to the fields. Otherwise, returns original fields.
 	 */
 	public function modify_search_widget_fields( $search_fields ) {
-		if ( $letter = $this->get_filter_letter() ) {
+		if ( $letter = $this->get_filter_letter( true ) ) {
 			$search_fields .= sprintf( '<input type="hidden" name="%s" value="%s" />', esc_attr( $this->letter_parameter ), esc_attr( $letter ) );
 		}
 		return $search_fields;
@@ -142,8 +142,15 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	 *
 	 * @return string|boolean If search being performed, return the letter being filtered by. Otherwise, return false.
 	 */
-	public function get_filter_letter() {
-		return Utils::_GET( $this->letter_parameter ) ? : false;
+	public function get_filter_letter( $lowercase = false ) {
+
+		$letter = Utils::_GET( $this->letter_parameter, false );
+
+		if ( ! $letter ) {
+			return false;
+		}
+
+		return $lowercase ? mb_strtolower( $letter ) : $letter;
 	}
 
 	/**
@@ -220,10 +227,10 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	 * @param \GV\Request $request The request object
 	 */
 	public function gf_query_filter( &$query, $view, $request ) {
-		$letter = $this->get_filter_letter();
+		$letter = $this->get_filter_letter( true );
 
 		// No search
-		if ( empty( $letter ) ) {
+		if ( false === $letter ) {
 			gravityview()->log->debug( 'Widget_A_Z_Entry_Filter[filter_entries]: Not adding search criteria.' );
 			return;
 		}
@@ -241,6 +248,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			$localization = $widget->configuration->get( 'localization' );
 			$alphabet = $this->get_localized_alphabet( $localization );
 			$numbers = $this->get_localized_numbers( $localization );
+			$zero_through_nine = $this->get_zero_through_nine( $localization );
 
 			if ( in_array( $letter, $alphabet ) ) {
 				$conditions[] = new \GF_Query_Condition(
@@ -248,7 +256,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 					\GF_Query_Condition::LIKE,
 					new \GF_Query_Literal( "$letter%" )
 				);
-			} else {
+			} elseif( $zero_through_nine === $letter ) {
 				/**
 				 * For numbers 0-9 we need to add every condition separately.
 				 */
@@ -272,6 +280,22 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 				\GF_Query_Condition::_and( $query_parts['where'], call_user_func_array( 'GF_Query_Condition::_or', $conditions ) )
 			);
 		}
+
+		/**
+		 * Override the Gravity Forms SQL directly to set a custom collation.
+		 */
+		add_filter( 'gform_gf_query_sql', function ( $sql ) {
+
+			$where = $sql['where'];
+
+			// Replace GF_Query meta value statements with only lowercase search in case the collation gives a strict match.
+			// Also, adds the COLLATE statement if defined.
+			$where = preg_replace( '/(`m[0-9]+?`\.`meta_value`)/ism', 'LOWER( $1 )' . $collation_override, $where );
+
+			$sql['where'] = $where;
+
+			return $sql;
+		});
 	}
 
 	/**
@@ -296,7 +320,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 		$uppercase = $widget_args['uppercase'];
 
 		$args = array(
-			'current_letter' => $this->get_filter_letter()
+			'current_letter' => $this->get_filter_letter( true )
 		);
 
 		$letter_links = $this->render_alphabet_letters( $args, $localization, $uppercase, $context );
@@ -315,7 +339,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	 * @param  array|string  $args     List of arguments for how to display the linked list. By default, only `current_letter` is passed, but others can be used. See the $defaults array in the code.
 	 * @param  string  $charset   Language to use, using the WordPress Locale code (see {@link http://wpcentral.io/internationalization/})
 	 * @param  boolean $uppercase Whether to show as uppercase or not
-	 * @param  \GV\Template_Context $context The view context
+	 * @param  \GV\Template_Context $context The View context
 	 *
 	 * @return string             HTML output of links
 	 */
@@ -331,13 +355,13 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			'base' => add_query_arg( $this->letter_parameter ,'%#%'),
 			'format' => '&'.$this->letter_parameter.'=%#%',
 			'add_args' => array(), //
-			'current_letter' => NULL,
+			'current_letter' => null,
 			'number_character' => _x( '#', 'Character representing numbers', 'gravityview-az-filters' ),
 			'show_all_text' => __( 'Show All', 'gravityview-az-filters' ),
 			'link_title_number' => __( 'Show entries starting with a number', 'gravityview-az-filters' ),
 			'link_title_letter' => __( 'Show entries starting with the letter %s', 'gravityview-az-filters' ),
-			'before_first_letter' => NULL,
-			'after_last_letter' => NULL,
+			'before_first_letter' => null,
+			'after_last_letter' => null,
 			'first_letter' => $this->get_first_letter_localized( $charset ),
 			'last_letter' => $this->get_last_letter_localized( $charset ),
 		);
@@ -374,15 +398,15 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 
 		$pagenum_parameter = 'pagenum';
 
+		$current_letter = $this->get_filter_letter( true );
+
+		$zero_through_nine = $this->get_zero_through_nine( $charset );
+
 		foreach ( $alphabet_chars as $char ) { // This is more suited for any alphabet
 
-			$class = '';
-			$link = '#'; // Internal anchor
-
 			// If entries exist then change the link for the letter.
-
 			if ( $char === $args['number_character'] ) {
-				$link = add_query_arg( array( $this->letter_parameter => '0-9' ) );
+				$link = add_query_arg( array( $this->letter_parameter => $zero_through_nine ) );
 				$title = $args['link_title_number'];
 			} else {
 				$link = add_query_arg( array( $this->letter_parameter => $char ) );
@@ -390,7 +414,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			}
 
 			// Remove pagination if switching letters
-			if ( Utils::_GET( $this->letter_parameter ) != $char ) {
+			if ( $current_letter !== mb_strtolower( $char ) ) {
 				$link = remove_query_arg( $pagenum_parameter, $link );
 			}
 
@@ -400,7 +424,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			$classes = array();
 
 			// If the current letter matches then put it in bold.
-			if ( $current_letter === $char || ( $current_letter === '0-9' && $char === $args['number_character'] ) ) {
+			if ( $current_letter === mb_strtolower( $char ) || ( $current_letter === $zero_through_nine && $char === $args['number_character'] ) ) {
 				$classes[] = 'gv-active';
 			}
 
@@ -421,7 +445,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 		/**
 		 * Only show "Show All" link if there's a filter.
 		 */
-		if( $this->get_filter_letter() ) {
+		if( $current_letter ) {
 
 			$show_all_text = $args['show_all_text'];
 
@@ -435,6 +459,26 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 		$output .= '</ul>';
 
 		return $output;
+	}
+
+	/**
+	 * Get the localized version of 0-9 to use in links.
+	 *
+	 * Also used to determine whether numeric query or text.
+	 *
+	 * @since 1.3
+	 *
+	 * @param $charset
+	 *
+	 * @return string
+	 */
+	private function get_zero_through_nine( $charset ) {
+		$numbers = $this->get_localized_numbers( $charset );
+
+		$zero = reset( $numbers );
+		$nine = end( $numbers );
+
+		return $zero . '-' . $nine;
 	}
 
 	/**
