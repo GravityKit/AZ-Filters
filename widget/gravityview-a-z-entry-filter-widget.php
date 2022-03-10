@@ -38,10 +38,6 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 
 		$this->letter_parameter = ! empty( $parameter ) ? $parameter : 'letter';
 
-		$this->alphabet = $this->get_localized_alphabet();
-
-		$this->numbers = $this->get_localized_numbers();
-
 		$formid = gravityview_get_form_id( Utils::_GET( 'post' ) );
 
 		$widget_label = __( 'A-Z Entry Filter', 'gravityview-az-filters' );
@@ -243,10 +239,10 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			}
 
 			$localization = $widget->configuration->get( 'localization' );
-			$this->alphabet = $this->get_localized_alphabet( $localization );
-			$this->numbers = $this->get_localized_numbers( $localization );
+			$alphabet = $this->get_localized_alphabet( $localization );
+			$numbers = $this->get_localized_numbers( $localization );
 
-			if ( in_array( $letter, $this->alphabet ) ) {
+			if ( in_array( $letter, $alphabet ) ) {
 				$conditions[] = new \GF_Query_Condition(
 					new \GF_Query_Column( $filter_field ),
 					\GF_Query_Condition::LIKE,
@@ -256,7 +252,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 				/**
 				 * For numbers 0-9 we need to add every condition separately.
 				 */
-				foreach ( $this->numbers as $value ) {
+				foreach ( $numbers as $value ) {
 					$conditions[] = new \GF_Query_Condition(
 						new \GF_Query_Column( $filter_field ),
 						\GF_Query_Condition::LIKE,
