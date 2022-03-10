@@ -10,12 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  */
 class Widget_A_Z_Entry_Filter extends \GV\Widget {
 
-	private $letter = false;
-
-	private $numbers;
-
-	private $alphabet;
-
 	private $letter_parameter;
 
 	protected $widget_description;
