@@ -18,7 +18,8 @@ Alphabetically filter your entries by letters of the alphabet.
 
 = 1.3 on March 10, 2022 =
 
-* Added: Support for filtering by the Polish alphabet
+* Added: Support for filtering by the Polish alphabet 🇵🇱
+* Added: Support for filtering by the Ukrainian alphabet 🇺🇦
 * Added: When filtering by a letter, the webpage will scroll back to the clicked link
 * Modified: Localized numbers will be used for links instead of always 0-9. For example, in Bengali, the URL will now show `?letter=০-৯`
 * Improved: Multiple A-Z Entry Filter widgets may be added to the same View using different languages
