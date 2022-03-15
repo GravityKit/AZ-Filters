@@ -1,7 +1,7 @@
 # GravityView - A-Z Filters Extension #
 **Tags:** gravityview  
-**Requires at least:** 3.3  
-**Tested up to:** 5.5  
+**Requires at least:** 4.3  
+**Tested up to:** 5.9.2  
 **Stable tag:** trunk  
 **Contributors:** katzwebservices  
 **License:** GPL 3 or higher  
@@ -15,6 +15,23 @@ Alphabetically filter your entries by letters of the alphabet.
 3. Follow the instructions
 
 ## Changelog ##
+
+### 1.3 on March 15, 2022 ###
+
+* Added: Support for filtering by the Polish alphabet 🇵🇱
+* Added: Support for filtering by the Ukrainian alphabet 🇺🇦
+* Added: When filtering by a letter, the webpage will scroll back to the clicked link
+* Modified: Localized numbers will be used for links instead of always 0-9. For example, in Bengali, the URL will now show `?letter=০-৯`
+* Improved: Multiple A-Z Entry Filter widgets may be added to the same View using different languages
+* Fixed: Support for custom collation overrides in situations where accented letters are shown in a filter for the other (for example, L and Ł in Polish).
+* Updated translations
+
+__Developer Updates:__
+
+* Removed legacy query overrides in favor of exclusively relying on `GF_Query`. This may, in theory, affect some custom code. If it does, it will stop filtering values. If that happens, please let support@gravityview.co know.
+* Added: `gravityview/az_filter/collation` filter to override collation for the letter comparison query. This is helpful when the database interprets multiple letters as the same due to collation. For example, in Polish, L and Ł. This functionality requires Gravity Forms 2.4.3 or newer.
+* Added: `gravityview/az_filter/anchor` filter to modify the anchor ID added to the end of the letter filter links. Return an empty string to remove the functionality.
+* Deprecated: `gravityview_blacklist_field_types` filter. Use `gravityview_blocklist_field_types` instead.
 
 ### 1.2.1 on November 13, 2018 ###
 
