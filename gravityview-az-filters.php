@@ -8,7 +8,7 @@
  * Author URI: https://gravityview.co
  * Author Email: hello@gravityview.co
  * Requires at least: 4.4
- * Tested up to: 5.9
+ * Tested up to: 5.9.2
  * Text Domain: gravityview-az-filters
  * Domain Path: languages
  */

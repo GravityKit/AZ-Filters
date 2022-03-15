@@ -1,7 +1,7 @@
 === GravityView - A-Z Filters Extension ===
 Tags: gravityview
 Requires at least: 4.3
-Tested up to: 5.9
+Tested up to: 5.9.2
 Stable tag: trunk
 Contributors: katzwebservices
 License: GPL 3 or higher
@@ -16,7 +16,7 @@ Alphabetically filter your entries by letters of the alphabet.
 
 == Changelog ==
 
-= 1.3 on March 10, 2022 =
+= 1.3 on March 15, 2022 =
 
 * Added: Support for filtering by the Polish alphabet 🇵🇱
 * Added: Support for filtering by the Ukrainian alphabet 🇺🇦
