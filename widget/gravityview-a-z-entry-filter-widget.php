@@ -10,12 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  */
 class Widget_A_Z_Entry_Filter extends \GV\Widget {
 
-	private $letter = false;
-
-	private $numbers;
-
-	private $alphabet;
-
 	private $letter_parameter;
 
 	protected $widget_description;
@@ -30,17 +24,13 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 
 		/**
 		 * @filter `gravityview/az_filter/parameter`
-		 * @param string $parameter The URL parameter used to filte the alphabet by.
+		 * @param string $parameter The URL parameter used to filter the alphabet by.
 		 * For example, you could use `starts_with` as the parameter, and the link would be `/view/example/?starts_with=a` instead of `/view/example/?letter=a`
 		 * @return string
 		 */
 		$parameter = apply_filters( 'gravityview/az_filter/parameter', $parameter );
 
-		$this->letter_parameter = ! empty( $parameter ) ? $parameter : 'letter';
-
-		$this->alphabet = $this->get_localized_alphabet();
-
-		$this->numbers = $this->get_localized_numbers();
+		$this->letter_parameter = ! empty( $parameter ) ? esc_attr( $parameter ) : 'letter';
 
 		$formid = gravityview_get_form_id( Utils::_GET( 'post' ) );
 
@@ -101,12 +91,20 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 
 		if ( ! empty( $fields ) ) {
 
-			$blacklist_field_types = apply_filters( 'gravityview_blacklist_field_types', array( 'list', 'textarea', 'checkbox', 'radio', 'likert' ) );
+			/**
+			 * @since 1.3
+			 * @param array $blocklist_field_types Array of fields not to be filtered due to storage types (JSON, serialized).
+			 */
+			$blocklist_field_types = apply_filters( 'gravityview_blocklist_field_types', array( 'list', 'textarea', 'checkbox', 'radio', 'likert' ) );
+
+			/**
+			 * @deprecated 1.3
+			 */
+			$blocklist_field_types = apply_filters_deprecated( 'gravityview_blacklist_field_types', $blocklist_field_types, '1.3', 'gravityview_blocklist_field_types' );
 
 			foreach ( $fields as $id => $field ) {
-				if ( in_array( $field['type'], $blacklist_field_types ) ) {
+				if ( in_array( $field['type'], $blocklist_field_types ) ) {
 					unset( $fields[ $id ] );
-					continue;
 				}
 			}
 		}
@@ -127,7 +125,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	 * @return string If filter letter exists, adds a hidden input to the fields. Otherwise, returns original fields.
 	 */
 	public function modify_search_widget_fields( $search_fields ) {
-		if ( $letter = $this->get_filter_letter() ) {
+		if ( $letter = $this->get_filter_letter( true ) ) {
 			$search_fields .= sprintf( '<input type="hidden" name="%s" value="%s" />', esc_attr( $this->letter_parameter ), esc_attr( $letter ) );
 		}
 		return $search_fields;
@@ -138,8 +136,15 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	 *
 	 * @return string|boolean If search being performed, return the letter being filtered by. Otherwise, return false.
 	 */
-	public function get_filter_letter() {
-		return Utils::_GET( $this->letter_parameter ) ? : false;
+	public function get_filter_letter( $lowercase = false ) {
+
+		$letter = Utils::_GET( $this->letter_parameter, false );
+
+		if ( ! $letter ) {
+			return false;
+		}
+
+		return $lowercase ? mb_strtolower( $letter ) : $letter;
 	}
 
 	/**
@@ -150,108 +155,25 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	public function load_localization() {
 		$local = apply_filters( 'gravityview_az_entry_filter_localization', array(
 			'en_US' => __( 'English', 'gravityview-az-filters' ),
-			'fi'	=> __( 'Finnish', 'gravityview-az-filters' ),
+			'fi'    => __( 'Finnish', 'gravityview-az-filters' ),
 			'fr_FR' => __( 'French', 'gravityview-az-filters' ),
 			'de_DE' => __( 'German', 'gravityview-az-filters' ),
 			'it_IT' => __( 'Italian', 'gravityview-az-filters' ),
-			'nn_NO'	=> __( 'Norwegian', 'gravityview-az-filters' ),
-			'ro_RO'	=> __( 'Romanian', 'gravityview-az-filters' ),
+			'nn_NO' => __( 'Norwegian', 'gravityview-az-filters' ),
+			'ro_RO' => __( 'Romanian', 'gravityview-az-filters' ),
 			'ru_RU' => __( 'Russian', 'gravityview-az-filters' ),
 			'es_ES' => __( 'Spanish', 'gravityview-az-filters' ),
-			'tr_TR'	=> __( 'Turkish', 'gravityview-az-filters' ),
-			'bn_BN'	=> __( 'Bengali', 'gravityview-az-filters' ),
+			'tr_TR' => __( 'Turkish', 'gravityview-az-filters' ),
+			'bn_BN' => __( 'Bengali', 'gravityview-az-filters' ),
 			'is_IS' => __( 'Icelandic', 'gravityview-az-filters' ),
 			'sv_SE' => __( 'Swedish (Sweden)', 'gravityview-az-filters' ),
 			'sv_FI' => __( 'Swedish (Finland)', 'gravityview-az-filters' ),
 			'sv'    => __( 'Swedish', 'gravityview-az-filters' ),
+			'pl_PL' => __( 'Polish', 'gravityview-az-filters' ),
+			'uk'    => __( 'Ukrainian', 'gravityview-az-filters' ),
 		) );
 
 		return $local;
-	}
-
-	/**
-	 * Modifies the query performed by GravityView to allow for "starts with" queries.
-	 *
-	 * This is a major hack, but necessary for the plugin to work without core GF changes.
-	 *
-	 * Because Gravity Forms doesn't have a way to search entries using "starts with", we add a placeholder so that when the query comes up in the filter, we can identify it. That placeholder is `[GravityView_Widget_A_Z_Entry_Filter]`. The query is modified from a wildcard "LIKE" search, which allows for anything before or after the query to a query where the search allows a wildcard after the first letter matches.
-	 *
-	 * Here's a basic example for the letter "a":
-	 *
-	 * - Before: `value LIKE %a%` - note the `%` wildcard both before and after. This would match "apple" and "face"
-	 * - After: `value LIKE a%` - The `%` wildcard is now only after the `a`, which would match "apple", not "face"
-	 *
-	 * Here's an actual sample from a real query:
-	 *
-	 * - Before: `WHERE ((value like '%[GRAVITYVIEW_AZ_FILTER_REPLACE]a%'))` - note the wildcard before and after the `GRAVITYVIEW_AZ_FILTER_REPLACE`
-	 * - After: `WHERE ((value like 'a%'))` - Now the wildcard and the placeholder get replaced with just the letter
-	 *
-	 * The code for the numbers query is a bit complex because we need to process multi-byte strings.
-	 *
-	 * MySQL regex doesn't work for unicode characters, so we need to generate a query string that goes through each number with a `LIKE` statement instead.
-	 *
-	 * The code looks like:
-	 *
-	 * `(value like '0%' OR value like '1%' [...] OR value like '9%')`
-	 *
-	 * and in Bengali:
-	 *
-	 * `(value like '০%' OR value like '1%' [...] OR value like '৯%')`
-	 *
-	 * There's a nice side effect: it's faster than `REGEXP` anyway.
-	 *
-	 * @param  string $query MySQL query passed to the database
-	 * @return string        If the query contains `GRAVITYVIEW_AZ_FILTER_REPLACE`, it will be a modified query. Otherwise, the original query will be returned.
-	 */
-	public function query( $query ) {
-		global $wpdb;
-
-		// Get the letter to filter by. Already sanitized.
-		$letter = $this->get_filter_letter();
-
-		// Make sure the query is the correct, modified query. We don't want to modify any other queries!
-		if ( false !== $letter && preg_match( '/(rg_lead_detail|gf_entry_meta).*GRAVITYVIEW_AZ_FILTER_REPLACE/s', $query ) ) {
-
-			gravityview()->log->debug( 'Widget_A_Z_Entry_Filter[query]: Before filtering by character '.$letter, array( 'data' => $query ) );
-
-			$replace_sql = '';
-
-			if ( in_array( $letter, $this->alphabet ) ) {
-
-				$replace_sql = sprintf( "'%s%%'", $wpdb->esc_like( $letter ) );
-
-			} else if ( $letter === '0-9' ) {
-				/**
-				 * See docBlock for more information on why we're doing it like this.
-				 */
-
-				// Open number LIKE statement
-				$replace_sql = '(';
-
-				foreach ( $this->numbers as $key => $value ) {
-
-					// Sanitize the request
-					$replace_sql .= sprintf( "'%s%%'", $wpdb->esc_like( $value ) );
-
-					// If there's another number, join the statement
-					if ( isset( $this->numbers[ $key + 1 ] ) ) {
-						$replace_sql .= ' OR ';
-					}
-				}
-
-				// Close LIKE statement
-				$replace_sql .= ')';
-			} else {
-				return $query;
-			}
-
-			// Replace the placeholder with the actual query
-			$query = str_replace( "'%[GRAVITYVIEW_AZ_FILTER_REPLACE]{$letter}%'", $replace_sql, $query );
-
-			gravityview()->log->debug( 'Widget_A_Z_Entry_Filter[query]: After filtering by character '.$letter, array( 'data' => $query ) );
-		}
-
-		return $query;
 	}
 
 	/**
@@ -262,64 +184,24 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	 * @return array Modified search criteria
 	 */
 	public function filter_entries( $search_criteria, $form_id, $args ) {
-		if ( gravityview()->plugin->supports( \GV\Plugin::FEATURE_GFQUERY ) ) {
-			static $filter_added = false;
- 			if ( ! $filter_added ) {
-				/**
-				 * If GF_Query is available, we can construct custom conditions with nested
-				 * booleans on the query, giving up the old ways of flat search_criteria field_filters.
-				 */
-				$filter_added = add_action( 'gravityview/view/query', array( $this, 'gf_query_filter' ), 10, 3 );
-			}
 
-			return $search_criteria; // Return the original criteria, GF_Query modification kicks in later
-		}
-
-		$letter = $this->get_filter_letter();
-
-		// No search
-		if ( empty( $letter ) ) {
-			gravityview()->log->debug( 'Widget_A_Z_Entry_Filter[filter_entries]: Not adding search criteria.' );
+		if ( ! gravityview()->plugin->supports( \GV\Plugin::FEATURE_GFQUERY ) ) {
 			return $search_criteria;
 		}
 
-		// After 1.9.12, GF changed search operator options
-		$filter_operator = version_compare( \GFCommon::$version, '1.9.12', '>=' ) ? 'contains' : 'like';
+		static $filter_added = false;
 
-		$view = View::by_id( Utils::get( $args, 'id' ) );
+        if ( $filter_added ) {
+	        return $search_criteria;
+        }
 
-		foreach ( $view->widgets->by_id( $this->get_widget_id() )->all() as $widget ) {
-			$filter_field = $widget->configuration->get( 'filter_field' );
+		/**
+		 * If GF_Query is available, we can construct custom conditions with nested
+		 * booleans on the query, giving up the old ways of flat search_criteria field_filters.
+		 */
+		$filter_added = add_action( 'gravityview/view/query', array( $this, 'gf_query_filter' ), 10, 3 );
 
-			if ( empty( $filter_field ) ) {
-				gravityview()->log->error( 'Widget_A_Z_Entry_Filter[filter_entries]: No filter field has been set.', array( 'data' => $widget ) );
-				continue;
-			}
-
-			$localization = $widget->configuration->get( 'localization' );
-			$this->alphabet = $this->get_localized_alphabet( $localization );
-			$this->numbers = $this->get_localized_numbers( $localization );
-
-			/**
-			 * Modifies the query performed by GravityView. As in, the ACTUAL SQL.
-			 *
-			 * @see  GravityView_Widget_A_Z_Entry_Filter::query()
-			 * @hack
-			 */
-			add_filter( 'query', array( $this, 'query') );
-
-			$filter = array(
-				'key' => $filter_field, // The field ID to search e.g. 1.3 is the First Name
-				'value' => '[GRAVITYVIEW_AZ_FILTER_REPLACE]'.$letter, // The value to search
-				'operator' => $filter_operator, // Will use wildcard `%search%` format
-			);
-
-			$search_criteria['field_filters'][] = $filter;
-
-			gravityview()->log->debug( 'Widget_A_Z_Entry_Filter[filter_entries]: Adding search criteria.', array( 'data' => $filter ) );
-		}
-
-		return $search_criteria;
+		return $search_criteria; // Return the original criteria, GF_Query modification kicks in later
 	}
 
 	/**
@@ -332,10 +214,10 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	 * @param \GV\Request $request The request object
 	 */
 	public function gf_query_filter( &$query, $view, $request ) {
-		$letter = $this->get_filter_letter();
+		$letter = $this->get_filter_letter( true );
 
 		// No search
-		if ( empty( $letter ) ) {
+		if ( false === $letter ) {
 			gravityview()->log->debug( 'Widget_A_Z_Entry_Filter[filter_entries]: Not adding search criteria.' );
 			return;
 		}
@@ -351,20 +233,21 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			}
 
 			$localization = $widget->configuration->get( 'localization' );
-			$this->alphabet = $this->get_localized_alphabet( $localization );
-			$this->numbers = $this->get_localized_numbers( $localization );
+			$alphabet = $this->get_localized_alphabet( $localization );
+			$numbers = $this->get_localized_numbers( $localization );
+			$zero_through_nine = $this->get_zero_through_nine( $localization );
 
-			if ( in_array( $letter, $this->alphabet ) ) {
+			if ( in_array( $letter, $alphabet ) ) {
 				$conditions[] = new \GF_Query_Condition(
 					new \GF_Query_Column( $filter_field ),
 					\GF_Query_Condition::LIKE,
 					new \GF_Query_Literal( "$letter%" )
 				);
-			} else {
+			} elseif( $zero_through_nine === $letter ) {
 				/**
 				 * For numbers 0-9 we need to add every condition separately.
 				 */
-				foreach ( $this->numbers as $value ) {
+				foreach ( $numbers as $value ) {
 					$conditions[] = new \GF_Query_Condition(
 						new \GF_Query_Column( $filter_field ),
 						\GF_Query_Condition::LIKE,
@@ -384,6 +267,37 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 				\GF_Query_Condition::_and( $query_parts['where'], call_user_func_array( 'GF_Query_Condition::_or', $conditions ) )
 			);
 		}
+
+		/**
+		 * Override the Gravity Forms SQL directly to search lowercase values and possibly define custom collation.
+		 *
+		 * Requires Gravity Forms 2.4.3 or newer.
+		 */
+		add_filter( 'gform_gf_query_sql', function ( $sql ) {
+
+			$where = $sql['where'];
+
+			/**
+			 * Override the default query collation for the letter comparison.
+			 * @since 1.3
+			 * @param string $collation_override The collation override for the query. May be necessary to limit results with non-latin characters containing accents. Return a valid collation to override, like 'utf8mb4_bin'.
+			 * @param string $query The MySQL query passed to the database.
+			 */
+			$collation_override = apply_filters( 'gravityview/az_filter/collation', '', $where );
+
+			// If the collation is set, add the COLLATE command.
+			if ( $collation_override ) {
+				$collation_override = esc_sql( ' COLLATE ' . $collation_override );
+			}
+
+			// Replace GF_Query meta value statements with only lowercase search in case the collation gives a strict match.
+			// Also, adds the COLLATE statement if defined.
+			$where = preg_replace( '/(`m[0-9]+?`\.`meta_value`)/ism', 'LOWER( $1 )' . $collation_override, $where );
+
+			$sql['where'] = $where;
+
+			return $sql;
+		});
 	}
 
 	/**
@@ -408,7 +322,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 		$uppercase = $widget_args['uppercase'];
 
 		$args = array(
-			'current_letter' => $this->get_filter_letter()
+			'current_letter' => $this->get_filter_letter( true )
 		);
 
 		$letter_links = $this->render_alphabet_letters( $args, $localization, $uppercase, $context );
@@ -427,7 +341,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	 * @param  array|string  $args     List of arguments for how to display the linked list. By default, only `current_letter` is passed, but others can be used. See the $defaults array in the code.
 	 * @param  string  $charset   Language to use, using the WordPress Locale code (see {@link http://wpcentral.io/internationalization/})
 	 * @param  boolean $uppercase Whether to show as uppercase or not
-	 * @param  \GV\Template_Context $context The view context
+	 * @param  \GV\Template_Context $context The View context
 	 *
 	 * @return string             HTML output of links
 	 */
@@ -443,13 +357,13 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			'base' => add_query_arg( $this->letter_parameter ,'%#%'),
 			'format' => '&'.$this->letter_parameter.'=%#%',
 			'add_args' => array(), //
-			'current_letter' => NULL,
+			'current_letter' => null,
 			'number_character' => _x( '#', 'Character representing numbers', 'gravityview-az-filters' ),
 			'show_all_text' => __( 'Show All', 'gravityview-az-filters' ),
 			'link_title_number' => __( 'Show entries starting with a number', 'gravityview-az-filters' ),
 			'link_title_letter' => __( 'Show entries starting with the letter %s', 'gravityview-az-filters' ),
-			'before_first_letter' => NULL,
-			'after_last_letter' => NULL,
+			'before_first_letter' => null,
+			'after_last_letter' => null,
 			'first_letter' => $this->get_first_letter_localized( $charset ),
 			'last_letter' => $this->get_last_letter_localized( $charset ),
 		);
@@ -463,7 +377,21 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			gravityview()->log->debug( sprintf( '%s[render_frontend]: No entries.', get_class( $this ) ) );
 		}
 
-		$output = '<ul class="gravityview-az-filter">';
+		static $az_widget_counter;
+
+		// Auto-increment the ID attribute based on number of displayed widgets.
+		$az_widget_counter = isset( $az_widget_counter ) ? $az_widget_counter + 1 : 1;
+
+		$widget_id_attr = sprintf( 'gv-widget-%s-%d', $this->get_widget_id(), $az_widget_counter );
+
+		/**
+		 * Modifies the anchor ID added to the end of the letter filter links. Return empty string to remove.
+		 * @param string $az_widget_anchor The anchor in the format `#gv-widget-az_filter-{integer widget counter}`
+		 * @param \GV\Template_Context $context The View context
+		 */
+		$az_widget_anchor = apply_filters( 'gravityview/az_filter/anchor', '#' . $widget_id_attr, $context );
+
+		$output = '<ul class="gravityview-az-filter" id="' . esc_attr( $widget_id_attr ) . '">';
 
 		$output .= $args['before_first_letter'];
 
@@ -472,15 +400,15 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 
 		$pagenum_parameter = 'pagenum';
 
+		$current_letter = $this->get_filter_letter( true );
+
+		$zero_through_nine = $this->get_zero_through_nine( $charset );
+
 		foreach ( $alphabet_chars as $char ) { // This is more suited for any alphabet
 
-			$class = '';
-			$link = '#'; // Internal anchor
-
 			// If entries exist then change the link for the letter.
-
 			if ( $char === $args['number_character'] ) {
-				$link = add_query_arg( array( $this->letter_parameter => '0-9' ) );
+				$link = add_query_arg( array( $this->letter_parameter => $zero_through_nine ) );
 				$title = $args['link_title_number'];
 			} else {
 				$link = add_query_arg( array( $this->letter_parameter => $char ) );
@@ -488,15 +416,17 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			}
 
 			// Remove pagination if switching letters
-			if ( Utils::_GET( $this->letter_parameter ) != $char ) {
+			if ( $current_letter !== mb_strtolower( $char ) ) {
 				$link = remove_query_arg( $pagenum_parameter, $link );
 			}
+
+			$link .= $az_widget_anchor;
 
 			// Leave class empty unless there are no entries.
 			$classes = array();
 
 			// If the current letter matches then put it in bold.
-			if ( $current_letter === $char || ( $current_letter === '0-9' && $char === $args['number_character'] ) ) {
+			if ( $current_letter === mb_strtolower( $char ) || ( $current_letter === $zero_through_nine && $char === $args['number_character'] ) ) {
 				$classes[] = 'gv-active';
 			}
 
@@ -517,7 +447,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 		/**
 		 * Only show "Show All" link if there's a filter.
 		 */
-		if( $this->get_filter_letter() ) {
+		if( $current_letter ) {
 
 			$show_all_text = $args['show_all_text'];
 
@@ -525,12 +455,32 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 				$show_all_text = function_exists( 'mb_strtolower' ) ? mb_strtolower( $args['show_all_text'] ) : strtolower( $args['show_all_text'] );
 			}
 
-			$output .= '<li class="last"><span class="show-all"><a href="' . esc_url( remove_query_arg( $pagenum_parameter, remove_query_arg( $this->letter_parameter ) ) ) . '">' . esc_html( $show_all_text ) . '</a></span></li>';
+			$output .= '<li class="last"><span class="show-all"><a href="' . esc_url( remove_query_arg( $pagenum_parameter, remove_query_arg( $this->letter_parameter ) ) . $az_widget_anchor ) . '">' . esc_html( $show_all_text ) . '</a></span></li>';
 		}
 
 		$output .= '</ul>';
 
 		return $output;
+	}
+
+	/**
+	 * Get the localized version of 0-9 to use in links.
+	 *
+	 * Also used to determine whether numeric query or text.
+	 *
+	 * @since 1.3
+	 *
+	 * @param $charset
+	 *
+	 * @return string
+	 */
+	private function get_zero_through_nine( $charset ) {
+		$numbers = $this->get_localized_numbers( $charset );
+
+		$zero = reset( $numbers );
+		$nine = end( $numbers );
+
+		return $zero . '-' . $nine;
 	}
 
 	/**
@@ -562,20 +512,22 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 		$charset = empty( $charset ) ? 'en_US' : $charset;
 
 		$alphabets = apply_filters( 'gravityview_alphabets', array(
-			'en_US' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'),
-			'es_ES' => array('a', 'b', 'c', 'ch', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'll', 'm', 'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'),
-			'de_DE' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'),
-			'it_IT' => array( 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'z'),
-			'ru_RU' => array('а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я'),
-			'nn_NO' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'æ', 'ø', 'å' ),
-			'fi'    => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z', 'å', 'ä', 'ö' ),
-			'ro_RO' => array('a', 'ă', 'â', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'î', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 'ș', 't', 'ț', 'u', 'v', 'w', 'x', 'y', 'z' ),
+			'en_US' => array( 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' ),
+			'es_ES' => array( 'a', 'b', 'c', 'ch', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'll', 'm', 'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' ),
+			'de_DE' => array( 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' ),
+			'it_IT' => array( 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'z' ),
+			'ru_RU' => array( 'а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я' ),
+			'nn_NO' => array( 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'æ', 'ø', 'å' ),
+			'fi'    => array( 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z', 'å', 'ä', 'ö' ),
+			'ro_RO' => array( 'a', 'ă', 'â', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'î', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 'ș', 't', 'ț', 'u', 'v', 'w', 'x', 'y', 'z' ),
 			'tr_TR' => array( 'a', 'b', 'c', 'ç', 'd', 'e', 'f', 'g', 'ğ', 'h', 'ı', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'ö', 'p', 'r', 's', 'ş', 't', 'u', 'ü', 'v', 'y', 'z' ),
 			'bn_BN' => array( 'অ', 'আ', 'ই', 'ঈ', 'উ', 'ঊ', 'ঋ', 'এ', 'ঐ', 'ও', 'ঔ', 'ক', 'খ', 'গ', 'ঘ', 'ঙ', 'চ', 'ছ', 'জ', 'ঝ', 'ঞ', 'ট', 'ঠ', 'ড', 'ঢ', 'ণ', 'ত', 'থ', 'দ', 'ধ', 'ন', 'প', 'ফ', 'ব', 'ভ', 'ম', 'য', 'র', 'ল', 'শ', 'ষ', 'স', 'হ', 'ড়', 'ঢ়', 'য়' ),
-			'is_IS' => array('a','á','b','d','ð','e','é','f','g','h','i','í','j','k','l','m','n','o','ó','p','r','s','t','u','ú','v','x','y','ý','þ','æ','ö'),
-			'sv_FI' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö'),
-			'sv_SE' => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö'),
-			'sv'    => array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö'),
+			'is_IS' => array( 'a','á','b','d','ð','e','é','f','g','h','i','í','j','k','l','m','n','o','ó','p','r','s','t','u','ú','v','x','y','ý','þ','æ','ö' ),
+			'sv_FI' => array( 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö' ),
+			'sv_SE' => array( 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö' ),
+			'sv'    => array( 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö' ),
+			'pl_PL' => array( 'a', 'ą', 'b', 'c', 'ć', 'd', 'e', 'ę', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'ł', 'm', 'n', 'ń', 'o', 'ó', 'p', 'r', 's', 'ś', 't', 'u', 'w', 'y', 'z', 'ź', 'ż' ),
+			'uk'    => array( 'а', 'б', 'в', 'г', 'ґ', 'д', 'е', 'є', 'ж', 'з', 'и', 'і', 'ї', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ю', 'я' ),
 		) );
 
 		// If the alphabet exists, use it. Otherwise, use English alphabet.
