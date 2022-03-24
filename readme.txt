@@ -16,6 +16,12 @@ Alphabetically filter your entries by letters of the alphabet.
 
 == Changelog ==
 
+= 1.3.1 on March 24, 2022 =
+
+__Developer Updates:__
+
+* Fixed: Using the deprecated `gravityview_blacklist_field_types` filter results in an incorrect list of fields that are available for filtering as well as a PHP error notice. (Note: please use the `gravityview_blocklist_field_types` filter instead!)
+
 = 1.3 on March 15, 2022 =
 
 * Added: Support for filtering by the Polish alphabet 🇵🇱

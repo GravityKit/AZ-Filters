@@ -100,7 +100,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			/**
 			 * @deprecated 1.3
 			 */
-			$blocklist_field_types = apply_filters_deprecated( 'gravityview_blacklist_field_types', $blocklist_field_types, '1.3', 'gravityview_blocklist_field_types' );
+			$blocklist_field_types = apply_filters_deprecated( 'gravityview_blacklist_field_types', array( $blocklist_field_types ), '1.3', 'gravityview_blocklist_field_types' );
 
 			foreach ( $fields as $id => $field ) {
 				if ( in_array( $field['type'], $blocklist_field_types ) ) {
