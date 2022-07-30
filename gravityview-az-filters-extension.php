@@ -22,7 +22,7 @@ class A_Z_Entry_Filter_Extension extends Extension {
 		$this->_text_domain   = 'gravityview-az-filters';
 		$this->_path          = __FILE__ ;
 		$this->_item_id       = 266;
-		$this->plugin_file    = __FILE__;
+		$this->plugin_file    = GRAVITYVIEW_AZ_FILTER_FILE;
 		$this->plugin_version = GRAVITYVIEW_AZ_FILTER_VERSION;
 
 		parent::__construct();
