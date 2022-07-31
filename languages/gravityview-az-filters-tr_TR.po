@@ -1,12 +1,10 @@
-# Copyright (C) 2022 GravityView
-# This file is distributed under the same license as the GravityView - A-Z Filters Extension package.
+# Translators:
 # Translators:
 # Süha Karalar <suhakaralar@gmail.com>, 2014,2018
 msgid ""
 msgstr ""
 "Project-Id-Version: GravityView A-Z Filters\n"
-"Report-Msgid-Bugs-To: https://gravityview.co/support/\n"
-"POT-Creation-Date: 2022-03-10 04:09:04+00:00\n"
+"POT-Creation-Date: 2014-10-03 09:41-0700\n"
 "PO-Revision-Date: 2014-09-23 04:57+0000\n"
 "Last-Translator: Süha Karalar <suhakaralar@gmail.com>, 2014,2018\n"
 "Language-Team: Turkish (Turkey) (http://www.transifex.com/katzwebservices/gravityview-az-filters/language/tr_TR/)\n"
@@ -15,167 +13,115 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: tr_TR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: grunt-wp-i18n1.0.2\n"
-"X-Poedit-Basepath: ../\n"
-"X-Poedit-Bookmarks: \n"
-"X-Poedit-Country: United States\n"
-"X-Poedit-KeywordsList: __;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;_nx_noop:1,2,3c;esc_attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;esc_html_x:1,2c;\n"
+"X-Generator: Poedit 1.6.9\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Textdomain-Support: yes\n"
 
-#: lib/EDD_SL_Plugin_Updater.php:179
-msgid ""
-"There is a new version of %1$s available. <a target=\"_blank\" "
-"class=\"thickbox\" href=\"%2$s\">View version %3$s details</a>."
-msgstr "%1$s için yeni sürüm mevcut. <a target=\"_blank\" class=\"thickbox\" href=\"%2$s\">Sürüm %3$s detaylarını görüntüle </a>."
-
-#: lib/EDD_SL_Plugin_Updater.php:186
-msgid ""
-"There is a new version of %1$s available. <a target=\"_blank\" "
-"class=\"thickbox\" href=\"%2$s\">View version %3$s details</a> or <a "
-"href=\"%4$s\">update now</a>."
-msgstr "%1$s için yeni sürüm mevcut. <a target=\"_blank\" class=\"thickbox\" href=\"%2$s\">Sürüm %3$s detaylarını görüntüle </a> yada <a href=\"%4$s\">şimdi güncelleyin</a>."
-
-#: lib/EDD_SL_Plugin_Updater.php:334
-msgid "You do not have permission to install plugin updates"
-msgstr "Eklenti güncellemelerini yükleme yetkiniz yok"
-
-#: lib/EDD_SL_Plugin_Updater.php:334
-msgid "Error"
-msgstr "Hata"
-
-#: lib/class-gravityview-extension.php:359
+#: lib/class-gravityview-extension.php:157
+#, php-format
 msgid "Could not activate the %s Extension; GravityView is not active."
 msgstr "%s eklentisi etkinleştirilemiyor; GravityView etkin değil."
 
-#: lib/class-gravityview-extension.php:363
+#: lib/class-gravityview-extension.php:167
+#, php-format
 msgid "The %s Extension requires GravityView Version %s or newer."
 msgstr "%s eklentisi en az GravityView %s sürümü yada daha yenisini gerektirmektedir."
 
-#: lib/class-gravityview-extension.php:367
-msgid ""
-"The %s Extension requires PHP Version %s or newer. Please ask your host to "
-"upgrade your server's PHP."
-msgstr "Bu eklenti PHP %s ve üzeri sürümleri gerektirir. Lütfen hosting firmanızla iletişime geçerek güncelleme talep ediniz."
-
-#: lib/class-gravityview-extension.php:371
-msgid ""
-"The %s Extension is not compatible with this version of GravityView. Please "
-"update the Extension to the latest version."
-msgstr "%s eklentisi GravityView bu sürümü ile uyumlu değil. Lütfen eklentiyi en son sürüme güncelleyiniz."
-
-#: widget/gravityview-a-z-entry-filter-widget.php:37
+#: widget/gravityview-a-z-entry-filter-widget.php:35
 msgid "A-Z Entry Filter"
 msgstr "A-Z Kayıt Süzgeci"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:39
+#: widget/gravityview-a-z-entry-filter-widget.php:37
 msgid "Alphabet links that filter entries by their first letter."
 msgstr "Kayıtları ilk harflerine göre süzen Alfabe bağlantıları."
 
-#: widget/gravityview-a-z-entry-filter-widget.php:49
+#: widget/gravityview-a-z-entry-filter-widget.php:47
 msgid "Use this field to filter entries:"
 msgstr "Kayıtları süzmek için bu alanı kullanın:"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:50
+#: widget/gravityview-a-z-entry-filter-widget.php:48
+#, php-format
 msgid ""
 "Entries will be filtered based on the first character of this field. %sLearn"
 " more%s."
 msgstr "Kayıtlar bu alanın ilk harifne göre süzülecektir. %sDaha fazlası%s"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:56
+#: widget/gravityview-a-z-entry-filter-widget.php:54
 msgid "Alphabet"
 msgstr "Alfabe"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:57
+#: widget/gravityview-a-z-entry-filter-widget.php:55
 msgid "What alphabet should be used?"
 msgstr "Hangi alfabe kullanılmalı?"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:62
+#: widget/gravityview-a-z-entry-filter-widget.php:60
 msgid "Use Uppercase Letters?"
 msgstr "Büyük harfleri kullanmak istermisiniz?"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:64
+#: widget/gravityview-a-z-entry-filter-widget.php:62
 msgid "Should the alphabet links be capitalized?"
 msgstr "Alfabe bağlantıları büyük harfle mi gösterilsin?"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:157
+#: widget/gravityview-a-z-entry-filter-widget.php:147
 msgid "English"
 msgstr "İngilizce"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:158
+#: widget/gravityview-a-z-entry-filter-widget.php:148
 msgid "Finnish"
 msgstr "Fince"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:159
+#: widget/gravityview-a-z-entry-filter-widget.php:149
 msgid "French"
 msgstr "Fransızca"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:160
+#: widget/gravityview-a-z-entry-filter-widget.php:150
 msgid "German"
 msgstr "Almanca"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:161
+#: widget/gravityview-a-z-entry-filter-widget.php:151
 msgid "Italian"
 msgstr "İtalyanca"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:162
+#: widget/gravityview-a-z-entry-filter-widget.php:152
 msgid "Norwegian"
 msgstr "Norveçce"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:163
+#: widget/gravityview-a-z-entry-filter-widget.php:153
 msgid "Romanian"
 msgstr "Rumence"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:164
+#: widget/gravityview-a-z-entry-filter-widget.php:154
 msgid "Russian"
 msgstr "Rusça"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:165
+#: widget/gravityview-a-z-entry-filter-widget.php:155
 msgid "Spanish"
 msgstr "İspanyolca"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:166
+#: widget/gravityview-a-z-entry-filter-widget.php:156
 msgid "Turkish"
 msgstr "Türkçe"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:167
+#: widget/gravityview-a-z-entry-filter-widget.php:157
 msgid "Bengali"
 msgstr "Bengalce"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:168
-msgid "Icelandic"
-msgstr "İzlandaca"
-
-#: widget/gravityview-a-z-entry-filter-widget.php:169
-msgid "Swedish (Sweden)"
-msgstr "İsveççe (İsveç)"
-
-#: widget/gravityview-a-z-entry-filter-widget.php:170
-msgid "Swedish (Finland)"
-msgstr "İsveççe (Finlandiya)"
-
-#: widget/gravityview-a-z-entry-filter-widget.php:171
-msgid "Swedish"
-msgstr "İsveççe"
-
-#: widget/gravityview-a-z-entry-filter-widget.php:172
-msgid "Polish"
-msgstr ""
-
-#: widget/gravityview-a-z-entry-filter-widget.php:361
-msgid "Show All"
-msgstr "Tümü Göster"
-
-#: widget/gravityview-a-z-entry-filter-widget.php:362
-msgid "Show entries starting with a number"
-msgstr "Sayı ile başlayan kayıtları göster"
-
-#: widget/gravityview-a-z-entry-filter-widget.php:363
-msgid "Show entries starting with the letter %s"
-msgstr "%s harfi ile başlayan kayıtları göster"
-
-#: widget/gravityview-a-z-entry-filter-widget.php:360
+#: widget/gravityview-a-z-entry-filter-widget.php:375
 msgctxt "Character representing numbers"
 msgid "#"
 msgstr "#"
+
+#: widget/gravityview-a-z-entry-filter-widget.php:376
+msgid "Show All"
+msgstr "Tümü Göster"
+
+#: widget/gravityview-a-z-entry-filter-widget.php:377
+msgid "Show entries starting with a number"
+msgstr "Sayı ile başlayan kayıtları göster"
+
+#: widget/gravityview-a-z-entry-filter-widget.php:378
+#, php-format
+msgid "Show entries starting with the letter %s"
+msgstr "%s harfi ile başlayan kayıtları göster"
