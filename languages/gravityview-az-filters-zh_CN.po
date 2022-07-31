@@ -1,12 +1,10 @@
-# Copyright (C) 2022 GravityView
-# This file is distributed under the same license as the GravityView - A-Z Filters Extension package.
+# Translators:
 # Translators:
 # Edi Weigh <michaeledi@163.com>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: GravityView A-Z Filters\n"
-"Report-Msgid-Bugs-To: https://gravityview.co/support/\n"
-"POT-Creation-Date: 2022-03-10 04:09:04+00:00\n"
+"POT-Creation-Date: 2014-10-03 09:41-0700\n"
 "PO-Revision-Date: 2014-09-23 04:57+0000\n"
 "Last-Translator: Edi Weigh <michaeledi@163.com>, 2018\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/katzwebservices/gravityview-az-filters/language/zh_CN/)\n"
@@ -15,167 +13,115 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: grunt-wp-i18n1.0.2\n"
-"X-Poedit-Basepath: ../\n"
-"X-Poedit-Bookmarks: \n"
-"X-Poedit-Country: United States\n"
-"X-Poedit-KeywordsList: __;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;_nx_noop:1,2,3c;esc_attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;esc_html_x:1,2c;\n"
+"X-Generator: Poedit 1.6.9\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Textdomain-Support: yes\n"
 
-#: lib/EDD_SL_Plugin_Updater.php:179
-msgid ""
-"There is a new version of %1$s available. <a target=\"_blank\" "
-"class=\"thickbox\" href=\"%2$s\">View version %3$s details</a>."
-msgstr "有一个新的版本 %1$s可用。<a target=\"_blank\" class=\"thickbox\" href=\"%2$s\">查看版本 %3$s 的详细信息</a>。"
-
-#: lib/EDD_SL_Plugin_Updater.php:186
-msgid ""
-"There is a new version of %1$s available. <a target=\"_blank\" "
-"class=\"thickbox\" href=\"%2$s\">View version %3$s details</a> or <a "
-"href=\"%4$s\">update now</a>."
-msgstr "有一个新的版本 %1$s可用。<a target=\"_blank\" class=\"thickbox\" href=\"%2$s\">查看版本 %3$s 详情</a>或<a href=\"%4$s\">现在更新</a>。"
-
-#: lib/EDD_SL_Plugin_Updater.php:334
-msgid "You do not have permission to install plugin updates"
-msgstr "你无权安装插件更新"
-
-#: lib/EDD_SL_Plugin_Updater.php:334
-msgid "Error"
-msgstr "错误"
-
-#: lib/class-gravityview-extension.php:359
+#: lib/class-gravityview-extension.php:157
+#, php-format
 msgid "Could not activate the %s Extension; GravityView is not active."
 msgstr "无法激活插件%s；GravityView未启用。"
 
-#: lib/class-gravityview-extension.php:363
+#: lib/class-gravityview-extension.php:167
+#, php-format
 msgid "The %s Extension requires GravityView Version %s or newer."
 msgstr "%s插件需要GravityView版本为%s或者更新。"
 
-#: lib/class-gravityview-extension.php:367
-msgid ""
-"The %s Extension requires PHP Version %s or newer. Please ask your host to "
-"upgrade your server's PHP."
-msgstr "%s 扩展需要PHP版本 %s 或更新的。请访问您的主机升级服务器的 PHP。"
-
-#: lib/class-gravityview-extension.php:371
-msgid ""
-"The %s Extension is not compatible with this version of GravityView. Please "
-"update the Extension to the latest version."
-msgstr "%s扩展和当前GravityView版本不兼容。请升级插件到最新版本。"
-
-#: widget/gravityview-a-z-entry-filter-widget.php:37
+#: widget/gravityview-a-z-entry-filter-widget.php:35
 msgid "A-Z Entry Filter"
 msgstr "A-Z条目筛选"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:39
+#: widget/gravityview-a-z-entry-filter-widget.php:37
 msgid "Alphabet links that filter entries by their first letter."
 msgstr "按照首字母顺序排列条目。"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:49
+#: widget/gravityview-a-z-entry-filter-widget.php:47
 msgid "Use this field to filter entries:"
 msgstr "使用此字段筛选条目："
 
-#: widget/gravityview-a-z-entry-filter-widget.php:50
+#: widget/gravityview-a-z-entry-filter-widget.php:48
+#, php-format
 msgid ""
 "Entries will be filtered based on the first character of this field. %sLearn"
 " more%s."
 msgstr "条目将根据此字段的首字母筛选显示。%s了解更多%s。"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:56
+#: widget/gravityview-a-z-entry-filter-widget.php:54
 msgid "Alphabet"
 msgstr "字母表"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:57
+#: widget/gravityview-a-z-entry-filter-widget.php:55
 msgid "What alphabet should be used?"
 msgstr "使用什么字母表？"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:62
+#: widget/gravityview-a-z-entry-filter-widget.php:60
 msgid "Use Uppercase Letters?"
 msgstr "使用大写字母？"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:64
+#: widget/gravityview-a-z-entry-filter-widget.php:62
 msgid "Should the alphabet links be capitalized?"
 msgstr "字母应该大写吗？"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:157
+#: widget/gravityview-a-z-entry-filter-widget.php:147
 msgid "English"
 msgstr "英语"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:158
+#: widget/gravityview-a-z-entry-filter-widget.php:148
 msgid "Finnish"
 msgstr "芬兰语"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:159
+#: widget/gravityview-a-z-entry-filter-widget.php:149
 msgid "French"
 msgstr "法语"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:160
+#: widget/gravityview-a-z-entry-filter-widget.php:150
 msgid "German"
 msgstr "德语"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:161
+#: widget/gravityview-a-z-entry-filter-widget.php:151
 msgid "Italian"
 msgstr "意大利语"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:162
+#: widget/gravityview-a-z-entry-filter-widget.php:152
 msgid "Norwegian"
 msgstr "挪威语"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:163
+#: widget/gravityview-a-z-entry-filter-widget.php:153
 msgid "Romanian"
 msgstr "罗马尼亚语"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:164
+#: widget/gravityview-a-z-entry-filter-widget.php:154
 msgid "Russian"
 msgstr "俄语"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:165
+#: widget/gravityview-a-z-entry-filter-widget.php:155
 msgid "Spanish"
 msgstr "西班牙语"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:166
+#: widget/gravityview-a-z-entry-filter-widget.php:156
 msgid "Turkish"
 msgstr "土耳其语"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:167
+#: widget/gravityview-a-z-entry-filter-widget.php:157
 msgid "Bengali"
 msgstr "孟加拉语"
 
-#: widget/gravityview-a-z-entry-filter-widget.php:168
-msgid "Icelandic"
-msgstr "冰岛语"
-
-#: widget/gravityview-a-z-entry-filter-widget.php:169
-msgid "Swedish (Sweden)"
-msgstr "瑞典语（瑞典）"
-
-#: widget/gravityview-a-z-entry-filter-widget.php:170
-msgid "Swedish (Finland)"
-msgstr "瑞典语（芬兰）"
-
-#: widget/gravityview-a-z-entry-filter-widget.php:171
-msgid "Swedish"
-msgstr "瑞典语"
-
-#: widget/gravityview-a-z-entry-filter-widget.php:172
-msgid "Polish"
-msgstr ""
-
-#: widget/gravityview-a-z-entry-filter-widget.php:361
-msgid "Show All"
-msgstr "显示全部"
-
-#: widget/gravityview-a-z-entry-filter-widget.php:362
-msgid "Show entries starting with a number"
-msgstr "显示首字母为数字的条目"
-
-#: widget/gravityview-a-z-entry-filter-widget.php:363
-msgid "Show entries starting with the letter %s"
-msgstr "显示首字母为%s的条目"
-
-#: widget/gravityview-a-z-entry-filter-widget.php:360
+#: widget/gravityview-a-z-entry-filter-widget.php:375
 msgctxt "Character representing numbers"
 msgid "#"
 msgstr "#"
+
+#: widget/gravityview-a-z-entry-filter-widget.php:376
+msgid "Show All"
+msgstr "显示全部"
+
+#: widget/gravityview-a-z-entry-filter-widget.php:377
+msgid "Show entries starting with a number"
+msgstr "显示首字母为数字的条目"
+
+#: widget/gravityview-a-z-entry-filter-widget.php:378
+#, php-format
+msgid "Show entries starting with the letter %s"
+msgstr "显示首字母为%s的条目"

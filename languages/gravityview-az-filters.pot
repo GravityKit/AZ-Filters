@@ -1,8 +1,8 @@
-# Copyright (C) 2022 GravityView
+# Copyright (C) 2022 GravityKit
 # This file is distributed under the same license as the GravityView - A-Z Filters Extension package.
 msgid ""
 msgstr ""
-"Project-Id-Version: GravityView - A-Z Filters Extension 1.3.1\n"
+"Project-Id-Version: GravityView - A-Z Filters Extension 1.3.2\n"
 "Report-Msgid-Bugs-To: https://gravityview.co/support/\n"
 "POT-Creation-Date: 2022-03-11 16:42:36+00:00\n"
 "MIME-Version: 1.0\n"
@@ -24,29 +24,39 @@ msgstr ""
 "X-Poedit-Bookmarks: \n"
 "X-Textdomain-Support: yes\n"
 
-#: lib/EDD_SL_Plugin_Updater.php:179
-msgid ""
-"There is a new version of %1$s available. <a target=\"_blank\" "
-"class=\"thickbox\" href=\"%2$s\">View version %3$s details</a>."
+#: gravityview-az-filters.php:49 lib/class-gravityview-extension.php:359
+msgid "Could not activate the %s Extension; GravityView is not active."
 msgstr ""
 
-#: lib/EDD_SL_Plugin_Updater.php:186
-msgid ""
-"There is a new version of %1$s available. <a target=\"_blank\" "
-"class=\"thickbox\" href=\"%2$s\">View version %3$s details</a> or <a "
-"href=\"%4$s\">update now</a>."
+#: lib/EDD_SL_Plugin_Updater.php:257
+#. translators: the plugin name.
+msgid "There is a new version of %1$s available."
 msgstr ""
 
-#: lib/EDD_SL_Plugin_Updater.php:334
+#: lib/EDD_SL_Plugin_Updater.php:263
+msgid "Contact your network administrator to install the update."
+msgstr ""
+
+#: lib/EDD_SL_Plugin_Updater.php:268
+#. translators: 1. opening anchor tag, do not translate 2. the new plugin
+#. version 3. closing anchor tag, do not translate.
+msgid "%1$sView version %2$s details%3$s."
+msgstr ""
+
+#: lib/EDD_SL_Plugin_Updater.php:276
+msgid "%1$sView version %2$s details%3$s or %4$supdate now%5$s."
+msgstr ""
+
+#: lib/EDD_SL_Plugin_Updater.php:287
+msgid "Update now."
+msgstr ""
+
+#: lib/EDD_SL_Plugin_Updater.php:519
 msgid "You do not have permission to install plugin updates"
 msgstr ""
 
-#: lib/EDD_SL_Plugin_Updater.php:334
+#: lib/EDD_SL_Plugin_Updater.php:519
 msgid "Error"
-msgstr ""
-
-#: lib/class-gravityview-extension.php:359
-msgid "Could not activate the %s Extension; GravityView is not active."
 msgstr ""
 
 #: lib/class-gravityview-extension.php:363
@@ -177,6 +187,18 @@ msgstr ""
 
 #: widget/gravityview-a-z-entry-filter-widget.php:364
 msgid "Show entries starting with the letter %s"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://www.gravitykit.com/extensions/a-z-filter/"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "GravityKit"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://www.gravitykit.com"
 msgstr ""
 
 #: widget/gravityview-a-z-entry-filter-widget.php:361

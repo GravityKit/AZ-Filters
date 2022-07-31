@@ -3,7 +3,7 @@
 **Requires at least:** 4.3  
 **Tested up to:** 6.0.1  
 **Stable tag:** trunk  
-**Contributors:** katzwebservices  
+**Contributors:** The GravityKit Team  
 **License:** GPL 3 or higher  
 
 Alphabetically filter your entries by letters of the alphabet.
