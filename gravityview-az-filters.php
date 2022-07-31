@@ -8,7 +8,7 @@
  * Author URI: https://www.gravitykit.com
  * Author Email: hello@gravitykit.com
  * Requires at least: 4.4
- * Tested up to: 5.9.2
+ * Tested up to: 6.0.1
  * Text Domain: gravityview-az-filters
  * Domain Path: languages
  */
@@ -16,7 +16,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /** @since 1.2 */
-define( 'GRAVITYVIEW_AZ_FILTER_VERSION', '1' );
+define( 'GRAVITYVIEW_AZ_FILTER_VERSION', '1.3.2' );
 
 /** @since 1.3.2 */
 define( 'GRAVITYVIEW_AZ_FILTER_FILE', __FILE__ );
