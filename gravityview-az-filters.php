@@ -45,5 +45,7 @@ function gv_extension_az_entry_filtering_load() {
  * @return void
  */
 function gv_extension_az_entry_filtering_noload() {
-	echo esc_html( 'GravityView A-Z Filters Extension was not loaded. GravityView 2.0 core files not found!' );
+	echo '<div id="message" class="error"><p>';
+	printf( esc_html__( 'Could not activate the %s Extension; GravityView is not active.', 'gravityview-az-filters' ), 'A–Z Filters' );
+	echo '</p></div>';
 }
