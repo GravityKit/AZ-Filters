@@ -1,9 +1,9 @@
 === GravityView - A-Z Filters Extension ===
 Tags: gravityview
 Requires at least: 4.3
-Tested up to: 5.9.2
+Tested up to: 6.0.1
 Stable tag: trunk
-Contributors: katzwebservices
+Contributors: The GravityKit Team
 License: GPL 3 or higher
 
 Alphabetically filter your entries by letters of the alphabet.
@@ -15,6 +15,10 @@ Alphabetically filter your entries by letters of the alphabet.
 3. Follow the instructions
 
 == Changelog ==
+
+= 1.3.2 on July 31, 2022 =
+
+* Fixed: Issues with plugin auto-updates that was introduced in version 1.2
 
 = 1.3.1 on March 24, 2022 =
 
