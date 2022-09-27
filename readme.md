@@ -1,7 +1,7 @@
 # GravityView - A-Z Filters Extension #
 **Tags:** gravityview  
 **Requires at least:** 4.3  
-**Tested up to:** 6.0.1  
+**Tested up to:** 6.0.2  
 **Stable tag:** trunk  
 **Contributors:** The GravityKit Team  
 **License:** GPL 3 or higher  
@@ -15,6 +15,10 @@ Alphabetically filter your entries by letters of the alphabet.
 3. Follow the instructions
 
 ## Changelog ##
+
+### 1.3.3 on September 27, 2022 ###
+
+* Fixed: In Divi and Kadence themes, clicking a filter would not filter results (it would scroll the page instead)
 
 ### 1.3.2 on July 31, 2022 ###
 
