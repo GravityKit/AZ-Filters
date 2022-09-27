@@ -391,7 +391,15 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 		 */
 		$az_widget_anchor = apply_filters( 'gravityview/az_filter/anchor', '#' . $widget_id_attr, $context );
 
-		$output = '<ul class="gravityview-az-filter" id="' . esc_attr( $widget_id_attr ) . '">';
+		$ul_classes = array(
+			'gravityview-az-filter',
+		);
+
+		if ( defined( 'ET_CORE_VERSION' ) ) {
+			$ul_classes[] = 'et_smooth_scroll_disabled';
+		}
+
+		$output = '<ul class="' . gravityview_sanitize_html_class( $ul_classes ) . '" id="' . esc_attr( $widget_id_attr ) . '">';
 
 		$output .= $args['before_first_letter'];
 
@@ -403,6 +411,12 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 		$current_letter = $this->get_filter_letter( true );
 
 		$zero_through_nine = $this->get_zero_through_nine( $charset );
+
+		$anchor_classes = array();
+
+		if ( defined( 'KADENCE_VERSION' ) ) {
+			$anchor_classes[] = 'scroll-ignore';
+		}
 
 		foreach ( $alphabet_chars as $char ) { // This is more suited for any alphabet
 
@@ -437,7 +451,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 
 			// Outputs the letter to filter the results on click.
 			$output .= '<li class="' . gravityview_sanitize_html_class( $classes ) . '">';
-			$output .= '<a href="' . esc_url( $link ) . '" title="' . esc_attr( $title ) . '">' . esc_html( $char ) . '</a>';
+			$output .= '<a href="' . esc_url( $link ) . '" title="' . esc_attr( $title ) . '" class="' . gravityview_sanitize_html_class( $anchor_classes ) . '">' . esc_html( $char ) . '</a>';
 			$output .= '</li>';
 
 		}
@@ -455,7 +469,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 				$show_all_text = function_exists( 'mb_strtolower' ) ? mb_strtolower( $args['show_all_text'] ) : strtolower( $args['show_all_text'] );
 			}
 
-			$output .= '<li class="last"><span class="show-all"><a href="' . esc_url( remove_query_arg( $pagenum_parameter, remove_query_arg( $this->letter_parameter ) ) . $az_widget_anchor ) . '">' . esc_html( $show_all_text ) . '</a></span></li>';
+			$output .= '<li class="last"><span class="show-all"><a href="' . esc_url( remove_query_arg( $pagenum_parameter, remove_query_arg( $this->letter_parameter ) ) . $az_widget_anchor ) . '" class="' . gravityview_sanitize_html_class( $anchor_classes ) . '">' . esc_html( $show_all_text ) . '</a></span></li>';
 		}
 
 		$output .= '</ul>';
