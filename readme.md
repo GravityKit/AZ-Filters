@@ -16,7 +16,7 @@ Alphabetically filter your entries by letters of the alphabet.
 
 ## Changelog ##
 
-### 1.3.4 on October 10, 2022 ###
+### 1.3.4 on March 15, 2022 ###
 
 * Added: Support for filtering by the Greek alphabet 🇬🇷
 
