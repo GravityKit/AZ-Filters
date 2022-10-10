@@ -16,6 +16,10 @@ Alphabetically filter your entries by letters of the alphabet.
 
 == Changelog ==
 
+= 1.3.4 on March 15, 2022 =
+
+* Added: Support for filtering by the Greek alphabet 🇬🇷
+
 = 1.3.3 on September 27, 2022 =
 
 * Fixed: In Divi and Kadence themes, clicking a filter would not filter results (it would scroll the page instead)
