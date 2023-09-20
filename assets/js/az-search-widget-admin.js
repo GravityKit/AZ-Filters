@@ -3,8 +3,8 @@
  *
  * @package   GravityView A-Z Entry Filter
  * @license   GPL2+
- * @author    GravityView <hello@gravityview.co>
- * @link      http://gravityview.co
+ * @author    GravityKit <hello@gravitykit.com>
+ * @link      https://www.gravitykit.com
  * @copyright Copyright 2014, Katz Web Services, Inc.
  *
  * @since 1.0

@@ -112,17 +112,17 @@ module.exports = function(grunt) {
 					},
 					processPot: function( pot, options ) {
 						pot.headers['language'] = 'en_US';
-						pot.headers['language-team'] = 'GravityView <support@gravityview.co>';
-						pot.headers['last-translator'] = 'GravityView <support@gravityview.co>';
-						pot.headers['report-msgid-bugs-to'] = 'https://gravityview.co/support/';
+						pot.headers['language-team'] = 'GravityKit <support@gravitykit.com>';
+						pot.headers['last-translator'] = 'GravityKit <support@gravitykit.com>';
+						pot.headers['report-msgid-bugs-to'] = 'https://www.gravitykit.com/support/';
 
 						var translation,
 							excluded_meta = [
 								'GravityView - A-Z Filters Extension',
 								'Filter your entries by letters of the alphabet.',
-								'https://gravityview.co',
+								'https://www.gravitykit.com',
 								'GravityView',
-								'https://gravityview.co/extensions/a-z-filter/'
+								'https://www.gravitykit.com/extensions/a-z-filter/'
 							];
 
 						for ( translation in pot.translations[''] ) {

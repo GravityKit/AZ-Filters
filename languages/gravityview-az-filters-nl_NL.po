@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: GravityView A-Z Filters\n"
-"Report-Msgid-Bugs-To: https://gravityview.co/support/\n"
+"Report-Msgid-Bugs-To: https://www.gravitykit.com/support/\n"
 "POT-Creation-Date: 2018-04-27 18:50:48+00:00\n"
 "PO-Revision-Date: 2018-04-27 18:52+0000\n"
 "Last-Translator: Zachary Katz <zack@katz.co>\n"
