@@ -1,4 +1,7 @@
 module.exports = function(grunt) {
+	const sass = require( 'node-sass' );
+
+	require('load-grunt-tasks')(grunt);
 
 	grunt.initConfig({
 
@@ -6,7 +9,9 @@ module.exports = function(grunt) {
 
 		sass: {
 			options: {
-				outputStyle: 'compressed'
+				implementation: sass,
+				outputStyle: 'compressed',
+				sourceMap: false
 			},
 			dist: {
 				files: [{
@@ -35,7 +40,7 @@ module.exports = function(grunt) {
 		watch: {
 			main: {
 				files: ['assets/js/*.js','!assets/js/*.min.js','readme.txt'],
-				tasks: ['uglify:main','wp_readme_to_markdown']
+				tasks: ['uglify:main']
 			},
 			scss: {
 				files: ['assets/css/scss/*.scss'],
@@ -66,8 +71,6 @@ module.exports = function(grunt) {
 
 		// Pull in the latest translations
 		exec: {
-			transifex: 'tx pull -a',
-
 			// Create a ZIP file
 			// Create a ZIP file
 			zip: {
@@ -87,14 +90,6 @@ module.exports = function(grunt) {
 					return command;
 				}
 			}
-		},
-
-		wp_readme_to_markdown: {
-			your_target: {
-				files: {
-					'readme.md': 'readme.txt'
-				},
-			},
 		},
 
 		// Build translations without POEdit
@@ -161,17 +156,9 @@ module.exports = function(grunt) {
 		}
 	});
 
-	grunt.loadNpmTasks('grunt-sass');
-	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-wp-readme-to-markdown');
-	grunt.loadNpmTasks('grunt-potomo');
-	grunt.loadNpmTasks('grunt-exec');
-	grunt.loadNpmTasks('grunt-wp-i18n');
-
-	grunt.registerTask( 'default', [ 'sass', 'uglify', 'wp_readme_to_markdown', 'exec:transifex','potomo', 'watch'] );
+	grunt.registerTask( 'default', [ 'sass', 'uglify', 'translate'] );
 
 	// Translation stuff
-	grunt.registerTask( 'translate', [ 'exec:transifex', 'potomo', 'addtextdomain', 'makepot' ] );
+	grunt.registerTask( 'translate', [ 'potomo', 'addtextdomain', 'makepot' ] );
 
 };

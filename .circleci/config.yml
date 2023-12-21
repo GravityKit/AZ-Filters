@@ -31,13 +31,10 @@ jobs:
       - run:
           name: Building and packaging
           command: |
-            /home/circleci/tooling/build-tools/build_tools.sh grunt -o "sass uglify wp_readme_to_markdown"
+            /home/circleci/tooling/build-tools/build_tools.sh grunt
             if [ "${CIRCLE_BRANCH}" != "main" ]; then
               /home/circleci/tooling/build-tools/build_tools.sh package_build -o "gravityview-az-filters gravityview-az-filters.php --include-hash"
             else
-              /home/circleci/tooling/build-tools/build_tools.sh grunt -o translate
-              [[ $(git diff languages/gravityview-az-filters.pot | grep +msgid) ]] && /home/circleci/tooling/build-tools/build_tools.sh tx -o "push -s"
-              /home/circleci/tooling/build-tools/build_tools.sh tx -o "pull -f -a --parallel --no-interactive"
               /home/circleci/tooling/build-tools/build_tools.sh package_build -o "gravityview-az-filters gravityview-az-filters.php $([[ $(git log -n 1 | grep "\[skip release\]") ]] && echo --include-hash)"
             fi
             mkdir .release
