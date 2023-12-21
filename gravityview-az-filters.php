@@ -1,16 +1,14 @@
 <?php
 /**
- * Plugin Name: GravityView - A-Z Filters Extension
- * Plugin URI: https://www.gravitykit.com/extensions/a-z-filter/
- * Description: Filter your entries by letters of the alphabet.
- * Version: 1.3.5
- * Author: GravityKit
- * Author URI: https://www.gravitykit.com
- * Author Email: hello@gravitykit.com
- * Requires at least: 4.4
- * Tested up to: 6.4
- * Text Domain: gravityview-az-filters
- * Domain Path: languages
+ * Plugin Name:         GravityView - A-Z Filters Extension
+ * Plugin URI:          https://www.gravitykit.com/extensions/a-z-filter/
+ * Description:         Filter your entries by letters of the alphabet.
+ * Version:             1.3.5
+ * Author:              GravityKit
+ * Author URI:          https://www.gravitykit.com
+ * Text Domain:         gravityview-az-filters
+ * License:             GPLv3 or later
+ * License URI:         https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
