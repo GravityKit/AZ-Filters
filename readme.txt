@@ -16,6 +16,13 @@ Alphabetically filter your entries by letters of the alphabet.
 
 == Changelog ==
 
+= 1.3.5 on December 21, 2023 =
+
+This update brings a small yet important addition—a missing icon for the GravityView widget!
+
+#### 🚀 Added
+- Added the missing GravityView widget icon.
+
 = 1.3.4 on March 15, 2022 =
 
 * Added: Support for filtering by the Greek alphabet 🇬🇷
