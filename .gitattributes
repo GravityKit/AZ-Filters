@@ -4,10 +4,10 @@ Gruntfile.js export-ignore
 package-lock.json export-ignore
 package.json export-ignore
 readme.md export-ignore
+translations.pot export-ignore
 
 /.circleci export-ignore
 /.idea export-ignore
-/.tx export-ignore
 /assets/css/scss export-ignore
 /node_modules export-ignore
 /tests export-ignore
