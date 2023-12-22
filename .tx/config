@@ -1,8 +1,0 @@
-[main]
-host = https://www.transifex.com
-
-[gravityview-az-filters.gravityview-az-filters]
-file_filter = languages/gravityview-az-filters-<lang>.po
-lang_map = it: it_IT, bn: bn_BD, sv: sv_SE, nl: nl_NL, tr_TR: tr_TR, tr:tr
-source_lang = en
-type = PO

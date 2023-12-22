@@ -16,6 +16,13 @@ Alphabetically filter your entries by letters of the alphabet.
 
 == Changelog ==
 
+= 1.3.5 on December 22, 2023 =
+
+This update brings a small yet important addition—a missing icon for the GravityView widget!
+
+#### 🚀 Added
+- Added the missing GravityView widget icon.
+
 = 1.3.4 on March 15, 2022 =
 
 * Added: Support for filtering by the Greek alphabet 🇬🇷
@@ -46,7 +53,7 @@ __Developer Updates:__
 
 __Developer Updates:__
 
-* Removed legacy query overrides in favor of exclusively relying on `GF_Query`. This may, in theory, affect some custom code. If it does, it will stop filtering values. If that happens, please let support@gravityview.co know.
+* Removed legacy query overrides in favor of exclusively relying on `GF_Query`. This may, in theory, affect some custom code. If it does, it will stop filtering values. If that happens, please let support@gravitykit.com know.
 * Added: `gravityview/az_filter/collation` filter to override collation for the letter comparison query. This is helpful when the database interprets multiple letters as the same due to collation. For example, in Polish, L and Ł. This functionality requires Gravity Forms 2.4.3 or newer.
 * Added: `gravityview/az_filter/anchor` filter to modify the anchor ID added to the end of the letter filter links. Return an empty string to remove the functionality.
 * Deprecated: `gravityview_blacklist_field_types` filter. Use `gravityview_blocklist_field_types` instead.
@@ -96,7 +103,7 @@ __Developer Updates:__
 
 = 1.0.5 on July 20 =
 * Fixed: Sanitize links to improve security
-* Fixed: Link to "[Use this field to filter entries](http://docs.gravityview.co/article/198-the-use-this-field-to-filter-entries-setting)" documentation
+* Fixed: Link to "[Use this field to filter entries](https://docs.gravitykit.com/article/198-the-use-this-field-to-filter-entries-setting)" documentation
 * Updated: Translations
     - Added Danish (thanks, [@jaegerbo](https://www.transifex.com/accounts/profile/jaegerbo/))
 

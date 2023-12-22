@@ -14,6 +14,8 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 
 	protected $widget_description;
 
+	public $icon = 'data:image/svg+xml,%3Csvg%20fill=%22none%22%20height=%2248%22%20viewBox=%220%200%2048%2048%22%20width=%2248%22%20xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg%20stroke=%22%23000000%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%20stroke-width=%223%22%3E%3Cg%20stroke-miterlimit=%2210%22%3E%3Cpath%20d=%22m4.5%2020.5%205.5-16h2l5.5%2016%22/%3E%3Cpath%20d=%22m5.875%2016.5h10.25%22/%3E%3Cpath%20d=%22m24.5%2034.5%2010%2010%2010-10%22/%3E%3C/g%3E%3Cpath%20d=%22m34.5%2044.5v-41%22/%3E%3Cpath%20d=%22m5.5%2028.5h11v1l-11%2014v1h11%22%20stroke-miterlimit=%2210%22/%3E%3C/g%3E%3C/svg%3E';
+
 	public function __construct() {
 		/**
 		 * Modify the URL parameter used to filter the alphabet by.
@@ -47,7 +49,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 				'type' => 'select',
 				'choices' => $this->get_filter_fields( $formid ),
 				'label' => esc_attr__( 'Use this field to filter entries:', 'gravityview-az-filters' ),
-				'desc'	=> sprintf( esc_attr__( 'Entries will be filtered based on the first character of this field. %sLearn more%s.', 'gravityview-az-filters' ), '<a href="https://docs.gravityview.co/article/198-the-use-this-field-to-filter-entries-setting" rel="external">', '</a>' ),
+				'desc'	=> sprintf( esc_attr__( 'Entries will be filtered based on the first character of this field. %sLearn more%s.', 'gravityview-az-filters' ), '<a href="https://docs.gravitykit.com/article/198-the-use-this-field-to-filter-entries-setting" rel="external">', '</a>' ),
 				'value' => ''
 			),
 			'localization' => array(

@@ -31,13 +31,10 @@ jobs:
       - run:
           name: Building and packaging
           command: |
-            /home/circleci/tooling/build-tools/build_tools.sh grunt -o "sass uglify wp_readme_to_markdown"
+            /home/circleci/tooling/build-tools/build_tools.sh grunt -o "default translate"
             if [ "${CIRCLE_BRANCH}" != "main" ]; then
               /home/circleci/tooling/build-tools/build_tools.sh package_build -o "gravityview-az-filters gravityview-az-filters.php --include-hash"
             else
-              /home/circleci/tooling/build-tools/build_tools.sh grunt -o translate
-              [[ $(git diff languages/gravityview-az-filters.pot | grep +msgid) ]] && /home/circleci/tooling/build-tools/build_tools.sh tx -o "push -s"
-              /home/circleci/tooling/build-tools/build_tools.sh tx -o "pull -f -a --parallel --no-interactive"
               /home/circleci/tooling/build-tools/build_tools.sh package_build -o "gravityview-az-filters gravityview-az-filters.php $([[ $(git log -n 1 | grep "\[skip release\]") ]] && echo --include-hash)"
             fi
             mkdir .release
@@ -46,7 +43,7 @@ jobs:
           name: Creating a GitHub release
           command: |
             if [ "${CIRCLE_BRANCH}" == "main" ]; then
-              git config user.email "support@gravityview.co"
+              git config user.email "support@gravitykit.com"
               git config user.name "GravityView - CI"
               /home/circleci/tooling/build-tools/build_tools.sh create_release -o "gravityview-az-filters.php $(ls gravityview-az-filters-*.zip)"
             fi
