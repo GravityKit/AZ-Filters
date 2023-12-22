@@ -16,7 +16,7 @@ Alphabetically filter your entries by letters of the alphabet.
 
 == Changelog ==
 
-= 1.3.5 on December 21, 2023 =
+= 1.3.5 on December 22, 2023 =
 
 This update brings a small yet important addition—a missing icon for the GravityView widget!
 
