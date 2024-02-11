@@ -17,6 +17,9 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	public $icon = 'data:image/svg+xml,%3Csvg%20fill=%22none%22%20height=%2248%22%20viewBox=%220%200%2048%2048%22%20width=%2248%22%20xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg%20stroke=%22%23000000%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%20stroke-width=%223%22%3E%3Cg%20stroke-miterlimit=%2210%22%3E%3Cpath%20d=%22m4.5%2020.5%205.5-16h2l5.5%2016%22/%3E%3Cpath%20d=%22m5.875%2016.5h10.25%22/%3E%3Cpath%20d=%22m24.5%2034.5%2010%2010%2010-10%22/%3E%3C/g%3E%3Cpath%20d=%22m34.5%2044.5v-41%22/%3E%3Cpath%20d=%22m5.5%2028.5h11v1l-11%2014v1h11%22%20stroke-miterlimit=%2210%22/%3E%3C/g%3E%3C/svg%3E';
 
 	public function __construct() {
+		add_filter('gravityview/common/sortable_fields',array($this,'add_extra_fields'));
+		add_filter('gravityview_az_filters_fields',array($this,'add_extra_fields'));
+
 		/**
 		 * Modify the URL parameter used to filter the alphabet by.
 		 * For example, you could use `starts_with` as the parameter, and the link would be `/view/example/?starts_with=a` instead of `/view/example/?letter=a`
@@ -77,6 +80,21 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	}
 
 	/**
+	 * Add extra fields to filters.
+	 *
+	 * @param array $fields
+	 * @return array
+	 */
+	public function add_extra_fields($fields){
+		// Add created_by filter field.
+		$fields['created_by'] = array(
+			'label'=>__('Created By (User)','gravityview-az-filters'),
+		);
+
+		return $fields;
+	}
+
+	/**
 	 * Define the default fields for the widget. Overwritten by the Javascript, but necessary to pass settings.
 	 *
 	 * Unsets fields that are inappropriate for filtering by letter.
@@ -115,7 +133,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			$output[ $key ] = $field['label'];
 		}
 
-		return $output;
+		return apply_filters('gravityview_az_filters_fields',$output);
 	}
 
 	/**
@@ -241,11 +259,24 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 			$zero_through_nine = $this->get_zero_through_nine( $localization );
 
 			if ( in_array( $letter, $alphabet ) ) {
-				$conditions[] = new \GF_Query_Condition(
-					new \GF_Query_Column( $filter_field ),
-					\GF_Query_Condition::LIKE,
-					new \GF_Query_Literal( "$letter%" )
-				);
+
+				if($filter_field === 'created_by'){
+					$user_ids = $this->get_user_ids_by_first_letter($letter);
+					foreach($user_ids as $user_id){
+						$conditions[] = new \GF_Query_Condition(
+							new \GF_Query_Column( $filter_field ),
+							\GF_Query_Condition::EQ,
+							new \GF_Query_Literal( $user_id)
+						);
+					}
+				}else{
+					$conditions[] = new \GF_Query_Condition(
+						new \GF_Query_Column( $filter_field ),
+						\GF_Query_Condition::LIKE,
+						new \GF_Query_Literal( "$letter%" )
+					);
+				}
+
 			} elseif( $zero_through_nine === $letter ) {
 				/**
 				 * For numbers 0-9 we need to add every condition separately.
@@ -301,6 +332,24 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 
 			return $sql;
 		});
+	}
+
+	/**
+	 * Get users ids by display name start with letter.
+	 *
+	 * @param string $letter
+	 * @return array
+	 */
+	public function get_user_ids_by_first_letter( $letter ) {
+		global $wpdb;
+		$query = $wpdb->prepare("
+		SELECT ID
+		FROM {$wpdb->users}
+		WHERE display_name LIKE %s", $letter . '%');
+		$result = $wpdb->get_col($query);
+
+		// Big number to show no results when no found.
+		return (!empty($result) ? $result : [9999999]);
 	}
 
 	/**
