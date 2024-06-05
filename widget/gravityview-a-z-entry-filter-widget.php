@@ -58,7 +58,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 				'type'    => 'select',
 				'choices' => $this->get_filter_fields( $formid ),
 				'label'   => esc_attr__( 'Use this field to filter entries:', 'gravityview-az-filters' ),
-				'desc'    => sprintf( esc_attr__( 'Entries will be filtered based on the first character of this field. %1$sLearn more%2$s.', 'gravityview-az-filters' ), '<a href="https://docs.gravitykit.com/article/198-the-use-this-field-to-filter-entries-setting" rel="external">', '</a>' ),
+				'desc'    => sprintf( esc_attr__( 'Entries will be filtered based on the first character of this field. %sLearn more%s.', 'gravityview-az-filters' ), '<a href="https://docs.gravitykit.com/article/198-the-use-this-field-to-filter-entries-setting" rel="external">', '</a>' ),
 				'value'   => '',
 			),
 			'localization' => array(
