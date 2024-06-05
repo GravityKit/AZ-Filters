@@ -93,7 +93,7 @@ class Widget_A_Z_Entry_Filter extends Widget {
 	 *
 	 * Called by {@see self::get_filter_fields()} and `gravityview/common/sortable_fields` filter.
 	 *
-	 * @since TBD
+	 * @since 1.4
 	 *
 	 * @param array $fields
 	 *
@@ -357,7 +357,7 @@ class Widget_A_Z_Entry_Filter extends Widget {
 	/**
 	 * Returns user IDs by display name that starts with a given letter.
 	 *
-	 * @since TBD
+	 * @since 1.4
 	 *
 	 * @param string $letter
 	 *
