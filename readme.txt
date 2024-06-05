@@ -16,7 +16,7 @@ Alphabetically filter your entries by letters of the alphabet.
 
 == Changelog ==
 
-= 1.3.6 on June 5, 2024 =
+= 1.4 on June 5, 2024 =
 
 This release adds the ability to filter entries by the "Created By" field.
 
