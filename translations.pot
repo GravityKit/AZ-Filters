@@ -1,157 +1,166 @@
-# Copyright (C) 2023 GravityKit
+# Copyright (C) 2024 GravityKit
 # This file is distributed under the GPLv2 or later
 msgid ""
 msgstr ""
-"Project-Id-Version: GravityView - A-Z Filters Extension 1.3.5\n"
+"Project-Id-Version: GravityView - A-Z Filters Extension 1.4\n"
 "Report-Msgid-Bugs-To: https://www.gravitykit.com/support\n"
 "Last-Translator: GravityKit <support@gravitykit.com>\n"
 "Language-Team: GravityKit <support@gravitykit.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-12-22T13:47:11+00:00\n"
+"POT-Creation-Date: 2024-06-05T21:53:47+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.7.1\n"
+"X-Generator: WP-CLI 2.10.0\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Domain: gravityview-az-filters\n"
 
 #. Plugin Name of the plugin
+#: gravityview-az-filters.php
 msgid "GravityView - A-Z Filters Extension"
 msgstr ""
 
 #. Plugin URI of the plugin
+#: gravityview-az-filters.php
 msgid "https://www.gravitykit.com/extensions/a-z-filter/"
 msgstr ""
 
 #. Description of the plugin
+#: gravityview-az-filters.php
 msgid "Filter your entries by letters of the alphabet."
 msgstr ""
 
 #. Author of the plugin
+#: gravityview-az-filters.php
 msgid "GravityKit"
 msgstr ""
 
 #. Author URI of the plugin
+#: gravityview-az-filters.php
 msgid "https://www.gravitykit.com"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:39
+#: widget/gravityview-a-z-entry-filter-widget.php:48
 msgid "A-Z Entry Filter"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:41
+#: widget/gravityview-a-z-entry-filter-widget.php:50
 msgid "Alphabet links that filter entries by their first letter."
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:51
-msgid "Use this field to filter entries:"
-msgstr ""
-
-#: widget/gravityview-a-z-entry-filter-widget.php:52
-msgid "Entries will be filtered based on the first character of this field. %sLearn more%s."
-msgstr ""
-
-#: widget/gravityview-a-z-entry-filter-widget.php:58
-msgid "Alphabet"
-msgstr ""
-
-#: widget/gravityview-a-z-entry-filter-widget.php:59
-msgid "What alphabet should be used?"
+#: widget/gravityview-a-z-entry-filter-widget.php:63
+msgid "aaaUse this field to filter entries:"
 msgstr ""
 
 #: widget/gravityview-a-z-entry-filter-widget.php:64
+msgid "Entries will be filtered based on the first character of this field. %sLearn more%s."
+msgstr ""
+
+#: widget/gravityview-a-z-entry-filter-widget.php:70
+msgid "Alphabet"
+msgstr ""
+
+#: widget/gravityview-a-z-entry-filter-widget.php:71
+msgid "What alphabet should be used?"
+msgstr ""
+
+#: widget/gravityview-a-z-entry-filter-widget.php:76
 msgid "Use Uppercase Letters?"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:66
+#: widget/gravityview-a-z-entry-filter-widget.php:78
 msgid "Should the alphabet links be capitalized?"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:159
+#: widget/gravityview-a-z-entry-filter-widget.php:104
+msgid "Created By (User)"
+msgstr ""
+
+#: widget/gravityview-a-z-entry-filter-widget.php:191
 msgid "English"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:160
+#: widget/gravityview-a-z-entry-filter-widget.php:192
 msgid "Finnish"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:161
+#: widget/gravityview-a-z-entry-filter-widget.php:193
 msgid "French"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:162
+#: widget/gravityview-a-z-entry-filter-widget.php:194
 msgid "German"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:163
+#: widget/gravityview-a-z-entry-filter-widget.php:195
 msgid "Italian"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:164
+#: widget/gravityview-a-z-entry-filter-widget.php:196
 msgid "Norwegian"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:165
+#: widget/gravityview-a-z-entry-filter-widget.php:197
 msgid "Romanian"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:166
+#: widget/gravityview-a-z-entry-filter-widget.php:198
 msgid "Russian"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:167
+#: widget/gravityview-a-z-entry-filter-widget.php:199
 msgid "Spanish"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:168
+#: widget/gravityview-a-z-entry-filter-widget.php:200
 msgid "Turkish"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:169
+#: widget/gravityview-a-z-entry-filter-widget.php:201
 msgid "Bengali"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:170
+#: widget/gravityview-a-z-entry-filter-widget.php:202
 msgid "Icelandic"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:171
+#: widget/gravityview-a-z-entry-filter-widget.php:203
 msgid "Swedish (Sweden)"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:172
+#: widget/gravityview-a-z-entry-filter-widget.php:204
 msgid "Swedish (Finland)"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:173
+#: widget/gravityview-a-z-entry-filter-widget.php:205
 msgid "Swedish"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:174
+#: widget/gravityview-a-z-entry-filter-widget.php:206
 msgid "Polish"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:175
+#: widget/gravityview-a-z-entry-filter-widget.php:207
 msgid "Ukrainian"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:176
+#: widget/gravityview-a-z-entry-filter-widget.php:208
 msgid "Greek"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:364
+#: widget/gravityview-a-z-entry-filter-widget.php:440
 msgctxt "Character representing numbers"
 msgid "#"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:365
+#: widget/gravityview-a-z-entry-filter-widget.php:441
 msgid "Show All"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:366
+#: widget/gravityview-a-z-entry-filter-widget.php:442
 msgid "Show entries starting with a number"
 msgstr ""
 
-#: widget/gravityview-a-z-entry-filter-widget.php:367
+#: widget/gravityview-a-z-entry-filter-widget.php:443
 msgid "Show entries starting with the letter %s"
 msgstr ""
