@@ -16,12 +16,19 @@ Alphabetically filter your entries by letters of the alphabet.
 
 == Changelog ==
 
+= 1.4 on June 5, 2024 =
+
+This release adds the ability to filter entries by the "Created By" field.
+
+#### 🚀 Added
+* Support for filtering entries using the "Created By" field.
+
 = 1.3.5 on December 22, 2023 =
 
 This update brings a small yet important addition—a missing icon for the GravityView widget!
 
 #### 🚀 Added
-- Added the missing GravityView widget icon.
+* Added the missing GravityView widget icon.
 
 = 1.3.4 on March 15, 2022 =
 
