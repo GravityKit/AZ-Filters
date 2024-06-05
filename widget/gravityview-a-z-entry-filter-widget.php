@@ -2,17 +2,18 @@
 
 namespace GV;
 
+use GF_Query;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
 /**
- * A-Z Entry Filter Widget Extension
+ * A-Z Entry Filter Widget Extension.
  *
- * @extends \GV\Widget
+ * @extends Widget
  */
-class Widget_A_Z_Entry_Filter extends \GV\Widget {
-
+class Widget_A_Z_Entry_Filter extends Widget {
 	private $letter_parameter;
 
 	protected $widget_description;
@@ -20,8 +21,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	public $icon = 'data:image/svg+xml,%3Csvg%20fill=%22none%22%20height=%2248%22%20viewBox=%220%200%2048%2048%22%20width=%2248%22%20xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg%20stroke=%22%23000000%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%20stroke-width=%223%22%3E%3Cg%20stroke-miterlimit=%2210%22%3E%3Cpath%20d=%22m4.5%2020.5%205.5-16h2l5.5%2016%22/%3E%3Cpath%20d=%22m5.875%2016.5h10.25%22/%3E%3Cpath%20d=%22m24.5%2034.5%2010%2010%2010-10%22/%3E%3C/g%3E%3Cpath%20d=%22m34.5%2044.5v-41%22/%3E%3Cpath%20d=%22m5.5%2028.5h11v1l-11%2014v1h11%22%20stroke-miterlimit=%2210%22/%3E%3C/g%3E%3C/svg%3E';
 
 	public function __construct() {
-		add_filter( 'gravityview/common/sortable_fields', [ $this, 'add_extra_fields' ] );
-		add_filter( 'gk/gravityview/az-filters/fields', [ $this, 'add_extra_fields' ] );
+		add_filter( 'gravityview/common/sortable_fields', [ $this, 'update_list_of_filterable_fields' ] );
 
 		/**
 		 * Modify the URL parameter used to filter the alphabet by.
@@ -43,7 +43,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 
 		$this->letter_parameter = ! empty( $parameter ) ? esc_attr( $parameter ) : 'letter';
 
-		$formid = gravityview_get_form_id( Utils::_GET( 'post' ) );
+		$form_id = gravityview_get_form_id( Utils::_GET( 'post' ) );
 
 		$widget_label = __( 'A-Z Entry Filter', 'gravityview-az-filters' );
 
@@ -59,8 +59,8 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 		$settings = [
 			'filter_field' => [
 				'type'    => 'select',
-				'choices' => $this->get_filter_fields( $formid ),
-				'label'   => esc_attr__( 'Use this field to filter entries:', 'gravityview-az-filters' ),
+				'choices' => $this->get_filter_fields( $form_id ),
+				'label'   => esc_attr__( 'aaaUse this field to filter entries:', 'gravityview-az-filters' ),
 				'desc'    => sprintf( esc_attr__( 'Entries will be filtered based on the first character of this field. %sLearn more%s.', 'gravityview-az-filters' ), '<a href="https://docs.gravitykit.com/article/198-the-use-this-field-to-filter-entries-setting" rel="external">', '</a>' ),
 				'value'   => '',
 			],
@@ -89,7 +89,9 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	}
 
 	/**
-	 * Add extra fields to filters.
+	 * Adds extra fields to the list of fields that can be used for filtering.
+	 *
+	 * Called by {@see self::get_filter_fields()} and `gravityview/common/sortable_fields` filter.
 	 *
 	 * @since TBD
 	 *
@@ -97,67 +99,55 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	 *
 	 * @return array
 	 */
-	public function add_extra_fields( $fields ) {
-		// Add created_by filter field.
+	public function update_list_of_filterable_fields( $fields ) {
 		$fields['created_by'] = [
 			'label' => __( 'Created By (User)', 'gravityview-az-filters' ),
+			'type' => 'created_by',
 		];
 
 		return $fields;
 	}
 
 	/**
-	 * Define the default fields for the widget. Overwritten by the Javascript, but necessary to pass settings.
+	 * Defines the default fields for the widget. Overwritten by the Javascript, but necessary to pass settings.
 	 *
 	 * Unsets fields that are inappropriate for filtering by letter.
 	 *
-	 * @param int $formid Current Gravity Forms form ID
+	 * @param int $form_id Gravity Forms form ID.
 	 *
-	 * @return array         Array of fields
+	 * @return array         Array of fields.
 	 */
-	public function get_filter_fields( $formid ) {
+	public function get_filter_fields( $form_id ) {
 		$output = [];
 
 		// Get fields with sub-inputs and no parent
-		$fields = gravityview_get_form_fields( $formid, true, false );
-
-		if ( ! empty( $fields ) ) {
-
-			/**
-			 * @since 1.3
-			 *
-			 * @param array $blocklist_field_types Array of fields not to be filtered due to storage types (JSON, serialized).
-			 */
-			$blocklist_field_types = apply_filters( 'gravityview_blocklist_field_types', [ 'list', 'textarea', 'checkbox', 'radio', 'likert' ] );
-
-			/**
-			 * @deprecated 1.3
-			 */
-			$blocklist_field_types = apply_filters_deprecated( 'gravityview_blacklist_field_types', [ $blocklist_field_types ], '1.3', 'gravityview_blocklist_field_types' );
-
-			foreach ( $fields as $id => $field ) {
-				if ( in_array( $field['type'], $blocklist_field_types ) ) {
-					unset( $fields[ $id ] );
-				}
-			}
-		}
-
-		foreach ( $fields as $key => $field ) {
-			$output[ $key ] = $field['label'];
-		}
+		$fields = $this->update_list_of_filterable_fields( gravityview_get_form_fields( $form_id, true, false ) );
 
 		/**
-		 * Modifies the list of available fields used to filter entries.
+		 * @since 1.3
 		 *
-		 * @filter `gk/gravityview/az-filters/fields`
-		 *
-		 * @param array $output Array of fields (key => label).
+		 * @param array $blocklist_field_types Array of fields not to be filtered due to storage types (JSON, serialized).
 		 */
-		return apply_filters( 'gk/gravityview/az-filters/fields', $output );
+		$blocklist_field_types = apply_filters( 'gravityview_blocklist_field_types', [ 'list', 'textarea', 'checkbox', 'radio', 'likert' ] );
+
+		/**
+		 * @deprecated 1.3
+		 */
+		$blocklist_field_types = apply_filters_deprecated( 'gravityview_blacklist_field_types', [ $blocklist_field_types ], '1.3', 'gravityview_blocklist_field_types' );
+
+		foreach ( $fields as $id => $field ) {
+			if ( in_array( $field['type'], $blocklist_field_types ) ) {
+				continue;
+			}
+
+			$output[ $id ] = $field['label'];
+		}
+
+		return $output;
 	}
 
 	/**
-	 * Include the current letter in the search widget so it is included in search results.
+	 * Includes the current letter in the search widget so it is included in search results.
 	 *
 	 * Requires GravityView 1.1.7
 	 *
@@ -174,7 +164,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	}
 
 	/**
-	 * Get the currently searched-for letter.
+	 * Gets the currently searched-for letter.
 	 *
 	 * @return string|boolean If search being performed, return the letter being filtered by. Otherwise, return false.
 	 */
@@ -223,7 +213,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	}
 
 	/**
-	 * Add search criteria to the GravityView search that fetches entries from Gravity Forms
+	 * Adds search criteria to the GravityView search that fetches entries from Gravity Forms.
 	 *
 	 * @param array $search_criteria Existing search criteria
 	 * @param array $form_id         The main form ID
@@ -232,7 +222,6 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	 * @return array Modified search criteria
 	 */
 	public function filter_entries( $search_criteria, $form_id, $args ) {
-
 		if ( ! gravityview()->plugin->supports( \GV\Plugin::FEATURE_GFQUERY ) ) {
 			return $search_criteria;
 		}
@@ -247,21 +236,20 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 		 * If GF_Query is available, we can construct custom conditions with nested
 		 * booleans on the query, giving up the old ways of flat search_criteria field_filters.
 		 */
-		$filter_added = add_action( 'gravityview/view/query', [ $this, 'gf_query_filter' ], 10, 3 );
+		$filter_added = add_action( 'gravityview/view/query', [ $this, 'gf_query_filter' ], 10, 2 );
 
 		return $search_criteria; // Return the original criteria, GF_Query modification kicks in later
 	}
 
 	/**
-	 * Filters the \GF_Query with advanced logic.
+	 * Filters the GF_Query with advanced logic.
 	 *
-	 * Dropin for the legacy flat filters when \GF_Query is available.
+	 * Dropin for the legacy flat filters when GF_Query is available.
 	 *
-	 * @param \GF_Query   $query   The current query object reference
-	 * @param \GV\View    $this    The current view object
-	 * @param \GV\Request $request The request object
+	 * @param GF_Query $query The current query object reference
+	 * @param View     $this  The current view object
 	 */
-	public function gf_query_filter( &$query, $view, $request ) {
+	public function gf_query_filter( &$query, $view ) {
 		$letter = $this->get_filter_letter( true );
 
 		// No search
@@ -409,7 +397,6 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 
 		$widget_args = wp_parse_args( $widget_args, $defaults );
 
-		$filter_field = $widget_args['filter_field'];
 		$localization = $widget_args['localization'];
 		$uppercase    = $widget_args['uppercase'];
 
@@ -571,7 +558,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	}
 
 	/**
-	 * Get the localized version of 0-9 to use in links.
+	 * Gets the localized version of 0-9 to use in links.
 	 *
 	 * Also used to determine whether numeric query or text.
 	 *
@@ -591,7 +578,7 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	}
 
 	/**
-	 * Support non-latin numbers
+	 * Returns localized number.
 	 *
 	 * @since  1.0.1
 	 *
@@ -600,7 +587,6 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	 * @return array          Array of numbers in the language
 	 */
 	public function get_localized_numbers( $charset = 'en_US' ) {
-
 		$numbers = apply_filters(
 			'gravityview_numbers',
 			[
@@ -623,7 +609,6 @@ class Widget_A_Z_Entry_Filter extends \GV\Widget {
 	 * @return array The alphabet as an array
 	 */
 	public function get_localized_alphabet( $charset = 'en_US' ) {
-
 		$charset = empty( $charset ) ? 'en_US' : $charset;
 
 		$alphabets = apply_filters(
