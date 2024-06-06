@@ -60,7 +60,7 @@ class Widget_A_Z_Entry_Filter extends Widget {
 			'filter_field' => [
 				'type'    => 'select',
 				'choices' => $this->get_filter_fields( $form_id ),
-				'label'   => esc_attr__( 'aaaUse this field to filter entries:', 'gravityview-az-filters' ),
+				'label'   => esc_attr__( 'Use this field to filter entries:', 'gravityview-az-filters' ),
 				'desc'    => sprintf( esc_attr__( 'Entries will be filtered based on the first character of this field. %sLearn more%s.', 'gravityview-az-filters' ), '<a href="https://docs.gravitykit.com/article/198-the-use-this-field-to-filter-entries-setting" rel="external">', '</a>' ),
 				'value'   => '',
 			],
