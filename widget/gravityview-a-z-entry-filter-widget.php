@@ -60,7 +60,7 @@ class Widget_A_Z_Entry_Filter extends Widget {
 			'filter_field' => [
 				'type'    => 'select',
 				'choices' => $this->get_filter_fields( $form_id ),
-				'label'   => esc_attr__( 'aaaUse this field to filter entries:', 'gravityview-az-filters' ),
+				'label'   => esc_attr__( 'Use this field to filter entries:', 'gravityview-az-filters' ),
 				'desc'    => sprintf( esc_attr__( 'Entries will be filtered based on the first character of this field. %sLearn more%s.', 'gravityview-az-filters' ), '<a href="https://docs.gravitykit.com/article/198-the-use-this-field-to-filter-entries-setting" rel="external">', '</a>' ),
 				'value'   => '',
 			],
@@ -93,7 +93,7 @@ class Widget_A_Z_Entry_Filter extends Widget {
 	 *
 	 * Called by {@see self::get_filter_fields()} and `gravityview/common/sortable_fields` filter.
 	 *
-	 * @since TBD
+	 * @since 1.4
 	 *
 	 * @param array $fields
 	 *
@@ -357,7 +357,7 @@ class Widget_A_Z_Entry_Filter extends Widget {
 	/**
 	 * Returns user IDs by display name that starts with a given letter.
 	 *
-	 * @since TBD
+	 * @since 1.4
 	 *
 	 * @param string $letter
 	 *

@@ -16,6 +16,13 @@ Alphabetically filter your entries by letters of the alphabet.
 
 == Changelog ==
 
+= 1.4.1 on June 6, 2024 =
+
+This release addresses a minor issue with the A-Z Filters widget.
+
+#### 🐛 Fixed
+* Typo in a localization string used inside the A-Z Filters widget.
+
 = 1.4 on June 5, 2024 =
 
 This release adds the ability to filter entries by the "Created By" field.
