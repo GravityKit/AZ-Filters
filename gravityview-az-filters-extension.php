@@ -15,15 +15,19 @@ class A_Z_Entry_Filter_Extension extends Extension {
 
 	protected $_min_gravityview_version = '2.0-dev';
 
+	protected $_plugin_file;
+
+	protected $_plugin_version;
+
 	public function __construct() {
 
-		$this->_title         = 'A-Z Filters';
-		$this->_version       = GRAVITYVIEW_AZ_FILTER_VERSION;
-		$this->_text_domain   = 'gravityview-az-filters';
-		$this->_path          = __FILE__ ;
-		$this->_item_id       = 266;
-		$this->plugin_file    = GRAVITYVIEW_AZ_FILTER_FILE;
-		$this->plugin_version = GRAVITYVIEW_AZ_FILTER_VERSION;
+		$this->_title         	= 'A-Z Filters';
+		$this->_version       	= GRAVITYVIEW_AZ_FILTER_VERSION;
+		$this->_text_domain   	= 'gravityview-az-filters';
+		$this->_path          	= __FILE__ ;
+		$this->_item_id       	= 266;
+		$this->_plugin_file   	= GRAVITYVIEW_AZ_FILTER_FILE;
+		$this->_plugin_version 	= GRAVITYVIEW_AZ_FILTER_VERSION;
 
 		parent::__construct();
 	}
