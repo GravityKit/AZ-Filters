@@ -16,7 +16,9 @@ Alphabetically filter your entries by letters of the alphabet.
 
 == Changelog ==
 
-= develop =
+= 1.4.2 on January 16, 2025 =
+
+This update improves compatibility with PHP 8.2 or newer.
 
 #### 🐛 Fixed
 * PHP 8.2 deprecation notices.
