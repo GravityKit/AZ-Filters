@@ -12,12 +12,7 @@ if ( ! defined( 'GRAVITYVIEW_DIR' ) ) {
  * @extends \GV\Extension
  */
 class A_Z_Entry_Filter_Extension extends Extension {
-
 	protected $_min_gravityview_version = '2.0-dev';
-
-	protected $_plugin_file;
-
-	protected $_plugin_version;
 
 	public function __construct() {
 
@@ -26,14 +21,11 @@ class A_Z_Entry_Filter_Extension extends Extension {
 		$this->_text_domain   	= 'gravityview-az-filters';
 		$this->_path          	= __FILE__ ;
 		$this->_item_id       	= 266;
-		$this->_plugin_file   	= GRAVITYVIEW_AZ_FILTER_FILE;
-		$this->_plugin_version 	= GRAVITYVIEW_AZ_FILTER_VERSION;
 
 		parent::__construct();
 	}
 
 	public function add_hooks() {
-
 		// Load widget
 		add_action( 'init', array( $this, 'register_az_entry_filter_widget' ) );
 
@@ -94,7 +86,6 @@ class A_Z_Entry_Filter_Extension extends Extension {
 	 * @return void
 	 */
 	function print_styles() {
-
 		// Need to filter the CSS to load only when required.
 		wp_enqueue_style( 'gravityview_az_entry_filter', GRAVITYVIEW_AZ_FILTER_URL . '/assets/css/gravityview-az-filters.css' );
 	}
