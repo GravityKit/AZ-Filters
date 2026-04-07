@@ -29,9 +29,16 @@ jobs:
           paths:
             - node_modules
       - run:
-          name: Building and packaging
+          name: Building and generating translations
           command: |
             /home/circleci/tooling/build-tools/build_tools.sh grunt -o "default translate"
+      - run:
+          name: Trigger translation pipeline
+          command: |
+            /home/circleci/tooling/build-tools/build_tools.sh trigger_translation -o "gravityview-az-filters"
+      - run:
+          name: Packaging
+          command: |
             if [ "${CIRCLE_BRANCH}" != "main" ]; then
               /home/circleci/tooling/build-tools/build_tools.sh package_build -o "gravityview-az-filters gravityview-az-filters.php --include-hash"
             else
