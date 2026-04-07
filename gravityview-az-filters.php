@@ -41,6 +41,8 @@ add_action( 'plugins_loaded', function () {
 
 		echo "<div class='error' style='padding: 1.25em 0 1.25em 1em;'>$message</div>";
 	} );
+
+	__("test", "gravityview-az-filters");
 } );
 
 // Load the extension & register it with Foundation, which enables translations and other features.
