@@ -9,13 +9,8 @@ anchors:
     machine:
       image: default
 
-  test_job_config: &test_job_config
-    <<: *context
-    requires:
-      - prepare
-
 jobs:
-  prepare:
+  build_package_release:
     <<: *default_job_config
     steps:
       - checkout
@@ -31,16 +26,6 @@ jobs:
           name: Install dependencies
           command: |
             npx @gravitykit/gktools npm install
-      - persist_to_workspace:
-          root: /home/circleci
-          paths:
-            - .
-
-  build_package_release:
-    <<: *default_job_config
-    steps:
-      - attach_workspace:
-          at: /home/circleci
       - run:
           name: Configure git
           command: |
@@ -49,10 +34,17 @@ jobs:
       - run:
           name: Replace @since tags
           command: npx @gravitykit/gktools replace-since --commit
-
       - run:
           name: Build and package
           command: npx @gravitykit/gktools build
+      - run:
+          name: Trigger translation pipeline
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "develop" ] || [ "${CIRCLE_BRANCH}" == "main" ]; then
+              npx @gravitykit/gktools translate gravityview-az-filters --commit --push
+            else
+              echo "Skipping translation pipeline."
+            fi
       - run:
           name: Create GitHub release
           command: npx @gravitykit/gktools release
@@ -73,11 +65,7 @@ jobs:
 
 workflows:
   version: 2
-  test_and_release:
+  build_and_release:
     jobs:
-      - prepare:
-          <<: *context
       - build_package_release:
           <<: *context
-          requires:
-            - prepare
