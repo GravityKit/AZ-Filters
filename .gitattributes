@@ -11,3 +11,5 @@ translations.pot export-ignore
 /assets/css/scss export-ignore
 /node_modules export-ignore
 /tests export-ignore
+.gktools.json export-ignore
+.gktools.env export-ignore

@@ -9,69 +9,75 @@ anchors:
     machine:
       image: default
 
+  test_job_config: &test_job_config
+    <<: *context
+    requires:
+      - prepare
+
 jobs:
-  build_package_release:
+  prepare:
     <<: *default_job_config
     steps:
       - checkout
       - run:
-          name: Getting GV test/build tools
-          command: |
-            git clone git@github.com:gravityview/Tooling.git /home/circleci/tooling
-      - restore_cache:
-          key: node-dependencies-{{ checksum "package-lock.json" }}
+          name: Fetch tags
+          command: git fetch --tags
       - run:
-          name: Installing build dependencies
+          name: Create .npmrc
           command: |
-            /home/circleci/tooling/build-tools/build_tools.sh npm -o install
-      - save_cache:
-          key: node-dependencies-{{ checksum "package-lock.json" }}
+            echo "//npm.pkg.github.com/:_authToken=${GH_AUTH_TOKEN}" >> ~/.npmrc
+            echo "@gravitykit:registry=https://npm.pkg.github.com" >> ~/.npmrc
+      - run:
+          name: Install dependencies
+          command: |
+            npx @gravitykit/gktools npm install
+      - persist_to_workspace:
+          root: /home/circleci
           paths:
-            - node_modules
+            - .
+
+  build_package_release:
+    <<: *default_job_config
+    steps:
+      - attach_workspace:
+          at: /home/circleci
       - run:
-          name: Building
+          name: Configure git
           command: |
-            /home/circleci/tooling/build-tools/build_tools.sh grunt -o "default translate"
+            git config user.email "support@gravitykit.com"
+            git config user.name "GravityKit - CI"
       - run:
-          name: Trigger translation pipeline
+          name: Replace @since tags
+          command: npx @gravitykit/gktools replace-since --commit
+
+      - run:
+          name: Build and package
+          command: npx @gravitykit/gktools build
+      - run:
+          name: Create GitHub release
+          command: npx @gravitykit/gktools release
+      - run:
+          name: Announce build
           command: |
-            if [ "${CIRCLE_BRANCH}" == "develop" ] || [ "${CIRCLE_BRANCH}" == "main" ]; then
-              /home/circleci/tooling/build-tools/build_tools.sh trigger_translation -o "gravityview-az-filters"
-            else
-              echo "Skipping translation pipeline (branch: ${CIRCLE_BRANCH})."
+            if ! git log -1 --pretty=%B | grep -iq "\[skip notify\]"; then
+              npx @gravitykit/gktools announce
             fi
       - run:
-          name: Packaging
+          name: Collect build artifacts
           command: |
-            if [ "${CIRCLE_BRANCH}" != "main" ]; then
-              /home/circleci/tooling/build-tools/build_tools.sh package_build -o "gravityview-az-filters gravityview-az-filters.php --include-hash"
-            else
-              /home/circleci/tooling/build-tools/build_tools.sh package_build -o "gravityview-az-filters gravityview-az-filters.php $([[ $(git log -n 1 | grep "\[skip release\]") ]] && echo --include-hash)"
-            fi
-            mkdir .release
-            cp gravityview-az-filters-*.zip .release
-      - run:
-          name: Creating a GitHub release
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "main" ]; then
-              git config user.email "support@gravitykit.com"
-              git config user.name "GravityView - CI"
-              /home/circleci/tooling/build-tools/build_tools.sh create_release -o "gravityview-az-filters.php $(ls gravityview-az-filters-*.zip)"
-            fi
-      - run:
-          name: Notifying GravityView Release Manager
-          command: |
-            if ! [[ $(git log -n 1 | grep "\[skip notify\]") ]]; then
-              /home/circleci/tooling/build-tools/build_tools.sh announce_build -o "gravityview-az-filters.php $(ls gravityview-az-filters-*.zip) --with-circle"
-            fi
+            mkdir -p .release
+            cp gravityview-az-filters-*.zip .release/ 2>/dev/null || true
       - store_artifacts:
           path: .release
           destination: release
 
 workflows:
   version: 2
-  test_and_package:
+  test_and_release:
     jobs:
+      - prepare:
+          <<: *context
       - build_package_release:
           <<: *context
-
+          requires:
+            - prepare
