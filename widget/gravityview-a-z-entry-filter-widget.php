@@ -82,7 +82,13 @@ class Widget_A_Z_Entry_Filter extends Widget {
 
 		if ( ! $this->is_registered() ) {
 			add_action( 'gravityview_search_widget_fields', [ $this, 'modify_search_widget_fields' ] );
-			add_filter( 'gravityview_fe_search_criteria', [ $this, 'filter_entries' ], 10, 3 );
+		}
+
+		// Register the query filter once, regardless of how many widget instances exist.
+		static $query_filter_added = false;
+
+		if ( ! $query_filter_added ) {
+			$query_filter_added = add_action( 'gravityview/view/query', [ $this, 'gf_query_filter' ], 10, 2 );
 		}
 
 		parent::__construct( $widget_label, $widget_id, $default_values, $settings );
@@ -210,35 +216,6 @@ class Widget_A_Z_Entry_Filter extends Widget {
 		);
 
 		return $local;
-	}
-
-	/**
-	 * Adds search criteria to the GravityView search that fetches entries from Gravity Forms.
-	 *
-	 * @param array $search_criteria Existing search criteria
-	 * @param array $form_id         The main form ID
-	 * @param array $args            The View settings
-	 *
-	 * @return array Modified search criteria
-	 */
-	public function filter_entries( $search_criteria, $form_id, $args ) {
-		if ( ! gravityview()->plugin->supports( \GV\Plugin::FEATURE_GFQUERY ) ) {
-			return $search_criteria;
-		}
-
-		static $filter_added = false;
-
-		if ( $filter_added ) {
-			return $search_criteria;
-		}
-
-		/**
-		 * If GF_Query is available, we can construct custom conditions with nested
-		 * booleans on the query, giving up the old ways of flat search_criteria field_filters.
-		 */
-		$filter_added = add_action( 'gravityview/view/query', [ $this, 'gf_query_filter' ], 10, 2 );
-
-		return $search_criteria; // Return the original criteria, GF_Query modification kicks in later
 	}
 
 	/**

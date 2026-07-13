@@ -16,6 +16,11 @@ Alphabetically filter your entries by letters of the alphabet.
 
 == Changelog ==
 
+= develop =
+
+#### 💻 Developer Updates
+* Now uses current GravityView hooks instead of ones deprecated in GravityView 2.55.
+
 = 1.4.2 on January 16, 2025 =
 
 This update improves compatibility with PHP 8.2 or newer.
