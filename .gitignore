@@ -1,6 +1,8 @@
 *.sublime-project
 *.sublime-workspace
 node_modules/*
+vendor/
+.phpunit.result.cache
 **/.sass-cache/**
 .sass-cache
 *.codekit

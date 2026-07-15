@@ -91,7 +91,108 @@ class Widget_A_Z_Entry_Filter extends Widget {
 			$query_filter_added = add_action( 'gravityview/view/query', [ $this, 'gf_query_filter' ], 10, 2 );
 		}
 
+		// Make an active A-Z filter (?letter=B) count as a search so "Hide entries until
+		// search" reveals it. Two layers for version coverage: the search-request filters
+		// feed GravityView 3.0+'s is_search() (which also gates entry loading); the
+		// hide_until_searched filter (@since 1.5.4) covers older GravityView. The parameter
+		// is stripped from the built filters (remove_letter_filter()) so core does not treat
+		// `letter` as a form field; gf_query_filter() applies the actual filtering.
+		static $search_request_registered = false;
+
+		if ( ! $search_request_registered ) {
+			add_filter( 'gravityview/widget/hide_until_searched', [ $this, 'reveal_when_filtering_by_letter' ] );
+			add_filter( 'gk/gravityview/search/request/search-arguments', [ $this, 'register_search_argument' ], 10, 2 );
+			add_filter( 'gk/gravityview/search/request/filters', [ $this, 'remove_letter_filter' ], 10 );
+			$search_request_registered = true;
+		}
+
 		parent::__construct( $widget_label, $widget_id, $default_values, $settings );
+	}
+
+	/**
+	 * Registers the A-Z letter parameter with GravityView's search-request detection.
+	 *
+	 * Makes an active A-Z filter (`?letter=B`) count as a search so anything gated on
+	 * `gravityview()->request->is_search()` behaves correctly, most notably the "Hide
+	 * entries until search" View setting. The letter is not a form field, so the actual
+	 * filtering happens in {@see self::gf_query_filter()} and the parameter is removed
+	 * from the built filters in {@see self::remove_letter_filter()}.
+	 *
+	 * @since $ver$
+	 *
+	 * @param array $search_arguments The parsed search arguments, keyed by request key.
+	 * @param array $arguments        The raw request arguments.
+	 *
+	 * @return array The search arguments, with the letter parameter added when present.
+	 */
+	public function register_search_argument( $search_arguments, $arguments ) {
+		if ( ! is_array( $search_arguments ) ) {
+			$search_arguments = [];
+		}
+
+		$letter = is_array( $arguments ) ? ( $arguments[ $this->letter_parameter ] ?? '' ) : '';
+
+		if ( '' !== (string) $letter ) {
+			$search_arguments[ $this->letter_parameter ] = [ 'value' => $letter ];
+		}
+
+		return $search_arguments;
+	}
+
+	/**
+	 * Removes the A-Z letter parameter from GravityView's built search filters.
+	 *
+	 * The parameter is registered as a search argument only so the request counts as a
+	 * search (see {@see self::register_search_argument()}). It is not a form field, so
+	 * core must not build a filter for it; the letter filtering is applied separately in
+	 * {@see self::gf_query_filter()}.
+	 *
+	 * @since $ver$
+	 *
+	 * @param array $filters The normalized filters.
+	 *
+	 * @return array The filters without the letter parameter.
+	 */
+	public function remove_letter_filter( $filters ) {
+		if ( ! is_array( $filters ) ) {
+			return $filters;
+		}
+
+		$parameter = $this->letter_parameter;
+
+		$without_letter = array_filter(
+			$filters,
+			static function ( $filter ) use ( $parameter ) {
+				$key      = is_array( $filter ) ? ( $filter['key'] ?? null ) : null;
+				$field_id = is_array( $filter ) ? ( $filter['field_id'] ?? null ) : null;
+
+				return $parameter !== $key && $parameter !== $field_id;
+			}
+		);
+
+		return array_values( $without_letter );
+	}
+
+	/**
+	 * Keeps a View visible when it is being filtered by an A-Z letter.
+	 *
+	 * "Hide entries until search" withholds a View until the visitor searches. An active
+	 * A-Z filter is such a search, so this un-hides the View. It also covers GravityView
+	 * versions older than the search-request pipeline, where the hide_until_searched filter
+	 * (@since 1.5.4) is the available lever.
+	 *
+	 * @since $ver$
+	 *
+	 * @param bool $hide_until_searched Whether to hide the View until a search is performed.
+	 *
+	 * @return bool
+	 */
+	public function reveal_when_filtering_by_letter( $hide_until_searched ) {
+		if ( $hide_until_searched && false !== $this->get_filter_letter() ) {
+			return false;
+		}
+
+		return $hide_until_searched;
 	}
 
 	/**
