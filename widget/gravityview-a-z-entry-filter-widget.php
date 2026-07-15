@@ -252,32 +252,33 @@ class Widget_A_Z_Entry_Filter extends Widget {
 			$zero_through_nine = $this->get_zero_through_nine( $localization );
 
 			if ( in_array( $letter, $alphabet ) ) {
+				$prefixes = [ $letter ];
+			} elseif ( $zero_through_nine === $letter ) {
+				$prefixes = $numbers;
+			} else {
+				$prefixes = [];
+			}
 
-				if ( $filter_field === 'created_by' ) {
-					$user_ids = $this->get_user_ids_by_first_letter( $letter );
-					foreach ( $user_ids as $user_id ) {
-						$conditions[] = new \GF_Query_Condition(
-							new \GF_Query_Column( $filter_field ),
-							\GF_Query_Condition::EQ,
-							new \GF_Query_Literal( $user_id )
-						);
-					}
-				} else {
+			if ( ! $prefixes ) {
+				continue;
+			}
+
+			if ( 'created_by' === $filter_field ) {
+				// created_by stores the author user ID, so match the users whose display
+				// name starts with the letter (or any digit, for the 0-9 bucket).
+				foreach ( $this->get_user_ids_by_first_letter( $prefixes ) as $user_id ) {
 					$conditions[] = new \GF_Query_Condition(
 						new \GF_Query_Column( $filter_field ),
-						\GF_Query_Condition::LIKE,
-						new \GF_Query_Literal( "$letter%" )
+						\GF_Query_Condition::EQ,
+						new \GF_Query_Literal( $user_id )
 					);
 				}
-			} elseif ( $zero_through_nine === $letter ) {
-				/**
-				 * For numbers 0-9 we need to add every condition separately.
-				 */
-				foreach ( $numbers as $value ) {
+			} else {
+				foreach ( $prefixes as $prefix ) {
 					$conditions[] = new \GF_Query_Condition(
 						new \GF_Query_Column( $filter_field ),
 						\GF_Query_Condition::LIKE,
-						new \GF_Query_Literal( "$value%" )
+						new \GF_Query_Literal( "$prefix%" )
 					);
 				}
 			}
@@ -340,20 +341,27 @@ class Widget_A_Z_Entry_Filter extends Widget {
 	 *
 	 * @return array
 	 */
-	public function get_user_ids_by_first_letter( $letter ) {
+	public function get_user_ids_by_first_letter( $letters ) {
 		global $wpdb;
 
-		$query  = $wpdb->prepare(
-			"
-		SELECT ID
-		FROM {$wpdb->users}
-		WHERE display_name LIKE %s",
-			$letter . '%'
-		);
+		$letters = array_values( array_filter( (array) $letters, static function ( $letter ) {
+			return '' !== (string) $letter;
+		} ) );
+
+		if ( ! $letters ) {
+			return [ PHP_INT_MAX ];
+		}
+
+		$clauses      = implode( ' OR ', array_fill( 0, count( $letters ), 'display_name LIKE %s' ) );
+		$placeholders = array_map( static function ( $letter ) {
+			return $letter . '%';
+		}, $letters );
+
+		$query  = $wpdb->prepare( "SELECT ID FROM {$wpdb->users} WHERE {$clauses}", $placeholders );
 		$result = $wpdb->get_col( $query );
 
-		// Big number to show no results when no found.
-		return ( ! empty( $result ) ? $result : [ PHP_INT_MAX ] );
+		// A non-existent ID so an empty match returns no entries instead of all.
+		return ! empty( $result ) ? $result : [ PHP_INT_MAX ];
 	}
 
 	/**
