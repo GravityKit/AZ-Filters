@@ -2,6 +2,9 @@
   "name": "GravityView-AZ-Filters",
   "version": "1.0.5",
   "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "@wordpress/env": "^10.34.0",
+    "dotenv": "^16.4.5",
     "grunt": "^1.6.1",
     "grunt-contrib-uglify": "^5.2.2",
     "grunt-contrib-watch": "^1.1.0",
@@ -12,6 +15,19 @@
     "grunt-wp-i18n": "^1.0.3",
     "load-grunt-tasks": "^5.1.0",
     "sass": "^1.77.0"
+  },
+  "dependencies": {
+    "@gravitykit/e2e-bootstrap": "^1.3.0",
+    "@gravitykit/e2e-fixtures": "^1.4.0"
+  },
+  "scripts": {
+    "wp-env": "cd tests/E2E/setup && wp-env",
+    "wp-env:configure": "cd tests/E2E/setup && node wp-env.config.js",
+    "wp-env:cli": "npm run wp-env run cli -- ",
+    "tests:e2e:clean": "npm run wp-env:configure && npm run wp-env clean all",
+    "tests:e2e:setup": "npm run wp-env:configure && npm run wp-env start",
+    "tests:e2e:run": "npx playwright test --config=tests/E2E/setup/playwright.config.js",
+    "tests:e2e:debug": "USE_LOCAL_BROWSER=1 npx playwright test --config=tests/E2E/setup/playwright.config.js --debug"
   },
   "repository": {
     "type": "git",
