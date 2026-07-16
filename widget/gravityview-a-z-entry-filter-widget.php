@@ -16,6 +16,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Widget_A_Z_Entry_Filter extends Widget {
 	private $letter_parameter;
 
+	/**
+	 * The letter comparisons queued for the current query, keyed by alias and literal.
+	 *
+	 * Filled by {@see gf_query_filter()}, consumed by {@see collate_letter_conditions()},
+	 * so the LOWER()/COLLATE rewrite only ever touches the widget's own conditions.
+	 *
+	 * @since $ver$
+	 *
+	 * @var array[]
+	 */
+	private $letter_expressions = [];
+
 	protected $widget_description;
 
 	public $icon = 'data:image/svg+xml,%3Csvg%20fill=%22none%22%20height=%2248%22%20viewBox=%220%200%2048%2048%22%20width=%2248%22%20xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg%20stroke=%22%23000000%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%20stroke-width=%223%22%3E%3Cg%20stroke-miterlimit=%2210%22%3E%3Cpath%20d=%22m4.5%2020.5%205.5-16h2l5.5%2016%22/%3E%3Cpath%20d=%22m5.875%2016.5h10.25%22/%3E%3Cpath%20d=%22m24.5%2034.5%2010%2010%2010-10%22/%3E%3C/g%3E%3Cpath%20d=%22m34.5%2044.5v-41%22/%3E%3Cpath%20d=%22m5.5%2028.5h11v1l-11%2014v1h11%22%20stroke-miterlimit=%2210%22/%3E%3C/g%3E%3C/svg%3E';
@@ -89,6 +101,10 @@ class Widget_A_Z_Entry_Filter extends Widget {
 
 		if ( ! $query_filter_added ) {
 			$query_filter_added = add_action( 'gravityview/view/query', [ $this, 'gf_query_filter' ], 10, 2 );
+
+			// Registered here (once) rather than per query, so the collation rewrite does not
+			// stack on pages with more than one View.
+			add_filter( 'gform_gf_query_sql', [ $this, 'collate_letter_conditions' ] );
 		}
 
 		parent::__construct( $widget_label, $widget_id, $default_values, $settings );
@@ -227,6 +243,9 @@ class Widget_A_Z_Entry_Filter extends Widget {
 	 * @param View     $this  The current view object
 	 */
 	public function gf_query_filter( &$query, $view ) {
+		// Aliases and literals are per-query; comparisons queued for a previous query must not leak into this one.
+		$this->letter_expressions = [];
+
 		$letter = $this->get_filter_letter( true );
 
 		// No search
@@ -275,61 +294,92 @@ class Widget_A_Z_Entry_Filter extends Widget {
 				}
 			} else {
 				foreach ( $prefixes as $prefix ) {
+					$like = new \GF_Query_Literal( "$prefix%" );
+
 					$conditions[] = new \GF_Query_Condition(
 						new \GF_Query_Column( $filter_field ),
 						\GF_Query_Condition::LIKE,
-						new \GF_Query_Literal( "$prefix%" )
+						$like
 					);
+
+					// GF_Query memoizes aliases, so resolving the field's meta alias now yields the
+					// alias used in the final SQL: the rewrite can target exactly this comparison.
+					$alias    = $query->_alias( $filter_field, 0, 'm' );
+					$like_sql = $like->sql( $query );
+
+					$this->letter_expressions[ $alias . ' ' . $like_sql ] = [
+						'column' => sprintf( '`%s`.`meta_value`', $alias ),
+						'like'   => $like_sql,
+					];
 				}
 			}
 		}
 
-		if ( $conditions ) {
-			$query_parts = $query->_introspect();
+		if ( ! $conditions ) {
+			return;
+		}
 
-			/**
-			 * Tack on the AZ filter conditions.
-			 */
-			$query->where(
-				\GF_Query_Condition::_and( $query_parts['where'], call_user_func_array( 'GF_Query_Condition::_or', $conditions ) )
-			);
+		$query_parts = $query->_introspect();
+
+		$query->where(
+			\GF_Query_Condition::_and( $query_parts['where'], call_user_func_array( 'GF_Query_Condition::_or', $conditions ) )
+		);
+	}
+
+	/**
+	 * Lowercases the letter comparisons (and applies the optional collation override) so
+	 * first-letter matching is case-insensitive even on case-sensitive column collations.
+	 *
+	 * Registered once, and rewrites only the comparisons queued by {@see gf_query_filter()}:
+	 * other conditions in the query (e.g. a Search Bar search) keep their own matching.
+	 *
+	 * @since $ver$
+	 *
+	 * @param array $sql The Gravity Forms query SQL parts.
+	 *
+	 * @return array
+	 */
+	public function collate_letter_conditions( $sql ) {
+		if ( empty( $this->letter_expressions ) || empty( $sql['where'] ) ) {
+			return $sql;
 		}
 
 		/**
-		 * Override the Gravity Forms SQL directly to search lowercase values and possibly define custom collation.
+		 * Override the default query collation for the letter comparison.
 		 *
-		 * Requires Gravity Forms 2.4.3 or newer.
+		 * @since 1.3
+		 *
+		 * @param string $collation_override A valid collation to force, e.g. 'utf8mb4_bin'. Empty for none.
+		 * @param string $where              The query WHERE clause.
 		 */
-		add_filter(
-			'gform_gf_query_sql',
-			function ( $sql ) {
+		$collation_override = apply_filters( 'gravityview/az_filter/collation', '', $sql['where'] );
 
-				$where = $sql['where'];
+		$collate = '';
 
-				/**
-				 * Override the default query collation for the letter comparison.
-				 *
-				 * @since 1.3
-				 *
-				 * @param string $collation_override The collation override for the query. May be necessary to limit results with non-latin characters containing accents. Return a valid collation to override, like 'utf8mb4_bin'.
-				 * @param string $query              The MySQL query passed to the database.
-				 */
-				$collation_override = apply_filters( 'gravityview/az_filter/collation', '', $where );
+		if ( $collation_override ) {
+			$collate = esc_sql( ' COLLATE ' . $collation_override );
+		}
 
-				// If the collation is set, add the COLLATE command.
-				if ( $collation_override ) {
-					$collation_override = esc_sql( ' COLLATE ' . $collation_override );
-				}
+		$where = $sql['where'];
 
-				// Replace GF_Query meta value statements with only lowercase search in case the collation gives a strict match.
-				// Also, adds the COLLATE statement if defined.
-				$where = preg_replace( '/(`m[0-9]+?`\.`meta_value`)/ism', 'LOWER( $1 )' . $collation_override, $where );
+		foreach ( $this->letter_expressions as $expression ) {
+			$search  = $expression['column'] . ' LIKE ' . $expression['like'];
+			$replace = 'LOWER( ' . $expression['column'] . ' )' . $collate . ' LIKE ' . $expression['like'];
 
-				$sql['where'] = $where;
+			$where = str_replace( $search, $replace, $where );
+		}
 
-				return $sql;
-			}
-		);
+		$has_rewritten = $where !== $sql['where'];
+
+		if ( $has_rewritten ) {
+			// The queued comparisons belong to one query; once spent, later queries in the
+			// same request must not be rewritten.
+			$this->letter_expressions = [];
+
+			$sql['where'] = $where;
+		}
+
+		return $sql;
 	}
 
 	/**
@@ -352,7 +402,18 @@ class Widget_A_Z_Entry_Filter extends Widget {
 			return [ PHP_INT_MAX ];
 		}
 
-		$clauses      = implode( ' OR ', array_fill( 0, count( $letters ), 'display_name LIKE %s' ) );
+		/** This filter is documented in collate_letter_conditions(). */
+		$collation_override = apply_filters( 'gravityview/az_filter/collation', '', '' );
+
+		$column = 'display_name';
+
+		if ( $collation_override ) {
+			// Mirror the letter conditions: lowercase the column, then force the collation,
+			// so display names match the same way field values do.
+			$column = 'LOWER( display_name )' . esc_sql( ' COLLATE ' . $collation_override );
+		}
+
+		$clauses      = implode( ' OR ', array_fill( 0, count( $letters ), "{$column} LIKE %s" ) );
 		$placeholders = array_map( static function ( $letter ) {
 			return $letter . '%';
 		}, $letters );
