@@ -18,6 +18,15 @@ Alphabetically filter your entries by letters of the alphabet.
 
 = develop =
 
+This release fixes several issues with the A-Z Entry Filter widget: the Created By (User) field's number links, interference with a Search Bar search on the same View, and repeated matching when a page shows more than one View.
+
+#### 🐛 Fixed
+* Two issues with the A-Z Entry Filter widget when filtering by the Created By (User) field:
+  - The number (`0-9`) links returned every entry instead of only entries whose author's display name starts with a number;
+  - The custom collation used to match accented and non-Latin letters was not applied.
+* The A-Z Entry Filter widget changing how a separate Search Bar search on the same View matched entries.
+* The A-Z Entry Filter widget repeating its letter matching when a page displays more than one View.
+
 #### 💻 Developer Updates
 * Now uses current GravityView hooks instead of ones deprecated in GravityView 2.55.
 
