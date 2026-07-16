@@ -10,10 +10,11 @@ vendor/
 .DS_Store
 
 # E2E (Playwright + wp-env) generated artifacts
+.env
+.tmp/
 tests/E2E/setup/.wp-env.json
 tests/E2E/setup/.e2e-ports.json
 tests/E2E/setup/.state.json
-tests/E2E/setup/.env
 tests/E2E/results/
 tests/E2E/report/
 tests/E2E/test-results/
