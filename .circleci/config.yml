@@ -9,8 +9,13 @@ anchors:
     machine:
       image: default
 
+  test_job_config: &test_job_config
+    <<: *context
+    requires:
+      - prepare
+
 jobs:
-  build_package_release:
+  prepare:
     <<: *default_job_config
     steps:
       - checkout
@@ -25,7 +30,87 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            npx @gravitykit/gktools composer install
             npx @gravitykit/gktools npm install
+      - run:
+          name: Prepare unit test dependencies
+          command: npx @gravitykit/phpunit prepare
+      - run:
+          name: Configure E2E environment
+          # A-Z Filters is a GravityView extension: its widget only loads when
+          # GravityView (and Gravity Forms) are active. CI has no sibling repos,
+          # so mount both via WP_ENV_PLUGINS. GravityView is git-cloned (not the
+          # release zip) because the PHPUnit suite chains into its tests/
+          # bootstrap; `composer install` generates its prefixed Foundation.
+          command: |
+            npx @gravitykit/gktools gh release download -R gravityforms/gravityforms --clobber --pattern "*.zip" --dir .tmp
+            unzip .tmp/gravityforms*.zip -d .tmp
+            git clone --depth 1 "https://x-access-token:${GH_AUTH_TOKEN}@github.com/GravityKit/GravityView.git" .tmp/gravityview
+            (cd .tmp/gravityview && npx @gravitykit/gktools composer install)
+            cp .env.example .env
+            sed -i "s|WP_ENV_PLUGINS=.*|WP_ENV_PLUGINS=${PWD}/.tmp/gravityforms,${PWD}/.tmp/gravityview|" .env
+            sed -i "s|GRAVITY_FORMS_LICENSE_KEY=.*|GRAVITY_FORMS_LICENSE_KEY=${GRAVITYFORMS_KEY}|" .env
+            sed -i "s|GRAVITYKIT_LICENSE_KEY=.*|GRAVITYKIT_LICENSE_KEY=${GRAVITYVIEW_KEY}|" .env
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - .
+
+  run_unit_tests:
+    <<: *default_job_config
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+      - run:
+          name: Run unit tests
+          # Runs the PHP matrix from .gkunit.matrix.yml (7.4 + 8.0 on mysql:8.0).
+          # The suite bootstraps GravityView from the checkout provisioned above
+          # (@gravitykit/phpunit resolves GV_PLUGIN_DIR from WP_ENV_PLUGINS).
+          command: |
+            if git log -1 --pretty=%B | grep -iq "\[skip tests\]"; then
+              echo "Skipping tests."
+              exit 0
+            fi
+            npx @gravitykit/phpunit test --parallel
+
+  run_e2e_tests:
+    <<: *default_job_config
+    parallelism: 1
+    resource_class: xlarge
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+      - run:
+          name: Run E2E tests
+          command: |
+            attempt=0
+            max_attempts=3
+            sleep_time=5
+            while [ $attempt -lt $max_attempts ]; do
+              npm run tests:e2e:setup && break
+              attempt=$(( attempt + 1 ))
+              sudo rm -rf /home/circleci/.wp-env
+              echo "Retrying WP-ENV setup in $sleep_time seconds… (attempt $attempt/$max_attempts)"
+              sleep $sleep_time
+            done
+            if [ $attempt -eq $max_attempts ]; then
+              echo "WP-ENV setup failed."
+              exit 1
+            fi
+            TESTFILES=$(circleci tests glob "tests/E2E/tests/**/*.spec.js")
+            echo "$TESTFILES" | circleci tests run --command="xargs npx playwright test --config=tests/E2E/setup/playwright.config.js" --verbose
+      - store_artifacts:
+          path: tests/E2E/results
+      - store_artifacts:
+          path: tests/E2E/report
+      - store_test_results:
+          path: tests/E2E/results/junit.xml
+
+  build_package_release:
+    <<: *default_job_config
+    steps:
+      - attach_workspace:
+          at: /home/circleci
       - run:
           name: Configure git
           command: |
@@ -73,7 +158,15 @@ jobs:
 
 workflows:
   version: 2
-  build_and_release:
+  test_and_release:
     jobs:
+      - prepare:
+          <<: *context
+      - run_unit_tests:
+          <<: *test_job_config
+      - run_e2e_tests:
+          <<: *test_job_config
       - build_package_release:
           <<: *context
+          requires:
+            - run_unit_tests
