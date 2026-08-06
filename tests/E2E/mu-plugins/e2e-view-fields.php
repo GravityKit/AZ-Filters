@@ -35,6 +35,36 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Registers a custom alphabet so a test can prove the localization filter reaches the
+ * widget. Deliberately short and out of alphabetical order, so a View using it cannot
+ * be confused with any built-in alphabet.
+ */
+add_filter(
+	'gravityview_alphabets',
+	function ( $alphabets ) {
+		$alphabets['e2e_custom'] = array( 'x', 'y', 'z' );
+
+		return $alphabets;
+	}
+);
+
+/**
+ * Forces the binary collation when `?e2e_collation=bin` is present. The letter rewrite
+ * only applies a COLLATE clause when this filter returns one, so this is the lever a
+ * front-end test needs to prove the rewrite stays inside its own conditions: under a
+ * binary collation, a rewrite that leaked into a Search Bar condition would stop that
+ * search matching.
+ */
+add_filter(
+	'gravityview/az_filter/collation',
+	function ( $collation ) {
+		$requested = isset( $_GET['e2e_collation'] ) ? sanitize_text_field( wp_unslash( $_GET['e2e_collation'] ) ) : '';
+
+		return 'bin' === $requested ? 'utf8mb4_bin' : $collation;
+	}
+);
+
 add_action( 'rest_api_init', 'gv_e2e_register_view_field_routes' );
 
 function gv_e2e_register_view_field_routes() {
@@ -55,6 +85,119 @@ function gv_e2e_register_view_field_routes() {
 			'methods'             => 'POST',
 			'callback'            => 'gv_e2e_set_entry_approval',
 			'permission_callback' => 'gv_e2e_view_field_check_token',
+		)
+	);
+
+	register_rest_route(
+		'gk-e2e/v1',
+		'/page',
+		array(
+			'methods'             => 'POST',
+			'callback'            => 'gv_e2e_create_page',
+			'permission_callback' => 'gv_e2e_view_field_check_token',
+		)
+	);
+
+	register_rest_route(
+		'gk-e2e/v1',
+		'/entry-author',
+		array(
+			'methods'             => 'POST',
+			'callback'            => 'gv_e2e_set_entry_author',
+			'permission_callback' => 'gv_e2e_view_field_check_token',
+		)
+	);
+}
+
+/**
+ * Publishes a page with arbitrary content, so a test can put more than one View
+ * shortcode on a single page. The fixtures API creates one View per call and
+ * exposes only that View's own permalink, which cannot express a page where two
+ * Views render in the same request.
+ *
+ * Body: title (string, optional), content (string, required).
+ */
+function gv_e2e_create_page( $request ) {
+	$params  = (array) $request->get_json_params();
+	$content = (string) ( $params['content'] ?? '' );
+
+	if ( '' === $content ) {
+		return new WP_REST_Response( array( 'error' => 'content is required.' ), 400 );
+	}
+
+	$page_id = wp_insert_post(
+		array(
+			'post_type'    => 'page',
+			'post_status'  => 'publish',
+			'post_title'   => (string) ( $params['title'] ?? 'E2E Page' ),
+			'post_content' => $content,
+		)
+	);
+
+	if ( is_wp_error( $page_id ) ) {
+		return new WP_REST_Response( array( 'error' => $page_id->get_error_message() ), 500 );
+	}
+
+	return new WP_REST_Response(
+		array(
+			'success'  => true,
+			'page_id'  => $page_id,
+			'page_url' => get_permalink( $page_id ),
+		)
+	);
+}
+
+/**
+ * Creates a user (when `display_name` is given) and assigns entries to an author,
+ * so Created By filtering has authors with known display names. The fixtures API
+ * seeds entry field values but always attributes entries to the requesting user.
+ *
+ * Body: display_name (string, optional — creates the user and returns its ID),
+ * entry_ids (int[], optional), user_id (int, optional — used when display_name
+ * is omitted).
+ */
+function gv_e2e_set_entry_author( $request ) {
+	$params       = (array) $request->get_json_params();
+	$display_name = (string) ( $params['display_name'] ?? '' );
+	$user_id      = (int) ( $params['user_id'] ?? 0 );
+
+	if ( '' !== $display_name ) {
+		$login = 'e2e_' . wp_generate_password( 8, false );
+
+		$user_id = wp_insert_user(
+			array(
+				'user_login'   => $login,
+				'user_pass'    => wp_generate_password( 12, false ),
+				'user_email'   => $login . '@example.com',
+				'display_name' => $display_name,
+				'role'         => 'subscriber',
+			)
+		);
+
+		if ( is_wp_error( $user_id ) ) {
+			return new WP_REST_Response( array( 'error' => $user_id->get_error_message() ), 500 );
+		}
+
+		// wp_insert_user derives display_name from the login unless it is set again.
+		wp_update_user( array( 'ID' => $user_id, 'display_name' => $display_name ) );
+	}
+
+	if ( ! $user_id ) {
+		return new WP_REST_Response( array( 'error' => 'Provide display_name or user_id.' ), 400 );
+	}
+
+	$entry_ids = isset( $params['entry_ids'] ) && is_array( $params['entry_ids'] ) ? $params['entry_ids'] : array();
+
+	foreach ( $entry_ids as $entry_id ) {
+		GFAPI::update_entry_property( (int) $entry_id, 'created_by', $user_id );
+	}
+
+	return new WP_REST_Response(
+		array(
+			'success'      => true,
+			'user_id'      => $user_id,
+			'display_name' => $display_name,
+			'entry_ids'    => array_map( 'intval', $entry_ids ),
 		)
 	);
 }
