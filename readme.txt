@@ -138,7 +138,7 @@ __Developer Updates:__
 
 = 1.0.5 on July 20 =
 * Fixed: Sanitize links to improve security
-* Fixed: Link to "[Use this field to filter entries](https://docs.gravitykit.com/article/198-the-use-this-field-to-filter-entries-setting)" documentation
+* Fixed: Link to "[Use this field to filter entries](https://www.gravitykit.com/docs/gravityview-pro/a-z-filters/the-use-this-field-to-filter-entries-setting/)" documentation
 * Updated: Translations
     - Added Danish (thanks, [@jaegerbo](https://www.transifex.com/accounts/profile/jaegerbo/))
 
