@@ -79,7 +79,13 @@ test.describe('A-Z filter navigation', () => {
 
 		expect(firstPage).toHaveLength(2);
 
-		await page.getByRole('link', { name: '2', exact: true }).first().click();
+		// GravityView gives pagination links screen-reader names ("Page 2"), so match the
+		// trailing number inside the pagination landmark rather than the whole label.
+		await page
+			.getByRole('navigation', { name: /pagination/i })
+			.getByRole('link', { name: /(^|\s)2$/ })
+			.first()
+			.click();
 
 		await expect(page).toHaveURL(/[?&]letter=b/i);
 
