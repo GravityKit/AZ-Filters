@@ -4,6 +4,8 @@
  * Plugin URI:          https://www.gravitykit.com/extensions/a-z-filter/
  * Description:         Filter your entries by letters of the alphabet.
  * Version:             1.4.2
+ * Requires at least:   6.5
+ * Requires PHP:        7.4.0
  * Author:              GravityKit
  * Author URI:          https://www.gravitykit.com
  * Text Domain:         gravityview-az-filters

@@ -1,7 +1,8 @@
 === GravityView - A-Z Filters Extension ===
 Tags: gravityview
-Requires at least: 4.3
+Requires at least: 6.5
 Tested up to: 6.7.1
+Requires PHP: 7.4.0
 Stable tag: trunk
 Contributors: The GravityKit Team
 License: GPL 3 or higher
@@ -29,6 +30,9 @@ This release fixes several issues with the A-Z Entry Filter widget: the Created 
 
 #### 💻 Developer Updates
 * Now uses current GravityView hooks instead of ones deprecated in GravityView 2.55.
+
+#### 🔧 Updated
+* The minimum required WordPress version is now 6.5 and the minimum PHP version is 7.4.
 
 = 1.4.2 on January 16, 2025 =
 
