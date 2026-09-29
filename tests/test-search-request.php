@@ -91,6 +91,52 @@ class GV_AZ_Search_Request_Test extends GV_UnitTestCase {
 	}
 
 	/**
+	 * Builds a View on a form with a text field, optionally with an A-Z widget filtering by it.
+	 *
+	 * @param bool $with_az_filter Whether the View has an A-Z widget.
+	 *
+	 * @return \GV\View The View.
+	 */
+	private function create_view( bool $with_az_filter ): \GV\View {
+		$form = $this->factory->form->create_and_get( array(
+			'fields' => array( array( 'id' => 1, 'type' => 'text', 'label' => 'Name' ) ),
+		) );
+
+		$widgets = $with_az_filter ? array(
+			'header_top' => array(
+				wp_generate_password( 4, false ) => array(
+					'id'           => 'az_filter',
+					'filter_field' => '1',
+					'localization' => 'en_US',
+				),
+			),
+		) : array();
+
+		$view_post = $this->factory->view->create_and_get( array(
+			'form_id'     => $form['id'],
+			'template_id' => 'table',
+			'widgets'     => $widgets,
+		) );
+
+		return \GV\View::by_id( $view_post->ID );
+	}
+
+	/**
+	 * An A-Z letter searches only a View that has an A-Z filter for it, so it cannot reveal
+	 * a hidden View that has none.
+	 */
+	public function test_az_letter_is_a_search_only_for_a_view_with_an_az_filter() {
+		$parameter = $this->az_parameter();
+		$register  = static function ( \GV\View $view, string $letter ) use ( $parameter ): array {
+			return (array) apply_filters( 'gk/gravityview/search/request/search-arguments', array(), array( $parameter => $letter ), $view );
+		};
+
+		$this->assertArrayHasKey( $parameter, $register( $this->create_view( true ), 'B' ), 'A View with an A-Z filter is searched by the letter.' );
+		$this->assertArrayNotHasKey( $parameter, $register( $this->create_view( false ), 'B' ), 'A View without an A-Z filter is not searched by the letter.' );
+		$this->assertArrayNotHasKey( $parameter, $register( $this->create_view( true ), '%' ), 'A character outside the alphabet searches nothing.' );
+	}
+
+	/**
 	 * "Hide entries until search" must reveal a View when an A-Z letter is active. This
 	 * path (the hide_until_searched filter, @since 1.5.4) also covers GravityView versions
 	 * older than the search-request pipeline.

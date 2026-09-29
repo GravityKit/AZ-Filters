@@ -117,7 +117,7 @@ class Widget_A_Z_Entry_Filter extends Widget {
 
 		if ( ! $search_request_registered ) {
 			add_filter( 'gravityview/widget/hide_until_searched', [ $this, 'reveal_when_filtering_by_letter' ] );
-			add_filter( 'gk/gravityview/search/request/search-arguments', [ $this, 'register_search_argument' ], 10, 2 );
+			add_filter( 'gk/gravityview/search/request/search-arguments', [ $this, 'register_search_argument' ], 10, 3 );
 			add_filter( 'gk/gravityview/search/request/filters', [ $this, 'remove_letter_filter' ], 10 );
 			$search_request_registered = true;
 		}
@@ -136,23 +136,75 @@ class Widget_A_Z_Entry_Filter extends Widget {
 	 *
 	 * @since $ver$
 	 *
-	 * @param array $search_arguments The parsed search arguments, keyed by request key.
-	 * @param array $arguments        The raw request arguments.
+	 * @param array     $search_arguments The parsed search arguments, keyed by request key.
+	 * @param array     $arguments        The raw request arguments.
+	 * @param View|null $view             The View, if known.
 	 *
 	 * @return array The search arguments, with the letter parameter added when present.
 	 */
-	public function register_search_argument( $search_arguments, $arguments ) {
+	public function register_search_argument( $search_arguments, $arguments, $view = null ) {
 		if ( ! is_array( $search_arguments ) ) {
 			$search_arguments = [];
 		}
 
 		$letter = is_array( $arguments ) ? ( $arguments[ $this->letter_parameter ] ?? '' ) : '';
 
-		if ( '' !== (string) $letter ) {
-			$search_arguments[ $this->letter_parameter ] = [ 'value' => $letter ];
+		if ( '' === (string) $letter ) {
+			return $search_arguments;
 		}
 
+		// A View without an A-Z filter for this letter is not searched by it, and must stay hidden.
+		if ( $view instanceof View && ! $this->filters_by_letter( $view, mb_strtolower( (string) $letter ) ) ) {
+			return $search_arguments;
+		}
+
+		$search_arguments[ $this->letter_parameter ] = [ 'value' => $letter ];
+
 		return $search_arguments;
+	}
+
+	/**
+	 * Whether a View has an A-Z filter that filters by the letter.
+	 *
+	 * @since $ver$
+	 *
+	 * @param View   $view   The View.
+	 * @param string $letter The lowercase letter.
+	 *
+	 * @return bool
+	 */
+	private function filters_by_letter( View $view, string $letter ): bool {
+		foreach ( $view->widgets->by_id( $this->get_widget_id() )->all() as $widget ) {
+			if ( $widget->configuration->get( 'filter_field' ) && $this->get_letter_prefixes( $widget, $letter ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns the prefixes a widget matches for the letter.
+	 *
+	 * @since $ver$
+	 *
+	 * @param Widget $widget The A-Z widget.
+	 * @param string $letter The lowercase letter.
+	 *
+	 * @return string[] The letter itself, the digits for the 0-9 bucket, or none when the widget's alphabet lacks it.
+	 */
+	private function get_letter_prefixes( $widget, string $letter ): array {
+		$localization = $widget->configuration->get( 'localization' );
+
+		if ( in_array( $letter, $this->get_localized_alphabet( $localization ) ) ) {
+			return [ $letter ];
+		}
+
+		if ( $this->get_zero_through_nine( $localization ) === $letter ) {
+			return $this->get_localized_numbers( $localization );
+		}
+
+		return [];
 	}
 
 	/**
@@ -366,18 +418,7 @@ class Widget_A_Z_Entry_Filter extends Widget {
 				continue;
 			}
 
-			$localization      = $widget->configuration->get( 'localization' );
-			$alphabet          = $this->get_localized_alphabet( $localization );
-			$numbers           = $this->get_localized_numbers( $localization );
-			$zero_through_nine = $this->get_zero_through_nine( $localization );
-
-			if ( in_array( $letter, $alphabet ) ) {
-				$prefixes = [ $letter ];
-			} elseif ( $zero_through_nine === $letter ) {
-				$prefixes = $numbers;
-			} else {
-				$prefixes = [];
-			}
+			$prefixes = $this->get_letter_prefixes( $widget, $letter );
 
 			if ( ! $prefixes ) {
 				continue;
