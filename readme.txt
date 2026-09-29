@@ -22,6 +22,7 @@ Alphabetically filter your entries by letters of the alphabet.
 This release fixes several issues with the A-Z Entry Filter widget: the Created By (User) field's number links, interference with a Search Bar search on the same View, and repeated matching when a page shows more than one View.
 
 #### 🐛 Fixed
+* A View set to "Hide View data until search is performed" stayed empty when a visitor clicked an A-Z Entry Filter letter.
 * Two issues with the A-Z Entry Filter widget when filtering by the Created By (User) field:
   - The number (`0-9`) links returned every entry instead of only entries whose author's display name starts with a number;
   - The custom collation used to match accented and non-Latin letters was not applied.
