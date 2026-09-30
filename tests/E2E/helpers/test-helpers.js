@@ -112,6 +112,9 @@ const PAGING_B_CITIES = ['Boston', 'Buffalo', 'Boise', 'Baltimore', 'Bakersfield
  * @param {Array}    [params.entries]           Entries to seed.
  * @param {Object}   [params.settings]          Extra View settings.
  * @param {boolean}  [params.searchBar]         Add a Search Bar searching the Name field.
+ * @param {Function} [params.prepare]           Awaited with the fixture data before the View is
+ *                                              configured, to change the form or entries in ways
+ *                                              the fixture /create route cannot (Repeater rows).
  * @returns {Promise<object>} Fixture data: { view_id, view_url, form_id, entries, ... }.
  */
 async function createAZView({
@@ -123,7 +126,8 @@ async function createAZView({
 	entries = CITY_ENTRIES,
 	settings = {},
 	searchBar = false,
-	pageLinks = false
+	pageLinks = false,
+	prepare = null
 } = {}) {
 	const hide = hideUntilSearched ? 1 : 0;
 	const viewTitle = title || (hideUntilSearched ? 'AZ Hide Until Searched' : 'AZ No Hide');
@@ -138,6 +142,10 @@ async function createAZView({
 			settings: viewSettings
 		}
 	});
+
+	if (prepare) {
+		await prepare(data);
+	}
 
 	// Seed the directory fields (PresetFieldGenerator) so the List renders.
 	const configured = await fixtures.api.configureView(data.view_id, {

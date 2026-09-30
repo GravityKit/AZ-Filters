@@ -175,7 +175,13 @@ class Widget_A_Z_Entry_Filter extends Widget {
 	 */
 	private function filters_by_letter( View $view, string $letter ): bool {
 		foreach ( $view->widgets->by_id( $this->get_widget_id() )->all() as $widget ) {
-			if ( $widget->configuration->get( 'filter_field' ) && $this->get_letter_prefixes( $widget, $letter ) ) {
+			$filter_field = $widget->configuration->get( 'filter_field' );
+
+			if ( ! $filter_field || $this->is_repeater_field( $view, $filter_field ) ) {
+				continue;
+			}
+
+			if ( $this->get_letter_prefixes( $widget, $letter ) ) {
 				return true;
 			}
 		}
@@ -280,7 +286,59 @@ class Widget_A_Z_Entry_Filter extends Widget {
 			'type' => 'created_by',
 		];
 
+		// The widget's admin script flags its request; GravityView's own sort dropdown uses the same list.
+		$is_widget_request = (bool) Utils::_POST( 'gv_az_filter_fields' );
+
+		if ( $is_widget_request ) {
+			$fields = $this->remove_repeater_fields( $fields );
+		}
+
 		return $fields;
+	}
+
+	/**
+	 * Removes Repeater fields (not their sub-fields) from a field list.
+	 *
+	 * A repeater stores nothing under its own ID, so filtering by it matches no entry.
+	 * Its sub-fields are stored per row and match when any row starts with the letter.
+	 *
+	 * @since $ver$
+	 *
+	 * @param array $fields Fields keyed by ID, each with a `type`.
+	 *
+	 * @return array
+	 */
+	private function remove_repeater_fields( $fields ) {
+		if ( ! is_array( $fields ) ) {
+			return $fields;
+		}
+
+		return array_filter(
+			$fields,
+			static function ( $field ) {
+				return 'repeater' !== ( is_array( $field ) ? ( $field['type'] ?? '' ) : '' );
+			}
+		);
+	}
+
+	/**
+	 * Whether a field of the View's form is a Repeater (top-level or nested).
+	 *
+	 * @since $ver$
+	 *
+	 * @param View       $view     The View.
+	 * @param string|int $field_id The field ID.
+	 *
+	 * @return bool
+	 */
+	private function is_repeater_field( View $view, $field_id ): bool {
+		if ( ! is_numeric( $field_id ) || ! $view->form ) {
+			return false;
+		}
+
+		$field = \GFFormsModel::get_field( \GFAPI::get_form( $view->form->ID ), $field_id );
+
+		return $field instanceof \GF_Field && 'repeater' === $field->type;
 	}
 
 	/**
@@ -309,6 +367,9 @@ class Widget_A_Z_Entry_Filter extends Widget {
 		 * @deprecated 1.3
 		 */
 		$blocklist_field_types = apply_filters_deprecated( 'gravityview_blacklist_field_types', [ $blocklist_field_types ], '1.3', 'gravityview_blocklist_field_types' );
+
+		// Not part of the filterable blocklist: a repeater can never match, whatever the filter returns.
+		$fields = $this->remove_repeater_fields( $fields );
 
 		foreach ( $fields as $id => $field ) {
 			if ( in_array( $field['type'], $blocklist_field_types ) ) {
@@ -415,6 +476,12 @@ class Widget_A_Z_Entry_Filter extends Widget {
 
 			if ( empty( $filter_field ) ) {
 				gravityview()->log->error( 'Widget_A_Z_Entry_Filter[filter_entries]: No filter field has been set.', [ 'data' => $widget ] );
+				continue;
+			}
+
+			// Saved before repeaters were removed from the picker: filtering would hide every entry.
+			if ( $this->is_repeater_field( $view, $filter_field ) ) {
+				gravityview()->log->error( 'Widget_A_Z_Entry_Filter[filter_entries]: The filter field is a Repeater, which has no value of its own; not filtering.', [ 'data' => $filter_field ] );
 				continue;
 			}
 
