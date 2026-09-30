@@ -265,4 +265,16 @@ class GV_AZ_Repeater_Field_Test extends GV_UnitTestCase {
 
 		$this->assertSame( $all, $this->entry_ids_for_letter( $view, 'a' ), 'A repeater cannot be filtered by letter, so the widget must not filter instead of returning nothing.' );
 	}
+
+	public function test_letter_counts_as_a_search_only_for_a_filterable_field() {
+		$form = $this->make_form();
+
+		$repeater_view = $this->make_view( $form, self::REPEATER );
+		$sub_view      = $this->make_view( $form, self::COMPANY );
+
+		$widget = $this->widget();
+
+		$this->assertSame( array(), $widget->register_search_argument( array(), array( 'letter' => 'a' ), $repeater_view ), 'A widget set to a repeater does not filter, so "Hide entries until search" must stay hidden.' );
+		$this->assertArrayHasKey( 'letter', $widget->register_search_argument( array(), array( 'letter' => 'a' ), $sub_view ), 'A widget set to a repeater sub-field does filter.' );
+	}
 }
