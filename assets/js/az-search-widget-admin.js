@@ -57,6 +57,8 @@
 				var data = {
 					action: 'gv_sortable_fields_form',
 					nonce: gvGlobals.nonce,
+					// Tells the server this list is for the A-Z field, which cannot be a Repeater.
+					gv_az_filter_fields: 1,
 				};
 
 				data.form_id = $('#gravityview_form_id').val();
