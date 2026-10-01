@@ -33,9 +33,6 @@ jobs:
             npx @gravitykit/gktools composer install
             npx @gravitykit/gktools npm install
       - run:
-          name: Prepare unit test dependencies
-          command: npx @gravitykit/phpunit prepare
-      - run:
           name: Configure E2E environment
           # A-Z Filters is a GravityView extension: its widget only loads when
           # GravityView (and Gravity Forms) are active. CI has no sibling repos,
@@ -45,12 +42,27 @@ jobs:
           command: |
             npx @gravitykit/gktools gh release download -R gravityforms/gravityforms --clobber --pattern "*.zip" --dir .tmp
             unzip .tmp/gravityforms*.zip -d .tmp
-            git clone --depth 1 "https://x-access-token:${GH_AUTH_TOKEN}@github.com/GravityKit/GravityView.git" .tmp/gravityview
+            # main ships to sites running the released GravityView, so it tests
+            # against the latest release. Every other branch tests against develop.
+            gv_ref=develop
+            if [ "${CIRCLE_BRANCH}" == "main" ]; then
+              gv_ref=$(npx @gravitykit/gktools gh release view -R GravityKit/GravityView --json tagName --jq .tagName)
+            fi
+            echo "Testing against GravityView ${gv_ref}."
+            git clone --depth 1 --branch "${gv_ref}" "https://x-access-token:${GH_AUTH_TOKEN}@github.com/GravityKit/GravityView.git" .tmp/gravityview
             (cd .tmp/gravityview && npx @gravitykit/gktools composer install)
+            # The unit test runner uses this clone too, instead of downloading
+            # the latest release on its own.
+            echo "GV_PLUGIN_DIR=${PWD}/.tmp/gravityview" >> .gkunit.env
             cp .env.example .env
             sed -i "s|WP_ENV_PLUGINS=.*|WP_ENV_PLUGINS=${PWD}/.tmp/gravityforms,${PWD}/.tmp/gravityview|" .env
             sed -i "s|GRAVITY_FORMS_LICENSE_KEY=.*|GRAVITY_FORMS_LICENSE_KEY=${GRAVITYFORMS_KEY}|" .env
             sed -i "s|GRAVITYKIT_LICENSE_KEY=.*|GRAVITYKIT_LICENSE_KEY=${GRAVITYVIEW_KEY}|" .env
+      - run:
+          name: Prepare unit test dependencies
+          # After the clone above, so it uses that GravityView (and checks it)
+          # instead of downloading the latest release.
+          command: npx @gravitykit/phpunit prepare
       - persist_to_workspace:
           root: /home/circleci
           paths:
@@ -64,8 +76,8 @@ jobs:
       - run:
           name: Run unit tests
           # Runs the PHP matrix from .gkunit.matrix.yml (7.4 + 8.0 on mysql:8.0).
-          # The suite bootstraps GravityView from the checkout provisioned above
-          # (@gravitykit/phpunit resolves GV_PLUGIN_DIR from WP_ENV_PLUGINS).
+          # The suite bootstraps GravityView from the clone made in `prepare`
+          # (GV_PLUGIN_DIR in .gkunit.env).
           command: |
             if git log -1 --pretty=%B | grep -iq "\[skip tests\]"; then
               echo "Skipping tests."
