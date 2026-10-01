@@ -16,6 +16,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Widget_A_Z_Entry_Filter extends Widget {
 	private $letter_parameter;
 
+	/**
+	 * The letter comparisons queued for the current query, keyed by alias and literal.
+	 *
+	 * Filled by {@see gf_query_filter()}, consumed by {@see collate_letter_conditions()},
+	 * so the LOWER()/COLLATE rewrite only ever touches the widget's own conditions.
+	 *
+	 * @since 1.4.3
+	 *
+	 * @var array[]
+	 */
+	private $letter_expressions = [];
+
 	protected $widget_description;
 
 	public $icon = 'data:image/svg+xml,%3Csvg%20fill=%22none%22%20height=%2248%22%20viewBox=%220%200%2048%2048%22%20width=%2248%22%20xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg%20stroke=%22%23000000%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%20stroke-width=%223%22%3E%3Cg%20stroke-miterlimit=%2210%22%3E%3Cpath%20d=%22m4.5%2020.5%205.5-16h2l5.5%2016%22/%3E%3Cpath%20d=%22m5.875%2016.5h10.25%22/%3E%3Cpath%20d=%22m24.5%2034.5%2010%2010%2010-10%22/%3E%3C/g%3E%3Cpath%20d=%22m34.5%2044.5v-41%22/%3E%3Cpath%20d=%22m5.5%2028.5h11v1l-11%2014v1h11%22%20stroke-miterlimit=%2210%22/%3E%3C/g%3E%3C/svg%3E';
@@ -61,7 +73,7 @@ class Widget_A_Z_Entry_Filter extends Widget {
 				'type'    => 'select',
 				'choices' => $this->get_filter_fields( $form_id ),
 				'label'   => esc_attr__( 'Use this field to filter entries:', 'gravityview-az-filters' ),
-				'desc'    => sprintf( esc_attr__( 'Entries will be filtered based on the first character of this field. %sLearn more%s.', 'gravityview-az-filters' ), '<a href="https://docs.gravitykit.com/article/198-the-use-this-field-to-filter-entries-setting" rel="external">', '</a>' ),
+				'desc'    => sprintf( esc_attr__( 'Entries will be filtered based on the first character of this field. %sLearn more%s.', 'gravityview-az-filters' ), '<a href="https://www.gravitykit.com/docs/gravityview-pro/a-z-filters/the-use-this-field-to-filter-entries-setting/" rel="external">', '</a>' ),
 				'value'   => '',
 			],
 			'localization' => [
@@ -82,10 +94,173 @@ class Widget_A_Z_Entry_Filter extends Widget {
 
 		if ( ! $this->is_registered() ) {
 			add_action( 'gravityview_search_widget_fields', [ $this, 'modify_search_widget_fields' ] );
-			add_filter( 'gravityview_fe_search_criteria', [ $this, 'filter_entries' ], 10, 3 );
+		}
+
+		// Register the query filter once, regardless of how many widget instances exist.
+		static $query_filter_added = false;
+
+		if ( ! $query_filter_added ) {
+			$query_filter_added = add_action( 'gravityview/view/query', [ $this, 'gf_query_filter' ], 10, 2 );
+
+			// Registered here (once) rather than per query, so the collation rewrite does not
+			// stack on pages with more than one View.
+			add_filter( 'gform_gf_query_sql', [ $this, 'collate_letter_conditions' ] );
+		}
+
+		// Make an active A-Z filter (?letter=B) count as a search so "Hide entries until
+		// search" reveals it. Two layers for version coverage: the search-request filters
+		// feed GravityView 3.0+'s is_search() (which also gates entry loading); the
+		// hide_until_searched filter (@since 1.5.4) covers older GravityView. The parameter
+		// is stripped from the built filters (remove_letter_filter()) so core does not treat
+		// `letter` as a form field; gf_query_filter() applies the actual filtering.
+		static $search_request_registered = false;
+
+		if ( ! $search_request_registered ) {
+			add_filter( 'gravityview/widget/hide_until_searched', [ $this, 'reveal_when_filtering_by_letter' ] );
+			add_filter( 'gk/gravityview/search/request/search-arguments', [ $this, 'register_search_argument' ], 10, 3 );
+			add_filter( 'gk/gravityview/search/request/filters', [ $this, 'remove_letter_filter' ], 10 );
+			$search_request_registered = true;
 		}
 
 		parent::__construct( $widget_label, $widget_id, $default_values, $settings );
+	}
+
+	/**
+	 * Registers the A-Z letter parameter with GravityView's search-request detection.
+	 *
+	 * Makes an active A-Z filter (`?letter=B`) count as a search so anything gated on
+	 * `gravityview()->request->is_search()` behaves correctly, most notably the "Hide
+	 * entries until search" View setting. The letter is not a form field, so the actual
+	 * filtering happens in {@see self::gf_query_filter()} and the parameter is removed
+	 * from the built filters in {@see self::remove_letter_filter()}.
+	 *
+	 * @since 1.4.3
+	 *
+	 * @param array     $search_arguments The parsed search arguments, keyed by request key.
+	 * @param array     $arguments        The raw request arguments.
+	 * @param View|null $view             The View, if known.
+	 *
+	 * @return array The search arguments, with the letter parameter added when present.
+	 */
+	public function register_search_argument( $search_arguments, $arguments, $view = null ) {
+		if ( ! is_array( $search_arguments ) ) {
+			$search_arguments = [];
+		}
+
+		$letter = is_array( $arguments ) ? ( $arguments[ $this->letter_parameter ] ?? '' ) : '';
+
+		if ( '' === (string) $letter ) {
+			return $search_arguments;
+		}
+
+		// A View without an A-Z filter for this letter is not searched by it, and must stay hidden.
+		if ( $view instanceof View && ! $this->filters_by_letter( $view, mb_strtolower( (string) $letter ) ) ) {
+			return $search_arguments;
+		}
+
+		$search_arguments[ $this->letter_parameter ] = [ 'value' => $letter ];
+
+		return $search_arguments;
+	}
+
+	/**
+	 * Whether a View has an A-Z filter that filters by the letter.
+	 *
+	 * @since 1.4.3
+	 *
+	 * @param View   $view   The View.
+	 * @param string $letter The lowercase letter.
+	 *
+	 * @return bool
+	 */
+	private function filters_by_letter( View $view, string $letter ): bool {
+		foreach ( $view->widgets->by_id( $this->get_widget_id() )->all() as $widget ) {
+			if ( $widget->configuration->get( 'filter_field' ) && $this->get_letter_prefixes( $widget, $letter ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns the prefixes a widget matches for the letter.
+	 *
+	 * @since 1.4.3
+	 *
+	 * @param Widget $widget The A-Z widget.
+	 * @param string $letter The lowercase letter.
+	 *
+	 * @return string[] The letter itself, the digits for the 0-9 bucket, or none when the widget's alphabet lacks it.
+	 */
+	private function get_letter_prefixes( $widget, string $letter ): array {
+		$localization = $widget->configuration->get( 'localization' );
+
+		if ( in_array( $letter, $this->get_localized_alphabet( $localization ) ) ) {
+			return [ $letter ];
+		}
+
+		if ( $this->get_zero_through_nine( $localization ) === $letter ) {
+			return $this->get_localized_numbers( $localization );
+		}
+
+		return [];
+	}
+
+	/**
+	 * Removes the A-Z letter parameter from GravityView's built search filters.
+	 *
+	 * The parameter is registered as a search argument only so the request counts as a
+	 * search (see {@see self::register_search_argument()}). It is not a form field, so
+	 * core must not build a filter for it; the letter filtering is applied separately in
+	 * {@see self::gf_query_filter()}.
+	 *
+	 * @since 1.4.3
+	 *
+	 * @param array $filters The normalized filters.
+	 *
+	 * @return array The filters without the letter parameter.
+	 */
+	public function remove_letter_filter( $filters ) {
+		if ( ! is_array( $filters ) ) {
+			return $filters;
+		}
+
+		$parameter = $this->letter_parameter;
+
+		$without_letter = array_filter(
+			$filters,
+			static function ( $filter ) use ( $parameter ) {
+				$key      = is_array( $filter ) ? ( $filter['key'] ?? null ) : null;
+				$field_id = is_array( $filter ) ? ( $filter['field_id'] ?? null ) : null;
+
+				return $parameter !== $key && $parameter !== $field_id;
+			}
+		);
+
+		return array_values( $without_letter );
+	}
+
+	/**
+	 * Keeps a View visible when it is being filtered by an A-Z letter.
+	 *
+	 * "Hide entries until search" withholds a View until the visitor searches. An active
+	 * A-Z filter is such a search, so this un-hides the View. It also covers GravityView
+	 * versions older than the search-request pipeline, where the hide_until_searched filter
+	 * (@since 1.5.4) is the available lever.
+	 *
+	 * @since 1.4.3
+	 *
+	 * @param bool $hide_until_searched Whether to hide the View until a search is performed.
+	 *
+	 * @return bool
+	 */
+	public function reveal_when_filtering_by_letter( $hide_until_searched ) {
+		if ( $hide_until_searched && false !== $this->get_filter_letter() ) {
+			return false;
+		}
+
+		return $hide_until_searched;
 	}
 
 	/**
@@ -213,35 +388,6 @@ class Widget_A_Z_Entry_Filter extends Widget {
 	}
 
 	/**
-	 * Adds search criteria to the GravityView search that fetches entries from Gravity Forms.
-	 *
-	 * @param array $search_criteria Existing search criteria
-	 * @param array $form_id         The main form ID
-	 * @param array $args            The View settings
-	 *
-	 * @return array Modified search criteria
-	 */
-	public function filter_entries( $search_criteria, $form_id, $args ) {
-		if ( ! gravityview()->plugin->supports( \GV\Plugin::FEATURE_GFQUERY ) ) {
-			return $search_criteria;
-		}
-
-		static $filter_added = false;
-
-		if ( $filter_added ) {
-			return $search_criteria;
-		}
-
-		/**
-		 * If GF_Query is available, we can construct custom conditions with nested
-		 * booleans on the query, giving up the old ways of flat search_criteria field_filters.
-		 */
-		$filter_added = add_action( 'gravityview/view/query', [ $this, 'gf_query_filter' ], 10, 2 );
-
-		return $search_criteria; // Return the original criteria, GF_Query modification kicks in later
-	}
-
-	/**
 	 * Filters the GF_Query with advanced logic.
 	 *
 	 * Dropin for the legacy flat filters when GF_Query is available.
@@ -250,6 +396,9 @@ class Widget_A_Z_Entry_Filter extends Widget {
 	 * @param View     $this  The current view object
 	 */
 	public function gf_query_filter( &$query, $view ) {
+		// Aliases and literals are per-query; comparisons queued for a previous query must not leak into this one.
+		$this->letter_expressions = [];
+
 		$letter = $this->get_filter_letter( true );
 
 		// No search
@@ -269,89 +418,129 @@ class Widget_A_Z_Entry_Filter extends Widget {
 				continue;
 			}
 
-			$localization      = $widget->configuration->get( 'localization' );
-			$alphabet          = $this->get_localized_alphabet( $localization );
-			$numbers           = $this->get_localized_numbers( $localization );
-			$zero_through_nine = $this->get_zero_through_nine( $localization );
+			$prefixes = $this->get_letter_prefixes( $widget, $letter );
 
-			if ( in_array( $letter, $alphabet ) ) {
+			if ( ! $prefixes ) {
+				continue;
+			}
 
-				if ( $filter_field === 'created_by' ) {
-					$user_ids = $this->get_user_ids_by_first_letter( $letter );
-					foreach ( $user_ids as $user_id ) {
-						$conditions[] = new \GF_Query_Condition(
-							new \GF_Query_Column( $filter_field ),
-							\GF_Query_Condition::EQ,
-							new \GF_Query_Literal( $user_id )
-						);
-					}
-				} else {
+			if ( 'created_by' === $filter_field ) {
+				// created_by stores the author user ID, so match the users whose display
+				// name starts with the letter (or any digit, for the 0-9 bucket).
+				foreach ( $this->get_user_ids_by_first_letter( $prefixes ) as $user_id ) {
 					$conditions[] = new \GF_Query_Condition(
 						new \GF_Query_Column( $filter_field ),
-						\GF_Query_Condition::LIKE,
-						new \GF_Query_Literal( "$letter%" )
+						\GF_Query_Condition::EQ,
+						new \GF_Query_Literal( $user_id )
 					);
 				}
-			} elseif ( $zero_through_nine === $letter ) {
-				/**
-				 * For numbers 0-9 we need to add every condition separately.
-				 */
-				foreach ( $numbers as $value ) {
+			} else {
+				foreach ( $prefixes as $prefix ) {
+					$like = new \GF_Query_Literal( "$prefix%" );
+
 					$conditions[] = new \GF_Query_Condition(
 						new \GF_Query_Column( $filter_field ),
 						\GF_Query_Condition::LIKE,
-						new \GF_Query_Literal( "$value%" )
+						$like
 					);
+
+					// GF_Query memoizes aliases, so resolving the field's meta alias now yields the
+					// alias used in the final SQL: the rewrite can target exactly this comparison.
+					$alias    = $query->_alias( $filter_field, 0, 'm' );
+					$like_sql = $like->sql( $query );
+
+					$this->letter_expressions[ $alias . ' ' . $like_sql ] = [
+						'column' => sprintf( '`%s`.`meta_value`', $alias ),
+						'like'   => $like_sql,
+					];
 				}
 			}
 		}
 
-		if ( $conditions ) {
-			$query_parts = $query->_introspect();
-
-			/**
-			 * Tack on the AZ filter conditions.
-			 */
-			$query->where(
-				\GF_Query_Condition::_and( $query_parts['where'], call_user_func_array( 'GF_Query_Condition::_or', $conditions ) )
-			);
+		if ( ! $conditions ) {
+			return;
 		}
 
-		/**
-		 * Override the Gravity Forms SQL directly to search lowercase values and possibly define custom collation.
-		 *
-		 * Requires Gravity Forms 2.4.3 or newer.
-		 */
-		add_filter(
-			'gform_gf_query_sql',
-			function ( $sql ) {
+		$query_parts = $query->_introspect();
 
-				$where = $sql['where'];
-
-				/**
-				 * Override the default query collation for the letter comparison.
-				 *
-				 * @since 1.3
-				 *
-				 * @param string $collation_override The collation override for the query. May be necessary to limit results with non-latin characters containing accents. Return a valid collation to override, like 'utf8mb4_bin'.
-				 * @param string $query              The MySQL query passed to the database.
-				 */
-				$collation_override = apply_filters( 'gravityview/az_filter/collation', '', $where );
-
-				// If the collation is set, add the COLLATE command.
-				if ( $collation_override ) {
-					$collation_override = esc_sql( ' COLLATE ' . $collation_override );
-				}
-
-				// Replace GF_Query meta value statements with only lowercase search in case the collation gives a strict match.
-				// Also, adds the COLLATE statement if defined.
-				$where = preg_replace( '/(`m[0-9]+?`\.`meta_value`)/ism', 'LOWER( $1 )' . $collation_override, $where );
-
-				$sql['where'] = $where;
-
-				return $sql;
-			}
+		$query->where(
+			\GF_Query_Condition::_and( $query_parts['where'], call_user_func_array( 'GF_Query_Condition::_or', $conditions ) )
 		);
+	}
+
+	/**
+	 * Lowercases the letter comparisons (and applies the optional collation override) so
+	 * first-letter matching is case-insensitive even on case-sensitive column collations.
+	 *
+	 * Registered once, and rewrites only the comparisons queued by {@see gf_query_filter()}:
+	 * other conditions in the query (e.g. a Search Bar search) keep their own matching.
+	 *
+	 * @since 1.4.3
+	 *
+	 * @param array $sql The Gravity Forms query SQL parts.
+	 *
+	 * @return array
+	 */
+	public function collate_letter_conditions( $sql ) {
+		if ( empty( $this->letter_expressions ) || empty( $sql['where'] ) ) {
+			return $sql;
+		}
+
+		$collate = $this->get_collate_clause( $sql['where'] );
+		$where   = $sql['where'];
+
+		foreach ( $this->letter_expressions as $expression ) {
+			$search  = $expression['column'] . ' LIKE ' . $expression['like'];
+			$replace = 'LOWER( ' . $expression['column'] . ' )' . $collate . ' LIKE ' . $expression['like'];
+
+			$where = str_replace( $search, $replace, $where );
+		}
+
+		$has_rewritten = $where !== $sql['where'];
+
+		if ( $has_rewritten ) {
+			// The queued comparisons belong to one query; once spent, later queries in the
+			// same request must not be rewritten.
+			$this->letter_expressions = [];
+
+			$sql['where'] = $where;
+		}
+
+		return $sql;
+	}
+
+	/**
+	 * Returns the COLLATE clause for the letter comparisons, or an empty string for none.
+	 *
+	 * @since 1.4.3
+	 *
+	 * @param string $where The query WHERE clause, passed to the filter.
+	 *
+	 * @return string
+	 */
+	private function get_collate_clause( $where ) {
+		/**
+		 * Override the default query collation for the letter comparison.
+		 *
+		 * @since 1.3
+		 *
+		 * @param string $collation_override A valid collation to force, e.g. 'utf8mb4_bin'. Empty for none.
+		 * @param string $where              The query WHERE clause.
+		 */
+		$collation = trim( (string) apply_filters( 'gravityview/az_filter/collation', '', $where ), " \t`" );
+
+		if ( ! $collation ) {
+			return '';
+		}
+
+		// The value goes into the SQL as-is, so only accept a bare collation name.
+		if ( ! preg_match( '/^[A-Za-z0-9_]+$/', $collation ) ) {
+			gravityview()->log->error( sprintf( 'Widget_A_Z_Entry_Filter[get_collate_clause]: Ignoring "%s" from the gravityview/az_filter/collation filter; a collation name may only contain letters, numbers and underscores.', $collation ) );
+
+			return '';
+		}
+
+		return ' COLLATE ' . $collation;
 	}
 
 	/**
@@ -363,20 +552,36 @@ class Widget_A_Z_Entry_Filter extends Widget {
 	 *
 	 * @return array
 	 */
-	public function get_user_ids_by_first_letter( $letter ) {
+	public function get_user_ids_by_first_letter( $letters ) {
 		global $wpdb;
 
-		$query  = $wpdb->prepare(
-			"
-		SELECT ID
-		FROM {$wpdb->users}
-		WHERE display_name LIKE %s",
-			$letter . '%'
-		);
+		$letters = array_values( array_filter( (array) $letters, static function ( $letter ) {
+			return '' !== (string) $letter;
+		} ) );
+
+		if ( ! $letters ) {
+			return [ PHP_INT_MAX ];
+		}
+
+		$collate = $this->get_collate_clause( '' );
+		$column  = 'display_name';
+
+		if ( $collate ) {
+			// Mirror the letter conditions: lowercase the column, then force the collation,
+			// so display names match the same way field values do.
+			$column = 'LOWER( display_name )' . $collate;
+		}
+
+		$clauses      = implode( ' OR ', array_fill( 0, count( $letters ), "{$column} LIKE %s" ) );
+		$placeholders = array_map( static function ( $letter ) {
+			return $letter . '%';
+		}, $letters );
+
+		$query  = $wpdb->prepare( "SELECT ID FROM {$wpdb->users} WHERE {$clauses}", $placeholders );
 		$result = $wpdb->get_col( $query );
 
-		// Big number to show no results when no found.
-		return ( ! empty( $result ) ? $result : [ PHP_INT_MAX ] );
+		// A non-existent ID so an empty match returns no entries instead of all.
+		return ! empty( $result ) ? $result : [ PHP_INT_MAX ];
 	}
 
 	/**

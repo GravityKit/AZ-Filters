@@ -1,0 +1,10 @@
+{
+	"build": ["npm install", "grunt"],
+	"package": {
+		"prefix": "gravityview-az-filters"
+	},
+	"release": {
+		"branch": "main",
+		"mergeTo": "develop"
+	}
+}

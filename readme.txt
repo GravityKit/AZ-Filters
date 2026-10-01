@@ -1,7 +1,8 @@
 === GravityView - A-Z Filters Extension ===
 Tags: gravityview
-Requires at least: 4.3
-Tested up to: 6.7.1
+Requires at least: 6.5
+Tested up to: 7.1.2
+Requires PHP: 7.4.0
 Stable tag: trunk
 Contributors: The GravityKit Team
 License: GPL 3 or higher
@@ -15,6 +16,23 @@ Alphabetically filter your entries by letters of the alphabet.
 3. Follow the instructions
 
 == Changelog ==
+
+= 1.4.3 on October 1, 2026 =
+
+This release resolves several issues with the A-Z Entry Filter widget, including conflicts with searches and with other Views on the same page.
+
+**Note: A-Z Filters now requires PHP 7.4 and WordPress 6.5 or newer.**
+
+#### 🐛 Fixed
+* Views with the "Hide View data until search is performed" setting enabled stayed empty after a visitor clicked a letter in the A-Z Entry Filter widget.
+* Issues when filtering by the Created By (User) field:
+  - Number (`0-9`) links showed every entry instead of only entries created by users whose display name starts with a number;
+  - Accented and non-Latin letters were not matched correctly.
+* The Search Bar widget could return incorrect results on Views that also use the A-Z Entry Filter widget.
+* Letter filtering could be applied more than once when a page displayed multiple Views.
+
+#### 💻 Developer Updates
+* Replaced GravityView hooks deprecated in version 2.55 with their current equivalents.
 
 = 1.4.2 on January 16, 2025 =
 
@@ -124,7 +142,7 @@ __Developer Updates:__
 
 = 1.0.5 on July 20 =
 * Fixed: Sanitize links to improve security
-* Fixed: Link to "[Use this field to filter entries](https://docs.gravitykit.com/article/198-the-use-this-field-to-filter-entries-setting)" documentation
+* Fixed: Link to "[Use this field to filter entries](https://www.gravitykit.com/docs/gravityview-pro/a-z-filters/the-use-this-field-to-filter-entries-setting/)" documentation
 * Updated: Translations
     - Added Danish (thanks, [@jaegerbo](https://www.transifex.com/accounts/profile/jaegerbo/))
 
