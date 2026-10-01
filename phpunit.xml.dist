@@ -14,7 +14,8 @@
 	</php>
 	<testsuites>
 		<testsuite name="GravityView A-Z Filters Test Suite">
-			<directory suffix=".php">./tests/</directory>
+			<directory prefix="test-" suffix=".php">./tests/</directory>
+			<exclude>./tests/E2E/</exclude>
 		</testsuite>
 	</testsuites>
 </phpunit>

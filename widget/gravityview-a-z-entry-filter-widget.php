@@ -486,23 +486,8 @@ class Widget_A_Z_Entry_Filter extends Widget {
 			return $sql;
 		}
 
-		/**
-		 * Override the default query collation for the letter comparison.
-		 *
-		 * @since 1.3
-		 *
-		 * @param string $collation_override A valid collation to force, e.g. 'utf8mb4_bin'. Empty for none.
-		 * @param string $where              The query WHERE clause.
-		 */
-		$collation_override = apply_filters( 'gravityview/az_filter/collation', '', $sql['where'] );
-
-		$collate = '';
-
-		if ( $collation_override ) {
-			$collate = esc_sql( ' COLLATE ' . $collation_override );
-		}
-
-		$where = $sql['where'];
+		$collate = $this->get_collate_clause( $sql['where'] );
+		$where   = $sql['where'];
 
 		foreach ( $this->letter_expressions as $expression ) {
 			$search  = $expression['column'] . ' LIKE ' . $expression['like'];
@@ -525,6 +510,40 @@ class Widget_A_Z_Entry_Filter extends Widget {
 	}
 
 	/**
+	 * Returns the COLLATE clause for the letter comparisons, or an empty string for none.
+	 *
+	 * @since 1.4.3
+	 *
+	 * @param string $where The query WHERE clause, passed to the filter.
+	 *
+	 * @return string
+	 */
+	private function get_collate_clause( $where ) {
+		/**
+		 * Override the default query collation for the letter comparison.
+		 *
+		 * @since 1.3
+		 *
+		 * @param string $collation_override A valid collation to force, e.g. 'utf8mb4_bin'. Empty for none.
+		 * @param string $where              The query WHERE clause.
+		 */
+		$collation = trim( (string) apply_filters( 'gravityview/az_filter/collation', '', $where ), " \t`" );
+
+		if ( ! $collation ) {
+			return '';
+		}
+
+		// The value goes into the SQL as-is, so only accept a bare collation name.
+		if ( ! preg_match( '/^[A-Za-z0-9_]+$/', $collation ) ) {
+			gravityview()->log->error( sprintf( 'Widget_A_Z_Entry_Filter[get_collate_clause]: Ignoring "%s" from the gravityview/az_filter/collation filter; a collation name may only contain letters, numbers and underscores.', $collation ) );
+
+			return '';
+		}
+
+		return ' COLLATE ' . $collation;
+	}
+
+	/**
 	 * Returns user IDs by display name that starts with a given letter.
 	 *
 	 * @since 1.4
@@ -544,15 +563,13 @@ class Widget_A_Z_Entry_Filter extends Widget {
 			return [ PHP_INT_MAX ];
 		}
 
-		/** This filter is documented in collate_letter_conditions(). */
-		$collation_override = apply_filters( 'gravityview/az_filter/collation', '', '' );
+		$collate = $this->get_collate_clause( '' );
+		$column  = 'display_name';
 
-		$column = 'display_name';
-
-		if ( $collation_override ) {
+		if ( $collate ) {
 			// Mirror the letter conditions: lowercase the column, then force the collation,
 			// so display names match the same way field values do.
-			$column = 'LOWER( display_name )' . esc_sql( ' COLLATE ' . $collation_override );
+			$column = 'LOWER( display_name )' . $collate;
 		}
 
 		$clauses      = implode( ' OR ', array_fill( 0, count( $letters ), "{$column} LIKE %s" ) );

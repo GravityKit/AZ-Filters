@@ -242,6 +242,58 @@ class GV_AZ_Letter_Collation_Test extends GV_UnitTestCase {
 		);
 	}
 
+	public function test_invalid_collation_override_is_ignored() {
+		add_filter( 'gravityview/az_filter/collation', static function () {
+			return 'utf8mb4_bin LIKE 1 OR 1';
+		} );
+
+		$widget = new \GV\Widget_A_Z_Entry_Filter();
+
+		$captured = array();
+
+		$this->wpdb_spy = static function ( $q ) use ( &$captured ) {
+			if ( false !== stripos( $q, 'display_name' ) ) {
+				$captured[] = $q;
+			}
+
+			return $q;
+		};
+		add_filter( 'query', $this->wpdb_spy );
+
+		$widget->get_user_ids_by_first_letter( array( 'b' ) );
+
+		$this->assertNotEmpty( $captured );
+		$this->assertStringNotContainsString( 'COLLATE', end( $captured ), 'An invalid collation must not reach the display-name query.' );
+
+		$sql = array( 'where' => "`m1`.`meta_value` LIKE 'b%'" );
+
+		$this->set_letter_expressions( $widget, array( array( 'column' => '`m1`.`meta_value`', 'like' => "'b%'" ) ) );
+
+		$result = $widget->collate_letter_conditions( $sql );
+
+		$this->assertSame( "LOWER( `m1`.`meta_value` ) LIKE 'b%'", $result['where'], 'An invalid collation must not reach the entry query.' );
+	}
+
+	public function test_backticked_collation_override_is_accepted() {
+		add_filter( 'gravityview/az_filter/collation', static function () {
+			return '`utf8mb4_bin`';
+		} );
+
+		$widget = new \GV\Widget_A_Z_Entry_Filter();
+
+		$this->set_letter_expressions( $widget, array( array( 'column' => '`m1`.`meta_value`', 'like' => "'b%'" ) ) );
+
+		$result = $widget->collate_letter_conditions( array( 'where' => "`m1`.`meta_value` LIKE 'b%'" ) );
+
+		$this->assertSame( "LOWER( `m1`.`meta_value` ) COLLATE utf8mb4_bin LIKE 'b%'", $result['where'] );
+	}
+
+	private function set_letter_expressions( $widget, $expressions ) {
+		$property = new \ReflectionProperty( $widget, 'letter_expressions' );
+		$property->setAccessible( true );
+		$property->setValue( $widget, $expressions );
+	}
+
 	public function test_created_by_filtering_respects_collation_override() {
 		$form = $this->factory->form->import_and_get( 'complete.json' );
 
