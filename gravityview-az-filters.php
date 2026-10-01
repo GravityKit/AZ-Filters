@@ -3,7 +3,7 @@
  * Plugin Name:         GravityView - A-Z Filters Extension
  * Plugin URI:          https://www.gravitykit.com/extensions/a-z-filter/
  * Description:         Filter your entries by letters of the alphabet.
- * Version:             1.4.2
+ * Version:             1.4.3
  * Requires at least:   6.5
  * Requires PHP:        7.4.0
  * Author:              GravityKit
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 } // Exit if accessed directly
 
 /** @since 1.2 */
-define( 'GRAVITYVIEW_AZ_FILTER_VERSION', '1.4.2 ' );
+define( 'GRAVITYVIEW_AZ_FILTER_VERSION', '1.4.3 ' );
 
 /** @since 1.3.2 */
 define( 'GRAVITYVIEW_AZ_FILTER_FILE', __FILE__ );

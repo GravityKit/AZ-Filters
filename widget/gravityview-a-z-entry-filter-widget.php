@@ -22,7 +22,7 @@ class Widget_A_Z_Entry_Filter extends Widget {
 	 * Filled by {@see gf_query_filter()}, consumed by {@see collate_letter_conditions()},
 	 * so the LOWER()/COLLATE rewrite only ever touches the widget's own conditions.
 	 *
-	 * @since $ver$
+	 * @since 1.4.3
 	 *
 	 * @var array[]
 	 */
@@ -134,7 +134,7 @@ class Widget_A_Z_Entry_Filter extends Widget {
 	 * filtering happens in {@see self::gf_query_filter()} and the parameter is removed
 	 * from the built filters in {@see self::remove_letter_filter()}.
 	 *
-	 * @since $ver$
+	 * @since 1.4.3
 	 *
 	 * @param array     $search_arguments The parsed search arguments, keyed by request key.
 	 * @param array     $arguments        The raw request arguments.
@@ -166,7 +166,7 @@ class Widget_A_Z_Entry_Filter extends Widget {
 	/**
 	 * Whether a View has an A-Z filter that filters by the letter.
 	 *
-	 * @since $ver$
+	 * @since 1.4.3
 	 *
 	 * @param View   $view   The View.
 	 * @param string $letter The lowercase letter.
@@ -186,7 +186,7 @@ class Widget_A_Z_Entry_Filter extends Widget {
 	/**
 	 * Returns the prefixes a widget matches for the letter.
 	 *
-	 * @since $ver$
+	 * @since 1.4.3
 	 *
 	 * @param Widget $widget The A-Z widget.
 	 * @param string $letter The lowercase letter.
@@ -215,7 +215,7 @@ class Widget_A_Z_Entry_Filter extends Widget {
 	 * core must not build a filter for it; the letter filtering is applied separately in
 	 * {@see self::gf_query_filter()}.
 	 *
-	 * @since $ver$
+	 * @since 1.4.3
 	 *
 	 * @param array $filters The normalized filters.
 	 *
@@ -249,7 +249,7 @@ class Widget_A_Z_Entry_Filter extends Widget {
 	 * versions older than the search-request pipeline, where the hide_until_searched filter
 	 * (@since 1.5.4) is the available lever.
 	 *
-	 * @since $ver$
+	 * @since 1.4.3
 	 *
 	 * @param bool $hide_until_searched Whether to hide the View until a search is performed.
 	 *
@@ -475,7 +475,7 @@ class Widget_A_Z_Entry_Filter extends Widget {
 	 * Registered once, and rewrites only the comparisons queued by {@see gf_query_filter()}:
 	 * other conditions in the query (e.g. a Search Bar search) keep their own matching.
 	 *
-	 * @since $ver$
+	 * @since 1.4.3
 	 *
 	 * @param array $sql The Gravity Forms query SQL parts.
 	 *

@@ -1,7 +1,7 @@
 === GravityView - A-Z Filters Extension ===
 Tags: gravityview
 Requires at least: 6.5
-Tested up to: 6.7.1
+Tested up to: 7.1.2
 Requires PHP: 7.4.0
 Stable tag: trunk
 Contributors: The GravityKit Team
@@ -17,23 +17,22 @@ Alphabetically filter your entries by letters of the alphabet.
 
 == Changelog ==
 
-= develop =
+= 1.4.3 on October 1, 2026 =
 
-This release fixes several issues with the A-Z Entry Filter widget: the Created By (User) field's number links, interference with a Search Bar search on the same View, and repeated matching when a page shows more than one View.
+This release resolves several issues with the A-Z Entry Filter widget, including conflicts with searches and with other Views on the same page.
+
+**Note: A-Z Filters now requires PHP 7.4 and WordPress 6.5 or newer.**
 
 #### 🐛 Fixed
-* A View set to "Hide View data until search is performed" stayed empty when a visitor clicked an A-Z Entry Filter letter.
-* Two issues with the A-Z Entry Filter widget when filtering by the Created By (User) field:
-  - The number (`0-9`) links returned every entry instead of only entries whose author's display name starts with a number;
-  - The custom collation used to match accented and non-Latin letters was not applied.
-* The A-Z Entry Filter widget changing how a separate Search Bar search on the same View matched entries.
-* The A-Z Entry Filter widget repeating its letter matching when a page displays more than one View.
+* Views with the "Hide View data until search is performed" setting enabled stayed empty after a visitor clicked a letter in the A-Z Entry Filter widget.
+* Issues when filtering by the Created By (User) field:
+  - Number (`0-9`) links showed every entry instead of only entries created by users whose display name starts with a number;
+  - Accented and non-Latin letters were not matched correctly.
+* The Search Bar widget could return incorrect results on Views that also use the A-Z Entry Filter widget.
+* Letter filtering could be applied more than once when a page displayed multiple Views.
 
 #### 💻 Developer Updates
-* Now uses current GravityView hooks instead of ones deprecated in GravityView 2.55.
-
-#### 🔧 Updated
-* The minimum required WordPress version is now 6.5 and the minimum PHP version is 7.4.
+* Replaced GravityView hooks deprecated in version 2.55 with their current equivalents.
 
 = 1.4.2 on January 16, 2025 =
 
