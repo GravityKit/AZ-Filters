@@ -170,12 +170,14 @@ jobs:
 
 workflows:
   version: 2
-  # Every branch except main. E2E runs but does not hold up the build, so a red
-  # E2E on develop still produces a dev build.
+  # Every branch except main and main-beta. E2E runs but does not hold up the
+  # build, so a red E2E on develop still produces a dev build.
   test_and_package:
     when:
       not:
-        equal: [ main, << pipeline.git.branch >> ]
+        matches:
+          pattern: "^main(-beta)?$"
+          value: << pipeline.git.branch >>
     jobs:
       - prepare:
           <<: *context
@@ -188,11 +190,13 @@ workflows:
           requires:
             - run_unit_tests
 
-  # main publishes the release, so a failed E2E run stops it.
+  # main and main-beta publish releases, so a failed E2E run stops them.
   # Keep the job list in step with test_and_package above.
   release:
     when:
-      equal: [ main, << pipeline.git.branch >> ]
+      matches:
+        pattern: "^main(-beta)?$"
+        value: << pipeline.git.branch >>
     jobs:
       - prepare:
           <<: *context
