@@ -26,6 +26,24 @@ commands:
   # Every branch publishes a build. Caches are shared by every branch, so the
   # zip is never built from one: a cache an unreviewed branch saved under the
   # same key could otherwise ship.
+  # Build and publish jobs start from their own checkout, never from the
+  # prepare workspace. On a branch, prepare runs tools from a shared cache, so
+  # anything they wrote into the plugin folder could otherwise ship in the zip
+  # or ride along in a translations commit. Only the build job's own output
+  # crosses over: the zip and its tree (see publish_release).
+  clean_checkout:
+    steps:
+      - checkout
+      - run:
+          name: Fetch tags and configure npm
+          command: |
+            git fetch --tags
+            echo "//npm.pkg.github.com/:_authToken=${GH_AUTH_TOKEN}" >> ~/.npmrc
+            echo "@gravitykit:registry=https://npm.pkg.github.com" >> ~/.npmrc
+            echo "audit=false" >> ~/.npmrc
+            echo "fund=false" >> ~/.npmrc
+            echo "update-notifier=false" >> ~/.npmrc
+
   install_build_deps_fresh:
     steps:
       - run:
@@ -309,8 +327,7 @@ jobs:
   build_package:
     <<: *default_job_config
     steps:
-      - attach_workspace:
-          at: /home/circleci
+      - clean_checkout
       - install_build_deps_fresh
       - build_zip
       - persist_to_workspace:
@@ -325,11 +342,18 @@ jobs:
   publish_release:
     <<: *default_job_config
     steps:
+      - clean_checkout
       - attach_workspace:
-          at: /home/circleci
+          at: /tmp/workspace
+      # The tree comes from build_package, which also started from a clean
+      # checkout, so nothing prepare wrote reaches it. It carries
+      # translations.pot, the replace-since commit and the tracked files the
+      # build changed, which translate and release commit and push.
       - run:
           name: Restore the build's tree
-          command: tar -xzf .build-out/build-tree.tgz
+          command: |
+            tar -xzf /tmp/workspace/plugin/.build-out/build-tree.tgz
+            cp /tmp/workspace/plugin/.release/*.zip .
       - configure_git
       - publish_zip
 
