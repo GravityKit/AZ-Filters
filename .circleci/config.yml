@@ -325,7 +325,13 @@ jobs:
   run_e2e_tests:
     <<: *default_job_config
     parallelism: 1
-    resource_class: xlarge
+    # One Playwright worker drives one WordPress, so the extra cores of xlarge
+    # sat idle while costing most of the run's credits. medium.gen3 is what the
+    # other products' browser jobs run on.
+    resource_class: medium.gen3
+    # gen3 classes need an explicit machine image.
+    machine:
+      image: ubuntu-2604:current
     steps:
       - attach_workspace:
           at: /home/circleci
