@@ -253,6 +253,8 @@ jobs:
             fi
             echo "Testing against GravityView ${gv_ref}."
             git clone --depth 1 --branch "${gv_ref}" "https://x-access-token:${GH_AUTH_TOKEN}@github.com/GravityKit/GravityView.git" .tmp/gravityview
+            # The clone is persisted to the workspace, so its remote must not keep the token.
+            git -C .tmp/gravityview remote set-url origin https://github.com/GravityKit/GravityView.git
             (cd .tmp/gravityview && npx @gravitykit/gktools composer install)
             # The unit test runner uses this clone too, instead of downloading
             # the latest release on its own.
