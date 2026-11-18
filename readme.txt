@@ -17,6 +17,11 @@ Alphabetically filter your entries by letters of the alphabet.
 
 == Changelog ==
 
+= develop =
+
+#### 🐛 Fixed
+* The A-Z Entry Filter stylesheet loaded on every page of the site, not only on pages that show the letter links.
+
 = 1.4.3 on October 1, 2026 =
 
 This release resolves several issues with the A-Z Entry Filter widget, including conflicts with searches and with other Views on the same page.

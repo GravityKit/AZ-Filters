@@ -82,12 +82,14 @@ class A_Z_Entry_Filter_Extension extends Extension {
 	}
 
 	/**
-	 * Print CSS on front-end when widget is loaded
+	 * Registers the front-end CSS, which the letter links enqueue when they render.
+	 *
+	 * @since TBD Registers the CSS instead of loading it on every page.
+	 *
 	 * @return void
 	 */
 	function print_styles() {
-		// Need to filter the CSS to load only when required.
-		wp_enqueue_style( 'gravityview_az_entry_filter', GRAVITYVIEW_AZ_FILTER_URL . '/assets/css/gravityview-az-filters.css' );
+		wp_register_style( 'gravityview_az_entry_filter', GRAVITYVIEW_AZ_FILTER_URL . '/assets/css/gravityview-az-filters.css' );
 	}
 
 } // A_Z_Entry_Filter_Extension

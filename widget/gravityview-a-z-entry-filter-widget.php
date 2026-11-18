@@ -684,6 +684,8 @@ class Widget_A_Z_Entry_Filter extends Widget {
 			$ul_classes[] = 'et_smooth_scroll_disabled';
 		}
 
+		wp_enqueue_style( 'gravityview_az_entry_filter' );
+
 		$output = '<ul class="' . gravityview_sanitize_html_class( $ul_classes ) . '" id="' . esc_attr( $widget_id_attr ) . '">';
 
 		$output .= $args['before_first_letter'];
