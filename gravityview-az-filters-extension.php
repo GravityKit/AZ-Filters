@@ -84,7 +84,7 @@ class A_Z_Entry_Filter_Extension extends Extension {
 	/**
 	 * Registers the front-end CSS, which the letter links enqueue when they render.
 	 *
-	 * @since TBD Registers the CSS instead of loading it on every page.
+	 * @since 1.4.4 Registers the CSS instead of loading it on every page.
 	 *
 	 * @return void
 	 */
