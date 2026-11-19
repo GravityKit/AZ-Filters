@@ -1,7 +1,7 @@
 === GravityView - A-Z Filters Extension ===
 Tags: gravityview
 Requires at least: 6.5
-Tested up to: 7.1.2
+Tested up to: 7.1.5
 Requires PHP: 7.4.0
 Stable tag: trunk
 Contributors: The GravityKit Team
@@ -16,6 +16,13 @@ Alphabetically filter your entries by letters of the alphabet.
 3. Follow the instructions
 
 == Changelog ==
+
+= 1.4.4 on November 19, 2026 =
+
+This update stops A-Z Filters from loading its stylesheet on pages that don't use it.
+
+#### ✨ Improved
+* The A-Z Entry Filter stylesheet loading only on pages that show the widget, instead of on every page of the site.
 
 = 1.4.3 on October 1, 2026 =
 
